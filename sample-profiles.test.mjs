@@ -34,4 +34,10 @@ for (const profileId of Object.keys(expected)) {
   appSignals.add(s.previewSignal);
 }
 assert.equal(appSignals.size, 3);
+let preview = step(freshJourney(), 'sign-in');
+preview = step(preview, 'app-preview-connect', { app: 'oura', profileId: 'direction' });
+preview = step(preview, 'sample-read', { profileId: preview.previewProfileId });
+assert.equal(preview.sampleProfileId, 'direction');
+assert.equal(preview.topic, 'meaning');
+console.log('PASS: entering a sample after preview retains the same assigned profile');
 console.log('PASS: three stable fictional profiles lead to distinct guesses and matching results');
