@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {learnFromFiles} from './local-reader.js';
-import {freshJourney,step} from './loop-engine.js';
+import {freshJourney,step,rank} from './loop-engine.js';
 import {hypothesisCopy} from './hypothesis-copy.js';
 import {visualResult} from './visual-result.js';
 const legacySample={source:'sample',topic:'health',index:0,results:[],localGuess:'Your notes link treatment decisions with uninterrupted research time. Is protecting your focus the real priority?'};assert.match(hypothesisCopy(legacySample),/^The example notes/);console.log('PASS: older sample data is not described as the member’s own notes');
@@ -27,3 +27,5 @@ let undoNext=structuredClone(past);undoNext.needDepth=2;undoNext.followUpIndex=1
 let mixed=freshJourney();mixed=step(mixed,"sign-in");mixed=step(mixed,"local-read",life);mixed=step(mixed,"right");mixed=step(mixed,"right");mixed=step(mixed,"correct",{key:"focus"});mixed=step(mixed,"correct",{key:"focus"});assert.equal(mixed.weights.focus,6);mixed=step(mixed,"delete-memory",{id:"preference-focus"});assert.equal(mixed.weights.focus,2);mixed=step(mixed,"delete-memory",{id:"discovery-priority"});assert.equal(mixed.weights.focus,0);
 
 let budgetChange=freshJourney();budgetChange.stage="guess";budgetChange=step(budgetChange,"correct",{key:"budget"});assert.equal(budgetChange.cap,0);budgetChange=step(budgetChange,"budget",{cap:3});assert.equal(budgetChange.cap,3);assert.ok(!(budgetChange.confirmedMemories||[]).some(m=>m.id==="preference-budget"));assert.equal(budgetChange.weights.budget,0);
+
+let recovery=freshJourney();recovery.stage="guess";recovery.source="sample";recovery=step(recovery,"right");recovery=step(recovery,"right");assert.equal(recovery.stage,"plan");while(rank(recovery).length)recovery=step(recovery,"left");recovery=step(recovery,"recover-plans");assert.equal(recovery.stage,"guess");assert.equal(recovery.discoveryDepth,0);assert.equal(recovery.deepChoice,null);
