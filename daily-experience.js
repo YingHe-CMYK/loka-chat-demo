@@ -7,3 +7,10 @@ export function dailyHealth(day,previous,previousHeadline,profileId){const sampl
 export function dailyConnection(day,previous,previousHeadline){const examples=[{headline:'One conversation worth making room for.',detail:'Example prompt: reach out when it feels right.'},{headline:'Share a thought, without an agenda.',detail:'Example prompt: send a brief note when you have something to share.'},{headline:'Make space for someone to listen.',detail:'Example prompt: consider a conversation where you can speak openly.'}];let n=0;for(const c of day)n=(n*31+c.charCodeAt(0))>>>0;let i=(n+(previous==='no'?1:0))%examples.length;if(previous==='no'&&examples[i].headline===previousHeadline)i=(i+1)%examples.length;return examples[i];}
 
 export function previousDailyFeedback(feedback,day,tab,outcomes){const prior=Object.entries(feedback||{}).filter(([date,answers])=>date<day&&answers?.[tab]).sort(([a],[b])=>b.localeCompare(a))[0];return prior?(outcomes?.[prior[0]]?.[tab]||prior[1][tab]):null;}
+
+// Show only the user's saved, explicitly entered schedule in its own source context.
+export function savedScheduleForDay(results,day,source,profileId){
+ const date=new Date(`${day}T12:00:00`);if(Number.isNaN(date.getTime()))return null;
+ const weekday=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][date.getDay()];
+ return [...(results||[])].reverse().find(r=>r.topic==='health'&&r.schedule?.name&&r.schedule?.time&&r.schedule?.day===weekday&&(source==='sample'?r.sourceKind==='sample'&&r.sampleProfileId===profileId:r.sourceKind!=='sample'&&r.sourceKind!=='demo'))||null;
+}

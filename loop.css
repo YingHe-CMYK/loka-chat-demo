@@ -291,3 +291,5 @@ button,input,textarea,select{font-family:inherit}
 .meaning-insights{position:relative;z-index:2;display:grid;gap:10px;margin-top:16px}.meaning-insights div{display:grid;gap:3px;padding-top:9px;border-top:1px solid #ffffff30}.meaning-insights b{font-size:11px;letter-spacing:.04em;color:#e8dce8}.meaning-insights span{font-size:13px;line-height:1.45;color:#fff}
 
 .meaning-insights p{margin:5px 0 0;padding:8px 10px;border-radius:10px;background:#ffffff20;color:#fff;font-size:13px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}.meaning-insights p[hidden]{display:none}
+
+.daily-saved-schedule{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0;padding:16px 18px;border:1px solid #e4e0e8;border-radius:18px;background:#fff}.daily-saved-schedule div{display:grid;gap:3px;min-width:0}.daily-saved-schedule span{font-size:10px;font-weight:650;letter-spacing:.08em;color:#70697a}.daily-saved-schedule strong{font-size:15px;overflow-wrap:anywhere}.daily-saved-schedule small{font-size:12px;color:#70697a}.daily-saved-schedule button{flex:none;min-height:44px}
