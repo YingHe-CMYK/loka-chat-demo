@@ -13,9 +13,9 @@ export const sampleEvidence={
 };
 // Three complete, fictional starting points; no visitor data is used to select them.
 export const sampleProfiles={
- focus:{topic:'health',guess:'The example notes connect a treatment decision with protected research time. Is preserving focus the priority?',facts:[{label:'Research notes',value:'Treatment and supplement questions'},{label:'Calendar',value:'Three uninterrupted research blocks'}],evidence:sampleEvidence.health},
- direction:{topic:'meaning',guess:'The example notes return to a possible change in research direction. Is the harder part deciding what to leave behind?',facts:[{label:'Research notes',value:'Questions about a change of direction'},{label:'Saved reflection',value:'Exploring a new path'}],evidence:sampleEvidence.meaning},
- connection:{topic:'connection',guess:'The example notes mention an old friend and an unfinished conversation. Is finding an easy way to reconnect what matters?',facts:[{label:'Personal note',value:'An unfinished conversation'},{label:'Calendar',value:'A meeting idea without a date'}],evidence:sampleEvidence.connection}
+ focus:{label:'Health and focus',topic:'health',guess:'The example notes connect a treatment decision with protected research time. Is preserving focus the priority?',facts:[{label:'Research notes',value:'Treatment and supplement questions'},{label:'Calendar',value:'Three uninterrupted research blocks'}],evidence:sampleEvidence.health},
+ direction:{label:'Research direction',topic:'meaning',guess:'The example notes return to a possible change in research direction. Is the harder part deciding what to leave behind?',facts:[{label:'Research notes',value:'Questions about a change of direction'},{label:'Saved reflection',value:'Exploring a new path'}],evidence:sampleEvidence.meaning},
+ connection:{label:'Relationships',topic:'connection',guess:'The example notes mention an old friend and an unfinished conversation. Is finding an easy way to reconnect what matters?',facts:[{label:'Personal note',value:'An unfinished conversation'},{label:'Calendar',value:'A meeting idea without a date'}],evidence:sampleEvidence.connection}
 };
 export const sampleAppSignals={
  focus:{oura:'The example shows shorter sleep on three nights.',calendar:'The example shows three long research blocks.',health:'The example shows lower activity on two days.'},
