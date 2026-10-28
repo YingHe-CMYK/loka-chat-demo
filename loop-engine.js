@@ -93,7 +93,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
  }
  if(type==='budget'){s.cap=Math.max(0,Math.min(12,Number(data.cap)||0));event(s,type,{effect:`方案费用上限变为 ${s.cap} QB`});return s;}
  if(type==='revoke'){const balance=s.balance,ledger=s.ledger||[];s={...fresh(),source:'none',profile:s.profile,invitation:s.invitation};s.balance=balance;s.ledger=ledger;s.notice='Sources and local learning removed. Example balance kept.';return s;}
- if(['correct','left','right','feedback','next'].includes(type))s.undo={stage:s.stage,topic:s.topic,index:s.index,discoveryDepth:s.discoveryDepth||0,deepChoice:s.deepChoice||null,deepNeed:s.deepNeed||null,confirmedMemories:clone(s.confirmedMemories||[]),cap:s.cap,weights:clone(s.weights),affinity:clone(s.affinity),visits:clone(s.visits||{}),dismissed:[...s.dismissed],evidence:[...s.evidence]};
+ if(['correct','left','right','feedback','next'].includes(type))s.undo={stage:s.stage,topic:s.topic,index:s.index,discoveryDepth:s.discoveryDepth||0,needDepth:s.needDepth||0,followUpIndex:s.followUpIndex??null,localGuess:s.localGuess||'',previewFocus:s.previewFocus??null,dailyGreeting:!!s.dailyGreeting,deepChoice:s.deepChoice||null,deepNeed:s.deepNeed||null,confirmedMemories:clone(s.confirmedMemories||[]),cap:s.cap,weights:clone(s.weights),affinity:clone(s.affinity),visits:clone(s.visits||{}),dismissed:[...s.dismissed],evidence:[...s.evidence]};
  if(type==='signal'){
   if(!['gaze','smile','frown'].includes(data.signal)||!['guess','plan'].includes(s.stage))return s;
   s.signals=s.signals||[];
