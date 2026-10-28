@@ -20,7 +20,7 @@ export function rank(s){return plans.filter(p=>p.topic===s.topic&&!s.dismissed.i
 export function current(s){return rank(s)[0]||null;}
 function event(s,type,data){s.events.push({id:++s.seq,type,...data,time:Date.now()});s.events=s.events.slice(-100);}
 export function step(input,type,data={}){let s=clone(input);s.notice='';
- if(type==='navigate-back') {const previous={register:'invite',welcome:'register','source-result':'welcome',guess:'source-result',plan:'guess',result:'plan'}[s.stage];if(previous){s.stage=previous;event(s,type,{effect:'Returned to previous screen; earlier responses retained'});}return s;}
+ if(type==='navigate-back') {const previous={register:'invite',welcome:'invite','source-result':'welcome',guess:'source-result',plan:'guess',result:'plan'}[s.stage];if(previous){s.stage=previous;event(s,type,{effect:'Returned to previous screen; earlier responses retained'});}return s;}
  if(type==='sign-out'){s.signedOut=true;return s;}
  if(type==='sign-in'){s.signedOut=false;if(!s.profile){s.profile={name:String(data.name||'Guest').slice(0,24),cohort:'ML researcher',localDemo:true};s.invitation={code:'LOKA-ML-01',cohort:'ML researcher',accepted:true};s.stage='welcome';}return s;}
  if(type==='sample-read'&&s.stage==='welcome'){s.source='sample';s.stage='source-result';s.localRole='ML researcher';s.localGuess='Your notes link treatment decisions with uninterrupted research time. Is protecting your focus the real priority?';s.evidence=sampleEvidence.health;s.deviceFacts=[{label:'Research notes',value:'Treatment questions and supplements'},{label:'Calendar',value:'Three extended research blocks'}];return s;}
