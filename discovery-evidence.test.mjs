@@ -3,7 +3,7 @@ import {learnFromFiles} from './local-reader.js';
 import {freshJourney,step} from './loop-engine.js';
 import {hypothesisCopy} from './hypothesis-copy.js';
 import {visualResult} from './visual-result.js';
-const a=new File(['Research model experiment. The deadline for the paper is Friday.'], 'notes.txt');
+const a=new File(['Research model training experiment. The deadline for the paper is Friday.'], 'notes.txt');
 const b=new File(['Research model experiment. I am comparing several baselines.'], 'other.txt');
 const time=await learnFromFiles([a]);const choice=await learnFromFiles([b]);
 assert.equal(time.topic,'research');assert.match(time.probe,/deadlines/);assert.match(time.evidence[0],/deadline/);assert.doesNotMatch(time.guess,/notes\.txt/);assert.match(choice.probe,/comparisons/);assert.notEqual(time.probe,choice.probe);
@@ -17,3 +17,4 @@ const filenameOnly=await learnFromFiles([new File(['Apples, pears, and oranges.'
 z=step(z,'next');assert.equal(z.deepNeed,null);assert.equal(z.deepChoice,null);console.log('PASS: previous need is not presented as a new confirmation');
 let remembered=freshJourney();remembered=step(remembered,'sign-in');remembered=step(remembered,'local-read',life);remembered=step(remembered,'right');remembered=step(remembered,'right');assert.match(remembered.confirmedMemories.find(x=>x.id==='discovery-priority').value,/life outside work/);remembered=step(remembered,'delete-memory',{id:'discovery-priority'});assert.equal(remembered.deepNeed,null);assert.ok(!remembered.confirmedMemories.some(x=>x.id==='discovery-priority'));console.log('PASS: the accepted deeper need is visible and removable');
 let past=freshJourney();past=step(past,'sign-in');past=step(past,'local-read',life);past=step(past,'right');past=step(past,'right');past=step(past,'council-start',{confirmed:true,mode:'local'});for(let i=0;i<20&&past.stage==='review';i++)past=step(past,'council-next');const pastId=past.results.at(-1).id;past=step(past,'delete-memory',{id:'discovery-priority'});past=step(past,'open-result',{id:pastId});assert.equal(past.deepNeed,null);assert.equal(past.results.at(-1).deepNeed,'life-space');console.log('PASS: a saved result does not restore a removed preference');
+assert.equal(time.role,'Possible ML researcher');assert.equal(general.role,'');assert.equal(filenameOnly.role,'');console.log('PASS: role hypothesis requires content evidence, not a filename');
