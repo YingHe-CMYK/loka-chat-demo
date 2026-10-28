@@ -204,3 +204,5 @@ header{gap:10px}.prototype{color:#706b79;font-size:12px;letter-spacing:0}.header
 .daily-clue,.daily-action{position:relative;margin-top:15px;padding-top:12px;border-top:1px solid #ffffff24;font-size:13px;line-height:1.45;color:#f2edf4}.daily-clue span,.daily-action span{display:block;font-size:10px;letter-spacing:.12em;color:#d1c6d8;margin-bottom:4px}.daily-clue b{font-weight:500}.daily-action{color:#fff}.daily-card small{margin-top:14px}
 /* Fit the daily signal and its response into a compact mobile card. */
 .daily-card{padding:22px}.daily-card h2{font-size:25px;margin:15px 0 8px}.daily-card p{font-size:13px}.daily-orb{width:64px;height:64px;margin:13px auto 3px}.daily-clue,.daily-action{margin-top:10px;padding-top:9px}.daily-card small{margin-top:10px}.hexagram{margin:14px auto;gap:5px}.daily-people{margin:15px auto 4px}
+
+.daily-history{margin:14px 0 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px}.daily-history summary{display:flex;align-items:center;min-height:44px;color:var(--ink);cursor:pointer}.daily-history p{line-height:1.5;margin-bottom:4px}.daily-history b{color:var(--ink);font-weight:550}.daily-history small{font-size:12px}
