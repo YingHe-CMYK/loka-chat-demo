@@ -1,8 +1,8 @@
-import {chosenRoute,resultRoutes} from './visual-result.js?v=stage1-66';
+import {chosenRoute,resultRoutes} from './visual-result.js?v=stage1-67';
 import {makeRun,advance} from './council-sim.js';
 import {utility,economy,governanceReview} from './loop-frameworks.js';
-import {initialLens,nextLens,nextNeed} from './need-discovery.js?v=stage1-66';
-import {sampleEvidence,deviceEvidence} from './device-sources.js?v=stage1-66';
+import {initialLens,nextLens,nextNeed} from './need-discovery.js?v=stage1-67';
+import {sampleEvidence,deviceEvidence} from './device-sources.js?v=stage1-67';
 export const topics={health:{label:'身体与生活',guess:'也许你想找的，是一个不必反复研究、又能稳妥推进的身体管理办法。',evidence:['笔记里提到了减重咨询','清单里留着几种补剂','日程里标记了连续工作的时段']},meaning:{label:'另一个角度',guess:'也许你想借一个不同的角度，看清这次犹豫究竟卡在哪里。',evidence:['笔记里提到了塔罗与选择','留下了关于稳定和改变的问题']},connection:{label:'人与关系',guess:'也许你缺的不是一个开场白，而是一个不用马上解释很多的开场。',evidence:['笔记提到想联系一位朋友','记录中有一次尚未安排的见面']},research:{label:'Research',guess:'Is this the research question on your mind right now?',evidence:[]}};
 export const plans=[
 {id:'health-focus',topic:'health',title:'Fit treatment into your week.',subtitle:'Use your own prescription to place reminders.',tags:['focus','private'],cost:0,deliver:'One-week treatment view',body:'Organize existing medicines and supplements, then bring them to a clinician. No treatment time is inferred from a wearable.'},
@@ -20,7 +20,7 @@ export function rank(s){return plans.filter(p=>p.topic===s.topic&&!s.dismissed.i
 export function current(s){return rank(s)[0]||null;}
 function event(s,type,data){s.events.push({id:++s.seq,type,...data,time:Date.now()});s.events=s.events.slice(-100);}
 export function step(input,type,data={}){let s=clone(input);s.notice='';
- if(type==='open-daily'){if(s.stage!=='daily')s.dailyReturnStage=s.stage;s.stage='daily';s.dailyTab=s.dailyTab||'health';s.undo=null;event(s,type,{effect:'Opened daily check-in'});return s;}
+ if(type==='open-daily'){if(s.stage!=='daily')s.dailyReturnStage=s.stage;if(data.day&&s.dailyDay!==data.day){s.dailyDay=data.day;s.dailyTab='health';s.dailyReady=false;}s.stage='daily';s.dailyTab=s.dailyTab||'health';s.undo=null;event(s,type,{effect:'Opened daily check-in'});return s;}
  if(type==='daily-tab'&&s.stage==='daily'){if(['health','meaning','connection'].includes(data.tab))s.dailyTab=data.tab;return s;}
  if(type==='remove-bazi'&&s.stage==='daily'){delete s.baziPillars;event(s,type,{effect:'Four pillars removed from this browser'});return s;}
  if(type==='save-bazi'&&s.stage==='daily'&&Array.isArray(data.pillars)&&data.pillars.length===4){s.baziPillars=data.pillars;s.dailyTab='meaning';event(s,type,{effect:'Four user-provided pillars saved locally'});return s;}
