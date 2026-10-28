@@ -1,15 +1,15 @@
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=github-25';
-import {hypothesisCopy} from './hypothesis-copy.js?v=github-25';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=github-25';
-import {mirrorReading} from './need-discovery.js?v=github-25';
-import {mirrorStage} from './mirror-stage.js?v=github-25';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=github-25';
-import {visualResult} from './visual-result.js?v=github-25';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=github-25';
-import {appSources,browserFacts} from './device-sources.js?v=github-25';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=github-25';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=github-26';
+import {hypothesisCopy} from './hypothesis-copy.js?v=github-26';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=github-26';
+import {mirrorReading} from './need-discovery.js?v=github-26';
+import {mirrorStage} from './mirror-stage.js?v=github-26';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=github-26';
+import {visualResult} from './visual-result.js?v=github-26';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=github-26';
+import {appSources,browserFacts} from './device-sources.js?v=github-26';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=github-26';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=github-25';
+import {MirrorInputs} from './real-input.js?v=github-26';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
@@ -86,7 +86,7 @@ const card=$('.card');if(card)swipe=mountSwipe(card,d=>{if(d==='left')act('left'
 }
 function show(kind){popup=kind;const p=current(s);let h='',label='';$('#drawer').dataset.kind=kind;
 if(kind==='authorize'){label='Connect sources';h=`<div class="permission-icon">${icon('doc')}</div><h2>Choose what I can read.</h2><p class="secondary">Select a local folder with notes, research, calendar exports, or other text files. I will read only the folder you choose, here in your browser.</p><div class="connection-row">${icon('shield')}<span>Your selected folder<small>Text, Markdown, CSV, JSON and calendar exports</small></span><span class="badge">Local</span></div><input id="local-files" type="file" webkitdirectory multiple hidden accept=".txt,.md,.markdown,.csv,.json,.ics,.html,.htm"><input id="local-picked-files" type="file" multiple hidden accept=".txt,.md,.markdown,.csv,.json,.ics,.html,.htm">${button('choose-local','Choose a folder','primary full')}${button('choose-files','Choose individual files','text-button full')}<p class="fine">No files are uploaded. You can remove the learned clues in My → Sources.</p>`;}
-if(kind==='github-open'){label='GitHub · preview';h=`<h2>Continue with GitHub.</h2><p>In the finished product, GitHub will confirm your identity.</p><label for="github-name">Example GitHub username</label><input id="github-name" class="register-input" autocomplete="nickname" placeholder="Username" value="${esc(s.profile?.name||'')}">${button('github-preview','Continue','primary full')}${button('close-consent','Cancel','text-button full')}<p class="fine">Preview only: no GitHub account is connected or accessed.</p>`;}
+if(kind==='github-open'){label='GitHub · authorization preview';h=`<div class="permission-icon">${icon('user')}</div><h2>Authorize Loka Chat</h2><p>Use your GitHub identity to create or open your space.</p><div class="source-panel"><b>GitHub account</b><small>Basic profile · read only</small></div>${button('github-preview','Authorize and continue','primary full')}${button('close-consent','Cancel','text-button full')}<p class="fine">Simulated authorization. No GitHub account is connected.</p>`;}
 if(kind==='sign-in-open'){label='Sign in · demo';h=`<h2>Welcome back.</h2><label for="login-name">Name</label><input id="login-name" class="register-input" value="${esc(s.profile?.name||'')}" placeholder="Name or nickname"><p>Example code: <b>123456</b></p><label for="login-code">Code</label><input id="login-code" class="register-input" inputmode="numeric" maxlength="6">${button('sign-in-submit','Sign in','primary full')}<p class="fine">Demo sign-in. Your saved space is available on this browser only.</p>`;}
 if(kind==='verify-account'){label='Create account · demo';h=`<h2>Verify your space.</h2><p>Example code: <b>123456</b></p><label for="demo-code">Verification code</label><input id="demo-code" class="register-input" inputmode="numeric" maxlength="6" autocomplete="off">${button('verify-account','Verify and continue','primary full')}${button('resend-code','Resend example code','text-button full')}<p class="fine">No real account, email or SMS is created.</p>`;}
 if(kind==='checkout'){label='Checkout · demo';h=`<h2>Try Plus.</h2><div class="cost-line"><span>Monthly plan</span><strong>$12 / month</strong></div><p>Example price. Heavy tasks use separately confirmed QB.</p>${button('pay-demo','Confirm example payment','primary full')}${button('payment-fail','Test a declined payment','text-button full')}${button('membership','Cancel','text-button full')}<p class="fine">No payment information collected. No charge.</p>`;}
@@ -121,7 +121,7 @@ function correct(k){close();act('correct',{key:k});toast('Saved. I will try a cl
 document.addEventListener('click',e=>{const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;
 if(['checkout','payment-error','receipt','history','membership','settings','sources','inputs','correct','preferences','culture','invite-preview','guide-preview','ledger','activity','why','about','quote','dispute','result-detail','app-sources'].includes(a))return show(a);
 if(a==='github-open')return show('github-open');
-if(a==='github-preview'){const name=$('#github-name')?.value?.trim();if(!name)return toast('Enter an example username.');close();return act('sign-in',{name});}
+if(a==='github-preview'){close();return act('sign-in',{name:s.profile?.name||'GitHub user'});}
 if(a==='sign-in-open')return show('sign-in-open');
 if(a==='sign-in-submit'){const name=$('#login-name')?.value?.trim();if(!name||$('#login-code')?.value!=='123456')return toast('Enter a name and the example code 123456.');close();return act('sign-in',{name});}
 if(a==='sign-out'){input.stopAll();close();return act('sign-out');}
