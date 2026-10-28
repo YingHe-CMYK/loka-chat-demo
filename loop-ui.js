@@ -1,15 +1,15 @@
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=local-17';
-import {hypothesisCopy} from './hypothesis-copy.js?v=local-17';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=local-17';
-import {mirrorReading} from './need-discovery.js?v=local-17';
-import {mirrorStage} from './mirror-stage.js?v=local-17';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=local-17';
-import {visualResult} from './visual-result.js?v=local-17';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=local-17';
-import {appSources,browserFacts} from './device-sources.js?v=local-17';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=local-17';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=input-18';
+import {hypothesisCopy} from './hypothesis-copy.js?v=input-18';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=input-18';
+import {mirrorReading} from './need-discovery.js?v=input-18';
+import {mirrorStage} from './mirror-stage.js?v=input-18';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=input-18';
+import {visualResult} from './visual-result.js?v=input-18';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=input-18';
+import {appSources,browserFacts} from './device-sources.js?v=input-18';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=input-18';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=local-17';
+import {MirrorInputs} from './real-input.js?v=input-18';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
@@ -18,7 +18,7 @@ function bodyBanner(){const active=sensor.camera==='on'||sensor.speech==='listen
 function updateBody(){const el=$('#body-controls');if(el)el.innerHTML=bodyBanner();const frame=$('#live-mirror');if(!frame)return;
  frame.dataset.camera=sensor.camera||'off';const active=sensor.camera==='on',loading=sensor.camera==='loading';
  $('#presence-state').textContent=active?'Camera on':loading?'Connecting camera':sensor.camera==='error'?'Camera unavailable':'Camera off';
- $('#presence-tracking').textContent=active?(sensor.tracking||'Look at the camera for two seconds.'):loading?'Allow camera access in the system prompt.':sensor.camera==='error'?(sensor.message||'Try again or swipe.'):'Look at the camera for two seconds.';
+ $('#presence-tracking').textContent=active?(sensor.tracking||'Look at the camera for two seconds.'):loading?(sensor.message||'Allow camera access in the system prompt.'):sensor.camera==='error'?(sensor.message||'Try again or swipe.'):'Look at the camera for two seconds.';
  const start=$('#camera-start button');if(start){start.disabled=loading;start.innerHTML=icon('eye')+(loading?'Opening…':sensor.camera==='error'?'Try camera again':'Turn on camera');}
 }
 function mountMirror(){const slot=$('#camera-mount');if(slot){if(input.video.parentElement!==slot)slot.append(input.video);input.showPreview(sensor.camera==='on');if(sensor.camera==='on'&&input.video.paused)input.video.play().catch(()=>toast('Video paused. Restart the camera.'));}else if(!document.body.contains(input.video))document.body.append(input.video);updateBody();}
