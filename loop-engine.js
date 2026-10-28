@@ -1,11 +1,11 @@
-import {chosenRoute,resultRoutes} from './visual-result.js?v=stage1-91';
+import {chosenRoute,resultRoutes} from './visual-result.js?v=stage1-100';
 import {makeRun,advance} from './council-sim.js';
 import {utility,economy,governanceReview} from './loop-frameworks.js';
 import {initialLens,nextLens,nextNeed} from './need-discovery.js?v=stage1-91';
 import {sampleEvidence,deviceEvidence} from './device-sources.js?v=stage1-91';
 export const topics={health:{label:'身体与生活',guess:'也许你想找的，是一个不必反复研究、又能稳妥推进的身体管理办法。',evidence:['笔记里提到了减重咨询','清单里留着几种补剂','日程里标记了连续工作的时段']},meaning:{label:'另一个角度',guess:'也许你想借一个不同的角度，看清这次犹豫究竟卡在哪里。',evidence:['笔记里提到了塔罗与选择','留下了关于稳定和改变的问题']},connection:{label:'人与关系',guess:'也许你缺的不是一个开场白，而是一个不用马上解释很多的开场。',evidence:['笔记提到想联系一位朋友','记录中有一次尚未安排的见面']},research:{label:'Research',guess:'Is this the research question on your mind right now?',evidence:[]}};
 export const plans=[
-{id:'health-focus',topic:'health',title:'Fit treatment into your week.',subtitle:'Use your own prescription to place reminders.',tags:['focus','private'],cost:0,deliver:'One-week treatment view',body:'Organize existing medicines and supplements, then bring them to a clinician. No treatment time is inferred from a wearable.'},
+{id:'health-focus',topic:'health',title:'Fit treatment into your week.',subtitle:'Use your prescribed time to make a weekly view.',tags:['focus','private'],cost:0,deliver:'One-week treatment view',body:'Organize existing medicines and supplements, then bring them to a clinician. No treatment time is inferred from a wearable.'},
 {id:'health-budget',topic:'health',title:'See the full cost of treatment.',subtitle:'Compare the start, monthly, and exit costs.',tags:['budget','private'],cost:0,deliver:'Treatment cost view',body:'Consultation, treatment, follow-up, supplements, and exit costs are shown together. No prices are invented.'},
 {id:'health-review',topic:'health',title:'Prepare for a treatment review.',subtitle:'Three focused questions for your clinician.',tags:['depth','focus'],cost:3,deliver:'Visit questions',body:'Ask about suitability, use, and follow-up. This is not a diagnosis or prescription.'},
 {id:'meaning-reflect',topic:'meaning',title:'See this choice from another angle.',subtitle:'A symbolic three-card reflection.',tags:['private','depth'],cost:0,deliver:'Reflection cards',body:'Separate what to keep, what to move toward, and one small trial. No fate claim.'},
@@ -120,8 +120,8 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
  if(type==='save-connection-draft'&&s.stage==='result'){const r=s.results.at(-1);if(r?.topic==='connection'){r.connectionDraft=String(data.text||'').trim().slice(0,500);event(s,type,{effect:'Private draft saved locally; nothing sent'});}return s;}
  if(type==='save-health-schedule'&&s.stage==='result'){
   const r=s.results.at(-1),day=String(data.day||''),time=String(data.time||''),name=String(data.name||'').trim().slice(0,60),oralName=String(data.oralName||'').trim().slice(0,60),oralTime=String(data.oralTime||''),oralCondition=String(data.oralCondition||'').trim().slice(0,80);
-  if(r?.topic!=='health'||!['周一','周二','周三','周四','周五','周六','周日','Mon','Tue','Wed','Thu','Fri','Sat','Sun'].includes(day)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)||!name){s.notice='Enter a prescription name, day, and reminder time.';return s;}
-  if(oralTime&&!/^([01]\d|2[0-3]):[0-5]\d$/.test(oralTime)){s.notice='Check the oral medication reminder time.';return s;}
+  if(r?.topic!=='health'||!['周一','周二','周三','周四','周五','周六','周日','Mon','Tue','Wed','Thu','Fri','Sat','Sun'].includes(day)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)||!name){s.notice='Enter a prescription name, day, and prescribed time.';return s;}
+  if(oralTime&&!/^([01]\d|2[0-3]):[0-5]\d$/.test(oralTime)){s.notice='Check the oral medication time.';return s;}
   r.schedule={name,day,time,oralName,oralTime,oralCondition};event(s,type,{effect:'仅保存本人录入的医嘱提醒时间；未验证处方或计算疗效'});return s;
  }
  if(s.stage==='result'&&['result-route','result-begin','result-step'].includes(type)){
