@@ -5,6 +5,14 @@ const groups=[
  {topic:'connection',words:/朋友|关系|约见|联系|聊天|聚会|friend|relationship|meet up|reconnect/ig},
  {topic:'research',words:/论文|实验|模型|训练|研究|arxiv|paper|experiment|model|training|research|retrieval|benchmark|inference/ig}
 ];
+// A cue is a question based on explicit words, not a personality or medical inference.
+const cueRules=[
+ {key:'life',re:/my family|with (?:my )?family|family time|my parents|my children|personal life|家人|父母|孩子|生活时间/i,probe:'Your notes mention life outside work. Is making more room for it part of what matters here?'},
+ {key:'time',re:/deadline|due date|time pressure|calendar|schedule|时间不够|截止|日程|没时间/i,probe:'Your notes mention timing or deadlines. Is making uninterrupted time the harder part?'},
+ {key:'uncertainty',re:/uncertain|unclear|trade.?off|which option|compar(?:e|ing|ison)|不确定|纠结|选择|比较/i,probe:'Your notes mention uncertainty or comparisons. Is choosing a direction the harder part?'},
+ {key:'continuity',re:/unfinished|stuck|blocked|unfinished|反复|搁置|卡住|未完成/i,probe:'Your notes mention something unfinished or difficult to move forward. Is getting started the harder part?'},
+ {key:'connection',re:/reconnect|reach out|conversation|message|联系|沟通|对话/i,probe:'Your notes mention contact or conversation. Is finding the right opening the harder part?'}
+];
 const supported=/\.(txt|md|markdown|csv|json|jsonl|ics|html|htm|log|yaml|yml|py|js|ts|ipynb|pdf|docx)$/i;
 const ignored=/(^|\/)(\.git|node_modules|\.venv|venv|dist|build|__pycache__|Library|\.cache)(\/|$)/i;
 const clean=s=>String(s||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
@@ -25,14 +33,16 @@ export async function learnFromFiles(fileList,onProgress=()=>{},{signal}={}){
  async function worker(){while(cursor<candidates.length){checkAbort(signal);const file=candidates[cursor++];let raw='';try{raw=await read(file)}catch{completed++;continue}checkAbort(signal);const text=clean(raw).slice(0,160000);if(text){
   const points=Object.fromEntries(groups.map(k=>[k.topic,(text.match(k.words)||[]).length+(file.name.match(k.words)||[]).length*3]));
   const claim=text.match(/(?:test\s+whether|whether)\s+([^.!?]{8,95})/i);if(claim)points.research+=6;const first=groups.flatMap(k=>[...text.matchAll(k.words)]).sort((a,b)=>a.index-b.index)[0];const start=Math.max(0,(claim?.index??first?.index??0)-12);
-  records.push({name:base(file.name),path:file.lokaPath||file.webkitRelativePath||file.name,modified:file.lastModified||0,points,excerpt:safe(text.slice(start,start+200))});
+  const cue=cueRules.find(x=>(x.key!=='life'||points.research>0)&&x.re.test(text));const cueMatch=cue?text.match(cue.re):null;const cueStart=Math.max(0,(cueMatch?.index||0)-45);records.push({name:base(file.name),path:file.lokaPath||file.webkitRelativePath||file.name,modified:file.lastModified||0,points,excerpt:safe(text.slice(start,start+200)),cue:cue?{key:cue.key,probe:cue.probe,excerpt:safe(text.slice(cueStart,cueStart+170))}:null});
  }completed++;if(completed-lastReported>=25||completed===candidates.length){lastReported=completed;onProgress({discovered:readable.length,read:completed,total:candidates.length,path:file.name});await new Promise(r=>setTimeout(r,0))}}}
  await Promise.all(Array.from({length:Math.min(8,candidates.length)},worker));
  if(!records.length)return {count:0,facts:[],evidence:[],topic:'general',guess:'',inventory:{discovered:readable.length,read:0,types}};
  const totals=Object.fromEntries(groups.map(k=>[k.topic,records.reduce((n,r)=>n+r.points[k.topic],0)]));const ordered=Object.entries(totals).sort((a,b)=>b[1]-a[1]);const topic=ordered[0][1]>0?ordered[0][0]:'general';
  const ranked=[...records].sort((a,b)=>(b.points[topic]||0)-(a.points[topic]||0)||b.modified-a.modified),top=ranked.slice(0,3),lead=top[0].name.replace(/\.[^.]+$/,'');
  const focus=(top[0].excerpt.match(/(?:test\s+whether|whether)\s+([^.!?]{8,95})/i)||[])[1]?.trim()||'';
- const guesses={health:`Your selected files return to “${lead}”. Is the question how to fit a health decision into your life?`,meaning:`“${lead}” returns to a question about direction. Is this a choice you keep revisiting?`,connection:`“${lead}” mentions a relationship. Is there a conversation you have been postponing?`,research:focus?`Your note asks whether ${focus}. Is this the question you want to test?`:`“${lead}” appears central in your research files. Is this the problem occupying you now?`,general:`“${lead}” is one of the sources you chose. Is it still important to you now?`};
+ const groundedCue=topic==='general'?null:ranked.find(r=>r.points[topic]>0&&r.cue);const probe=groundedCue?.cue?.probe||'';
+ const guesses={health:'Your selected material contains health-related terms. Is there a health decision you want to explore?',meaning:'Your selected material mentions questions of direction. Is there a choice you want to examine?',connection:'Your selected material mentions relationships or conversation. Is there a connection you want to revisit?',research:focus?`Your note asks whether ${focus}. Is this the question you want to test?`:'Your selected material discusses research. Is finding a useful next direction on your mind?',general:'I need more context before I can make a useful personal guess.'};
+
  const typesLabel=Object.entries(types).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,n])=>`${n} ${k.toUpperCase()}`).join(' · ');
- return {count:records.length,inventory:{discovered:readable.length,read:records.length,types},facts:[{source:'Selected folder',label:'Files found',value:String(readable.length)},{source:'Selected folder',label:'Files analyzed',value:String(records.length)},{source:'Selected folder',label:'Formats',value:typesLabel||'Documents'},{source:top[0].path,label:'Strongest clue',value:top[0].name}],evidence:top.map(r=>`${r.path} · ${r.excerpt}`),topic,guess:guesses[topic],focus,excerpt:top[0].excerpt,titles:top.map(r=>r.name)};
+ return {count:records.length,inventory:{discovered:readable.length,read:records.length,types},facts:[{source:'Selected folder',label:'Files found',value:String(readable.length)},{source:'Selected folder',label:'Files analyzed',value:String(records.length)},{source:'Selected folder',label:'Formats',value:typesLabel||'Documents'},{source:top[0].path,label:'Strongest clue',value:top[0].name}],evidence:[...(groundedCue?[`${groundedCue.path} · ${groundedCue.cue.excerpt}`]:[]),...top.filter(r=>r!==groundedCue).map(r=>`${r.path} · ${r.excerpt}`)].slice(0,3),topic,guess:guesses[topic],probe,probeKey:groundedCue?.cue?.key||'',focus,excerpt:top[0].excerpt,titles:top.map(r=>r.name)};
 }

@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {learnFromFiles} from './local-reader.js';
+import {freshJourney,step} from './loop-engine.js';
+import {hypothesisCopy} from './hypothesis-copy.js';
+const a=new File(['Research model experiment. The deadline for the paper is Friday.'], 'notes.txt');
+const b=new File(['Research model experiment. I am comparing several baselines.'], 'other.txt');
+const time=await learnFromFiles([a]);const choice=await learnFromFiles([b]);
+assert.equal(time.topic,'research');assert.match(time.probe,/deadlines/);assert.match(time.evidence[0],/deadline/);assert.doesNotMatch(time.guess,/notes\.txt/);assert.match(choice.probe,/comparisons/);assert.notEqual(time.probe,choice.probe);
+let s=freshJourney();s=step(s,'sign-in');s=step(s,'local-read',time);assert.equal(s.stage,'guess');s=step(s,'right');assert.match(hypothesisCopy(s),/deadlines/);s=step(s,'left');assert.doesNotMatch(hypothesisCopy(s),/deadlines/);
+const general=await learnFromFiles([new File(['Shopping list: apples and pears.'],'list.txt')]);assert.equal(general.topic,'general');assert.equal(general.probe,'');console.log('PASS: selected source cues produce different, traceable questions');
+const life=await learnFromFiles([new File(['Research model experiment. I want to spend evenings with family.'], 'journal.txt')]);assert.match(life.probe,/life outside work/);assert.match(life.evidence[0],/family/);console.log('PASS: cross-domain cue is grounded in the selected text');
+let q=freshJourney();q=step(q,'sign-in');q=step(q,'local-read',choice);q=step(q,'right');q=step(q,'right');assert.equal(q.deepChoice,'clarity');assert.equal(q.stage,'plan');let t=freshJourney();t=step(t,'sign-in');t=step(t,'local-read',time);t=step(t,'right');t=step(t,'right');assert.equal(t.deepChoice,'space');console.log('PASS: different grounded needs lead to different plan priorities');

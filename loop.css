@@ -206,3 +206,43 @@ header{gap:10px}.prototype{color:#706b79;font-size:12px;letter-spacing:0}.header
 .daily-card{padding:22px}.daily-card h2{font-size:25px;margin:15px 0 8px}.daily-card p{font-size:13px}.daily-orb{width:64px;height:64px;margin:13px auto 3px}.daily-clue,.daily-action{margin-top:10px;padding-top:9px}.daily-card small{margin-top:10px}.hexagram{margin:14px auto;gap:5px}.daily-people{margin:15px auto 4px}
 
 .daily-history{margin:14px 0 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px}.daily-history summary{display:flex;align-items:center;min-height:44px;color:var(--ink);cursor:pointer}.daily-history p{line-height:1.5;margin-bottom:4px}.daily-history b{color:var(--ink);font-weight:550}.daily-history small{font-size:12px}
+
+.plan-swipe{touch-action:pan-y;cursor:grab;user-select:none;transition:transform .24s cubic-bezier(.2,.8,.2,1),opacity .24s}.plan-swipe.dragging{transition:none;cursor:grabbing}.plan-swipe-hint{margin:12px 4px 0}.plan-swipe:focus-visible{outline:2px solid #9275ba;outline-offset:5px}
+/* A shared structure with distinct materials for each kind of experience. */
+:root{--loka-health:#244d4c;--loka-meaning:#513947;--loka-connection:#625044;--loka-research:#30495a}
+.offer-object.health,.health-result:not(.research):not(.cost):not(.questions),.health-daily{background:radial-gradient(ellipse at 78% 7%,#799e90 0%,#365d58 42%,#203e40 100%)}
+.offer-object.meaning,.fortune-daily{background:radial-gradient(ellipse at 76% 8%,#a78385 0%,#6b4d5c 43%,#382e40 100%)}
+.offer-object.connection,.connection-daily{background:radial-gradient(ellipse at 78% 8%,#b3997d 0%,#796051 42%,#403833 100%)}
+.offer-object.research,.health-result.research{background:radial-gradient(ellipse at 78% 6%,#8ea8ac 0%,#4b6772 42%,#263c4b 100%)}
+.health-result.cost{background:radial-gradient(ellipse at 80% 8%,#b49a7e 0%,#806451 44%,#493e37 100%)}
+.health-result.questions{background:radial-gradient(ellipse at 80% 8%,#93a89e 0%,#567068 44%,#314943 100%)}
+.simplified-guess .conversation-prompt.health{background:linear-gradient(145deg,#edf4ef,#e2eee9);border-color:#cfdfd6}
+.simplified-guess .conversation-prompt.meaning{background:linear-gradient(145deg,#f6eff1,#eee3e8);border-color:#e6d7de}
+.simplified-guess .conversation-prompt.connection{background:linear-gradient(145deg,#f7f1e9,#eee5d9);border-color:#e6dacc}
+.simplified-guess .conversation-prompt.research{background:linear-gradient(145deg,#eef3f5,#e1ebef);border-color:#d2e0e5}
+.plan-swipe,.daily-card,.health-result,.scene-hero{border:1px solid #ffffff32;box-shadow:inset 0 1px 0 #ffffff26,0 15px 34px #3029321c}
+.daily-people i{background:linear-gradient(145deg,#f6eade,#d6b89d)}.daily-people i+i{background:linear-gradient(145deg,#f5e4d8,#c9a58e)}
+@media(prefers-reduced-motion:reduce){.plan-swipe,.daily-swipe,.result-swipe{transition:none}}
+
+.connection-scene{background:radial-gradient(ellipse at 76% 7%,#b3997d,#796051 42%,#403833 100%)}.connection-scene .person-dot{background:#e8ddcf;color:#49392f}.connection-scene .person-dot.other{background:#aa8d76;color:#fff}
+
+/* Entry identity: one intact lens, with slow light rather than deforming shapes. */
+#shell[data-stage="invite"],#shell[data-stage="welcome"]{background:#f7f6f3}
+.invite-entry .entry-orb{height:230px;min-height:230px;margin:8px 0 12px;display:grid;place-items:center}
+.landing-lens{position:relative;isolation:isolate;width:214px;height:214px;flex:none;margin:auto;pointer-events:none}
+.device-entry .landing-lens{width:200px;height:200px;margin:18px auto 22px}
+.lens-field{position:absolute;inset:-13%;border-radius:50%;background:radial-gradient(circle,#c9c3ce52 0%,#e9e4e85c 37%,transparent 69%);filter:blur(10px)}
+.lens-ring{position:absolute;border-radius:50%;border:1px solid #8c879870;box-shadow:inset 0 1px 0 #fff9,0 1px 3px #443b4a19}
+.lens-ring-outer{inset:5%;background:conic-gradient(from 50deg,#fff8,#a79eae18,#fff5,#c0b9c740,#fff8);animation:lens-turn 30s linear infinite}
+.lens-ring-inner{inset:14%;border-color:#b7adbc95;box-shadow:inset 0 0 18px #ffffff8c,0 0 12px #b4aebc28}
+.lens-glass{position:absolute;inset:22%;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 30% 24%,#fff 0%,#f4f0f2 18%,#d5d1da 50%,#aaa4b4 82%,#8a8596 100%);box-shadow:inset 3px 4px 10px #ffffffc7,inset -5px -7px 16px #716a7d4a,0 13px 28px #5a536325}
+.lens-glass i{position:absolute;inset:11%;border-radius:50%;border:1px solid #fff9;background:radial-gradient(circle at 34% 28%,#ffffff95,transparent 48%);animation:lens-light 7s ease-in-out infinite}
+.lens-glass b{position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle at 35% 28%,#fff,#e2dde6 50%,#aaa3b2);box-shadow:0 5px 12px #665e7130,inset 1px 1px 3px #fff}
+.lens-spark{position:absolute;top:21%;left:28%;width:17%;height:4%;border-radius:50%;background:#fff;filter:blur(2px);transform:rotate(-32deg);opacity:.85}
+@keyframes lens-turn{to{transform:rotate(360deg)}}@keyframes lens-light{0%,100%{opacity:.55}50%{opacity:1}}
+@media(max-height:720px){.invite-entry .entry-orb{height:190px;min-height:190px}.landing-lens{width:180px;height:180px}.device-entry .landing-lens{width:170px;height:170px;margin:8px auto 14px}}
+@media(prefers-reduced-motion:reduce){.lens-ring-outer,.lens-glass i{animation:none}}
+/* A quiet ambient cue on the daily view; all geometry stays intact. */
+.daily-orb{animation:daily-float 7s ease-in-out infinite}.hexagram i{animation:daily-line-glow 6s ease-in-out infinite}.hexagram i:nth-child(2){animation-delay:.25s}.hexagram i:nth-child(3){animation-delay:.5s}.hexagram i:nth-child(4){animation-delay:.75s}.hexagram i:nth-child(5){animation-delay:1s}.hexagram i:nth-child(6){animation-delay:1.25s}
+@keyframes daily-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes daily-line-glow{0%,100%{opacity:.65}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.daily-orb,.hexagram i{animation:none}}

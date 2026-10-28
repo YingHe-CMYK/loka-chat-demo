@@ -12,6 +12,6 @@ export function bodyGuide(stage){return stage==='result'?'Nod: useful · Shake: 
 export function dispatchDirection(intent,stage,act,show){
  if(intent==='left'&&['guess','plan'].includes(stage)){act('left');return true;}
  if(intent==='right'&&stage==='guess'){act('right');return true;}
- if(intent==='right'&&stage==='plan'){show('delivery');return true;}
+ if(intent==='right'&&stage==='plan'){act('council-start',{confirmed:true,mode:'local'});return true;}
  return false;
 }
