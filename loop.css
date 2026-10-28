@@ -196,3 +196,5 @@ header{gap:10px}.prototype{color:#706b79;font-size:12px;letter-spacing:0}.header
 .daily-pillars{display:flex;gap:13px;margin-top:10px;color:#eee3d7;letter-spacing:.06em;font-size:14px}.daily-pillars b{font-weight:500}
 
 .result-swipe{touch-action:pan-y;cursor:grab;user-select:none;transition:transform .24s cubic-bezier(.2,.8,.2,1),opacity .24s}.result-swipe.dragging{transition:none;cursor:grabbing}.result-swipe-hint{margin:12px 4px 0}.result-reveal{margin:3px 0 0;color:var(--violet)}
+
+.daily-draft-label{display:block;margin-top:20px;color:#f2e9f0;font-size:12px}.daily-card textarea{display:block;margin-top:7px;width:100%;min-height:90px;padding:12px;border:1px solid #ffffff50;border-radius:13px;background:#ffffff20;color:#fff;font:inherit;font-size:14px;line-height:1.5;resize:vertical}.daily-card textarea::placeholder{color:#ffffffa8}.daily-card textarea:focus-visible{outline:2px solid #fff;outline-offset:2px}

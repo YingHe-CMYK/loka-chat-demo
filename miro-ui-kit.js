@@ -9,7 +9,7 @@ export function swipeDecision(dx,dy,width){return Math.abs(dx)>=Math.max(64,widt
 export function mountSwipe(card,onSwipe){let start=null,busy=false;const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
  const reset=()=>{card.classList.remove('dragging');card.style.transform='';card.style.removeProperty('--drag');card.dataset.direction='';};
  const commit=direction=>{if(busy)return;busy=true;card.classList.remove('dragging');card.dataset.direction=direction;card.style.transform=`translateX(${direction==='right'?480:-480}px) rotate(${direction==='right'?16:-16}deg)`;card.style.opacity='0';setTimeout(()=>{onSwipe(direction);if(card.isConnected){reset();card.style.opacity='1';busy=false;}},reduced?0:230);};
- card.onpointerdown=e=>{if(e.button!==0||e.target.closest('button')||busy)return;start={x:e.clientX,y:e.clientY};card.setPointerCapture(e.pointerId);};
+ card.onpointerdown=e=>{if(e.button!==0||e.target.closest('button,input,textarea,select,a')||busy)return;start={x:e.clientX,y:e.clientY};card.setPointerCapture(e.pointerId);};
  card.onpointermove=e=>{if(!start||busy)return;const dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.abs(dx)<Math.abs(dy))return;card.classList.add('dragging');card.style.transform=`translateX(${dx}px) rotate(${Math.max(-14,Math.min(14,dx/22))}deg)`;card.style.setProperty('--drag',Math.min(1,Math.abs(dx)/95));card.dataset.direction=dx>0?'right':'left';};
  card.onpointercancel=()=>{start=null;reset();};card.onpointerup=e=>{if(!start)return;const d=swipeDecision(e.clientX-start.x,e.clientY-start.y,card.clientWidth);start=null;if(d)commit(d);else reset();};card.onkeydown=e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();commit(e.key==='ArrowRight'?'right':'left');}};return commit;
 }

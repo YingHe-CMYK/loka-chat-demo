@@ -1,17 +1,17 @@
-import {validatePillars,dailyPreview,dailyHealth,previousDailyFeedback} from './daily-experience.js?v=stage1-65';
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-65';
-import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-65';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-65';
-import {mirrorReading} from './need-discovery.js?v=stage1-65';
-import {mirrorStage} from './mirror-stage.js?v=stage1-65';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-65';
-import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-65';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-65';
-import {appSources,browserFacts} from './device-sources.js?v=stage1-65';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-65';
+import {validatePillars,dailyPreview,dailyHealth,previousDailyFeedback} from './daily-experience.js?v=stage1-66';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-66';
+import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-66';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-66';
+import {mirrorReading} from './need-discovery.js?v=stage1-66';
+import {mirrorStage} from './mirror-stage.js?v=stage1-66';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-66';
+import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-66';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-66';
+import {appSources,browserFacts} from './device-sources.js?v=stage1-66';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-66';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-65';
-import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js';
+import {MirrorInputs} from './real-input.js?v=stage1-66';
+import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-66';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
 try{const saved=JSON.parse(localStorage.getItem(key));if(saved?.stage&&['demo','none','device','sample','local','app'].includes(saved.source))s=saved;}catch{}
@@ -65,7 +65,7 @@ function deck(content,theme){return `<div class="deck"><div class="card-behind" 
 function dailyPage(){const tab=s.dailyTab||'health',date=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}),previous=previousDailyFeedback(s.dailyFeedback,today,tab),prediction=dailyPreview(today,s.baziPillars,previous),health=dailyHealth(today,previous),vote=s.dailyFeedback?.[today]?.[tab];const tabButton=(k,label)=>`<button data-action="daily-tab" data-tab="${k}" aria-pressed="${tab===k}">${label}</button>`;let content;
 if(tab==='health')content=`<div class="daily-card daily-swipe health-daily" tabindex="0" aria-label="Swipe left for not quite or right for yes"><span>BODY · SAMPLE</span><div class="daily-orb" aria-hidden="true"></div><h2>${esc(health.headline)}</h2><p>${esc(health.detail)}</p><small>Fictional data · no wearable connected · not a medical assessment${previous==='no'?' · adjusted after your last response':''}</small></div>`;
 else if(tab==='meaning')content=s.baziPillars?`<div class="daily-card daily-swipe fortune-daily" tabindex="0" aria-label="Swipe left for not quite or right for yes"><span>YOUR FOUR PILLARS</span><div class="daily-pillars">${s.baziPillars.map(p=>`<b>${esc(p)}</b>`).join('')}</div><div class="hexagram" aria-hidden="true">${prediction.lines.map(line=>`<i class="${line?'solid':'broken'}"></i>`).join('')}</div><h2>${esc(prediction.theme)}.</h2><p>A symbolic prompt for reflection.</p><small>Illustrative daily pattern · not a traditional computed hexagram or factual prediction${previous==='no'?' · adjusted after your last response':''}</small>${button('bazi-input','Edit four pillars','daily-link')}</div>`:`<div class="daily-card daily-swipe fortune-daily" tabindex="0" aria-label="Swipe left for not quite or right for yes"><span>FOUR PILLARS</span><div class="hexagram placeholder" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div><h2>A different lens for today.</h2><p>Add your four pillars to see a symbolic daily prompt.</p>${button('bazi-input','Add four pillars','daily-primary')}</div>`;
-else content=`<div class="daily-card daily-swipe connection-daily" tabindex="0" aria-label="Swipe left for not quite or right for yes"><span>CONNECTION · SAMPLE</span><div class="daily-people" aria-hidden="true"><i></i><i></i></div><h2>One conversation worth making room for.</h2><p>Example prompt: reach out when it feels right.</p><small>No contact was read or messaged.</small></div>`;
+else content=`<div class="daily-card daily-swipe connection-daily" tabindex="0" aria-label="Swipe left for not quite or right for yes"><span>CONNECTION · SAMPLE</span><div class="daily-people" aria-hidden="true"><i></i><i></i></div><h2>One conversation worth making room for.</h2><p>Example prompt: reach out when it feels right.</p><small>No contact was read or messaged.</small>${s.dailyReady?`<label class="daily-draft-label" for="daily-draft">A private opening</label><textarea id="daily-draft" maxlength="300" placeholder="Write a line…">${esc(s.dailyDraft??'I thought of you and would love to catch up.')}</textarea><small>Saved on this device as you type.</small>`:''}</div>`;
 return `<section class="daily-view"><div class="daily-heading"><div><span>${esc(date)}</span><h1>Today, with you.</h1></div></div><div class="daily-tabs" role="group" aria-label="Daily views">${tabButton('health','Body')}${tabButton('meaning','Four pillars')}${tabButton('connection','Connection')}</div>${content}<div class="swipe-hint daily-swipe-hint" aria-hidden="true"><span>← Not quite</span><span>Yes →</span></div><div class="daily-feedback"><span>Does this fit?</span><div><button data-action="daily-feedback" data-value="no" aria-pressed="${vote==='no'}">Not quite</button><button data-action="daily-feedback" data-value="yes" aria-pressed="${vote==='yes'}">Yes</button></div></div>${button('daily-continue','Back to mirror '+icon('arrow'),'primary full')}</section>`;}
 function render(){if(input.stream&&input.video.parentElement!==document.body)document.body.append(input.video);clearTimeout(reviewTimer);swipe=null;const p=current(s);let html='';
 $('#shell').dataset.stage=s.stage;
@@ -211,7 +211,7 @@ if(a==='pause')input.stopAll();act(a);
 });
 $('#settings').innerHTML=icon('user')+'<span>My</span>';$('#settings').onclick=()=>show('settings');$('#close').innerHTML=icon('close');$('#close').onclick=close;$('#drawer').addEventListener('cancel',()=>{clearTimeout(connectTimer);connecting=false;});$('#back').innerHTML=icon('back');$('#back').onclick=()=>{const previous=sheetHistory.pop();if(previous){popup='';show(previous);}else close();};
 $('#journey').onclick=()=>show('reset-confirm');
-document.addEventListener('input',e=>{if(e.target.id==='cap'){act('budget',{cap:e.target.value});$('#cap-text').textContent=s.cap+' QB';return;}const r=s.stage==='result'?s.results.at(-1):null;if(!r)return;if(e.target.id==='connection-draft'&&r.topic==='connection')r.connectionDraft=e.target.value.slice(0,500);else if(e.target.matches('[data-reflection]')&&r.topic==='meaning'){const route=r.visualRoute||(['meaning-budget'].includes(r.planId)?'keep':'try');const notes=[...document.querySelectorAll('[data-reflection]')].map(x=>x.value.slice(0,300));r.reflectionNotes={...(r.reflectionNotes||{}),[route]:notes};}else return;try{localStorage.setItem(key,JSON.stringify(s));}catch{}});
+document.addEventListener('input',e=>{if(e.target.id==='daily-draft'&&s.stage==='daily'){s.dailyDraft=e.target.value.slice(0,300);try{localStorage.setItem(key,JSON.stringify(s));}catch{}return;}if(e.target.id==='cap'){act('budget',{cap:e.target.value});$('#cap-text').textContent=s.cap+' QB';return;}const r=s.stage==='result'?s.results.at(-1):null;if(!r)return;if(e.target.id==='connection-draft'&&r.topic==='connection')r.connectionDraft=e.target.value.slice(0,500);else if(e.target.matches('[data-reflection]')&&r.topic==='meaning'){const route=r.visualRoute||(['meaning-budget'].includes(r.planId)?'keep':'try');const notes=[...document.querySelectorAll('[data-reflection]')].map(x=>x.value.slice(0,300));r.reflectionNotes={...(r.reflectionNotes||{}),[route]:notes};}else return;try{localStorage.setItem(key,JSON.stringify(s));}catch{}});
 render();
 
 document.addEventListener('change',async e=>{if(!['local-files','local-picked-files','global-local-files','global-picked-files','global-calendar-file'].includes(e.target?.id))return;const selected=e.target.files;if(!selected?.length)return;if(e.target.id==='global-calendar-file'){try{const learned=await readCalendarExport(selected[0]);close();act('app-read',learned)}catch(err){toast(err.message)}e.target.value='';return;}await analyzeSelected(selected);e.target.value='';});

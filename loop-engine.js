@@ -1,8 +1,8 @@
-import {chosenRoute,resultRoutes} from './visual-result.js?v=stage1-65';
+import {chosenRoute,resultRoutes} from './visual-result.js?v=stage1-66';
 import {makeRun,advance} from './council-sim.js';
 import {utility,economy,governanceReview} from './loop-frameworks.js';
-import {initialLens,nextLens,nextNeed} from './need-discovery.js?v=stage1-65';
-import {sampleEvidence,deviceEvidence} from './device-sources.js?v=stage1-65';
+import {initialLens,nextLens,nextNeed} from './need-discovery.js?v=stage1-66';
+import {sampleEvidence,deviceEvidence} from './device-sources.js?v=stage1-66';
 export const topics={health:{label:'身体与生活',guess:'也许你想找的，是一个不必反复研究、又能稳妥推进的身体管理办法。',evidence:['笔记里提到了减重咨询','清单里留着几种补剂','日程里标记了连续工作的时段']},meaning:{label:'另一个角度',guess:'也许你想借一个不同的角度，看清这次犹豫究竟卡在哪里。',evidence:['笔记里提到了塔罗与选择','留下了关于稳定和改变的问题']},connection:{label:'人与关系',guess:'也许你缺的不是一个开场白，而是一个不用马上解释很多的开场。',evidence:['笔记提到想联系一位朋友','记录中有一次尚未安排的见面']},research:{label:'Research',guess:'Is this the research question on your mind right now?',evidence:[]}};
 export const plans=[
 {id:'health-focus',topic:'health',title:'Fit treatment into your week.',subtitle:'Use your own prescription to place reminders.',tags:['focus','private'],cost:0,deliver:'One-week treatment view',body:'Organize existing medicines and supplements, then bring them to a clinician. No treatment time is inferred from a wearable.'},
@@ -24,7 +24,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
  if(type==='daily-tab'&&s.stage==='daily'){if(['health','meaning','connection'].includes(data.tab))s.dailyTab=data.tab;return s;}
  if(type==='remove-bazi'&&s.stage==='daily'){delete s.baziPillars;event(s,type,{effect:'Four pillars removed from this browser'});return s;}
  if(type==='save-bazi'&&s.stage==='daily'&&Array.isArray(data.pillars)&&data.pillars.length===4){s.baziPillars=data.pillars;s.dailyTab='meaning';event(s,type,{effect:'Four user-provided pillars saved locally'});return s;}
- if(type==='daily-swipe'&&s.stage==='daily'&&['yes','no'].includes(data.value)){s.dailyFeedback=s.dailyFeedback||{};s.dailyFeedback[data.day]={...(s.dailyFeedback[data.day]||{}),[s.dailyTab]:data.value};const order=['health','meaning','connection'],index=order.indexOf(s.dailyTab);if(index<2)s.dailyTab=order[index+1];event(s,type,{effect:'Daily response saved; the next view is available'});return s;}
+ if(type==='daily-swipe'&&s.stage==='daily'&&['yes','no'].includes(data.value)){s.dailyFeedback=s.dailyFeedback||{};s.dailyFeedback[data.day]={...(s.dailyFeedback[data.day]||{}),[s.dailyTab]:data.value};const order=['health','meaning','connection'],index=order.indexOf(s.dailyTab);if(index<2){s.dailyTab=order[index+1];s.dailyReady=false;}else s.dailyReady=data.value==='yes';event(s,type,{effect:'Daily response saved; the next view is available'});return s;}
  if(type==='daily-feedback'&&s.stage==='daily'&&['yes','no'].includes(data.value)){s.dailyFeedback=s.dailyFeedback||{};s.dailyFeedback[data.day]={...(s.dailyFeedback[data.day]||{}),[s.dailyTab]:data.value};event(s,type,{effect:'Member responded to daily prompt'});return s;}
  if(type==='daily-continue'&&s.stage==='daily'){const prior=s.dailyReturnStage||'welcome';s.stage=prior==='daily'?'welcome':prior;if(s.stage==='result')return step(s,'next');if(['local','app','sample'].includes(s.source)&&s.stage!=='guess')return step(s,'continue-explore');return s;}
  if(type==='navigate-back') {if(s.stage==='result'){s.topic=s.results.at(-1)?.topic||s.topic;s.dismissed=[];}const previous={daily:s.dailyReturnStage||'welcome',register:'invite',welcome:'invite','source-result':'welcome',guess:'source-result',plan:'guess',result:'plan'}[s.stage];if(previous){s.stage=previous;event(s,type,{effect:'Returned to previous screen; earlier responses retained'});}return s;}
