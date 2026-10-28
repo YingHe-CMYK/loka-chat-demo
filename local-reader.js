@@ -31,7 +31,7 @@ export async function learnFromFiles(fileList,onProgress=()=>{},{signal}={}){
  const records=[],types={};for(const f of readable){const kind=f.name.split('.').at(-1).toLowerCase();types[kind]=(types[kind]||0)+1}
  let cursor=0,completed=0,lastReported=0;
  async function worker(){while(cursor<candidates.length){checkAbort(signal);const file=candidates[cursor++];let raw='';try{raw=await read(file)}catch{completed++;continue}checkAbort(signal);const text=clean(raw).slice(0,160000);if(text){
-  const points=Object.fromEntries(groups.map(k=>[k.topic,(text.match(k.words)||[]).length+(file.name.match(k.words)||[]).length*3]));
+  const points=Object.fromEntries(groups.map(k=>[k.topic,(text.match(k.words)||[]).length]));
   const claim=text.match(/(?:test\s+whether|whether)\s+([^.!?]{8,95})/i);if(claim)points.research+=6;const first=groups.flatMap(k=>[...text.matchAll(k.words)]).sort((a,b)=>a.index-b.index)[0];const start=Math.max(0,(claim?.index??first?.index??0)-12);
   const cue=cueRules.find(x=>(x.key!=='life'||points.research>0)&&x.re.test(text));const cueMatch=cue?text.match(cue.re):null;const cueStart=Math.max(0,(cueMatch?.index||0)-45);records.push({name:base(file.name),path:file.lokaPath||file.webkitRelativePath||file.name,modified:file.lastModified||0,points,excerpt:safe(text.slice(start,start+200)),cue:cue?{key:cue.key,probe:cue.probe,excerpt:safe(text.slice(cueStart,cueStart+170))}:null});
  }completed++;if(completed-lastReported>=25||completed===candidates.length){lastReported=completed;onProgress({discovered:readable.length,read:completed,total:candidates.length,path:file.name});await new Promise(r=>setTimeout(r,0))}}}
