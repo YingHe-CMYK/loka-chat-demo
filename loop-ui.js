@@ -1,17 +1,17 @@
-import {validatePillars,dailyPreview,dailyHealth,previousDailyFeedback} from './daily-experience.js?v=stage1-85';
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-85';
-import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-85';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-85';
-import {mirrorReading} from './need-discovery.js?v=stage1-85';
-import {mirrorStage} from './mirror-stage.js?v=stage1-85';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-85';
-import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-85';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-85';
-import {appSources,browserFacts} from './device-sources.js?v=stage1-85';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-85';
+import {validatePillars,dailyPreview,dailyHealth,previousDailyFeedback} from './daily-experience.js?v=stage1-86';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-86';
+import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-86';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-86';
+import {mirrorReading} from './need-discovery.js?v=stage1-86';
+import {mirrorStage} from './mirror-stage.js?v=stage1-86';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-86';
+import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-86';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-86';
+import {appSources,browserFacts} from './device-sources.js?v=stage1-86';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-86';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-85';
-import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-85';
+import {MirrorInputs} from './real-input.js?v=stage1-86';
+import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-86';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
 try{const saved=JSON.parse(localStorage.getItem(key));if(saved?.stage&&['demo','none','device','sample','local','app'].includes(saved.source))s=saved;}catch{}
@@ -144,7 +144,7 @@ if(a==='open-daily'){if($('#drawer').open)close();return act('open-daily',{day:t
 if(a==='daily-tab')return act('daily-tab',{tab:e.target.closest('[data-tab]')?.dataset.tab});
 if(a==='bazi-input')return show('bazi-input');
 if(a==='remove-bazi'){close();return act('remove-bazi');}
-if(a==='save-bazi'){const pillars=validatePillars($('#bazi-pillars')?.value);if(!pillars)return toast('Enter four valid stem–branch pillars, separated by spaces.');close();return act('save-bazi',{pillars});}
+if(a==='save-bazi'){const pillars=validatePillars($('#bazi-pillars')?.value);if(!pillars)return toast('Enter four valid stem–branch pillars.');close();return act('save-bazi',{pillars});}
 if(a==='daily-feedback')return act('daily-swipe',{value:e.target.closest('[data-value]')?.dataset.value,day:today,snapshot:dailySnapshot()});
 if(a==='daily-continue'){if(s.source==='none'){return act('navigate-back');}return act('daily-continue');}
 if(a==='github-open')return show('github-open');
