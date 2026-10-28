@@ -15,3 +15,5 @@ const emptyDraft=visualResult({topic:"connection",planId:"connection-private",co
 const appHealth=visualResult({topic:"health",planId:"health-focus",sourceKind:"app",schedule:{name:"Example",day:"Mon",time:"09:00"}});assert.match(appHealth,/Based on the connected source/);assert.match(appHealth,/entered by you and has not been verified/);assert.doesNotMatch(appHealth,/fictional researcher sample/);
 
 s.results=[{id:"switch",topic:"connection",planId:"connection-focus"}];s=step(s,"result-begin");s=step(s,"result-step");s=step(s,"result-route",{route:"gentle"});assert.equal(s.results[0].visualDone,0);s=step(s,"result-route",{route:"meet"});assert.equal(s.results[0].visualDone,2);assert.match(visualResult(s.results[0]),/Your private draft/);
+
+let revealed={topic:"meaning",planId:"meaning-reflect",visualStarted:"try",visualDone:3};const allInsights=visualResult(revealed);assert.match(allInsights,/Name what you do not want to lose/);assert.match(allInsights,/Name the direction you keep returning to/);assert.match(allInsights,/Try once without deciding your future/);
