@@ -11,7 +11,7 @@ import {appSources,browserFacts} from './device-sources.js?v=stage1-91';
 import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-91';
 import {quote} from './council-sim.js';
 import {MirrorInputs} from './real-input.js?v=stage1-91';
-import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-91';
+import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-93';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
 try{const saved=JSON.parse(localStorage.getItem(key));if(saved?.stage&&['demo','none','device','sample','local','app'].includes(saved.source))s=saved;}catch{}
