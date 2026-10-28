@@ -200,3 +200,7 @@ header{gap:10px}.prototype{color:#706b79;font-size:12px;letter-spacing:0}.header
 .daily-draft-label{display:block;margin-top:20px;color:#f2e9f0;font-size:12px}.daily-card textarea{display:block;margin-top:7px;width:100%;min-height:90px;padding:12px;border:1px solid #ffffff50;border-radius:13px;background:#ffffff20;color:#fff;font:inherit;font-size:14px;line-height:1.5;resize:vertical}.daily-card textarea::placeholder{color:#ffffffa8}.daily-card textarea:focus-visible{outline:2px solid #fff;outline-offset:2px}
 
 .daily-progress{display:flex;gap:6px;margin:0 0 14px}.daily-progress i{display:block;width:18px;height:3px;background:#ded9e4;border-radius:5px}.daily-progress i.active{background:#776b87}
+
+.daily-clue,.daily-action{position:relative;margin-top:15px;padding-top:12px;border-top:1px solid #ffffff24;font-size:13px;line-height:1.45;color:#f2edf4}.daily-clue span,.daily-action span{display:block;font-size:10px;letter-spacing:.12em;color:#d1c6d8;margin-bottom:4px}.daily-clue b{font-weight:500}.daily-action{color:#fff}.daily-card small{margin-top:14px}
+/* Fit the daily signal and its response into a compact mobile card. */
+.daily-card{padding:22px}.daily-card h2{font-size:25px;margin:15px 0 8px}.daily-card p{font-size:13px}.daily-orb{width:64px;height:64px;margin:13px auto 3px}.daily-clue,.daily-action{margin-top:10px;padding-top:9px}.daily-card small{margin-top:10px}.hexagram{margin:14px auto;gap:5px}.daily-people{margin:15px auto 4px}
