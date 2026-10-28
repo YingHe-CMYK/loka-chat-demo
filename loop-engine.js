@@ -1,8 +1,8 @@
-import {chosenRoute,resultRoutes} from './visual-result.js?v=stage1-53';
+import {chosenRoute,resultRoutes} from './visual-result.js?v=stage1-54';
 import {makeRun,advance} from './council-sim.js';
 import {utility,economy,governanceReview} from './loop-frameworks.js';
-import {initialLens,nextLens,nextNeed} from './need-discovery.js?v=stage1-53';
-import {sampleEvidence,deviceEvidence} from './device-sources.js?v=stage1-53';
+import {initialLens,nextLens,nextNeed} from './need-discovery.js?v=stage1-54';
+import {sampleEvidence,deviceEvidence} from './device-sources.js?v=stage1-54';
 export const topics={health:{label:'身体与生活',guess:'也许你想找的，是一个不必反复研究、又能稳妥推进的身体管理办法。',evidence:['笔记里提到了减重咨询','清单里留着几种补剂','日程里标记了连续工作的时段']},meaning:{label:'另一个角度',guess:'也许你想借一个不同的角度，看清这次犹豫究竟卡在哪里。',evidence:['笔记里提到了塔罗与选择','留下了关于稳定和改变的问题']},connection:{label:'人与关系',guess:'也许你缺的不是一个开场白，而是一个不用马上解释很多的开场。',evidence:['笔记提到想联系一位朋友','记录中有一次尚未安排的见面']},research:{label:'Research',guess:'Is this the research question on your mind right now?',evidence:[]}};
 export const plans=[
 {id:'health-focus',topic:'health',title:'Fit treatment into your week.',subtitle:'Use your own prescription to place reminders.',tags:['focus','private'],cost:0,deliver:'One-week treatment view',body:'Organize existing medicines and supplements, then bring them to a clinician. No treatment time is inferred from a wearable.'},
@@ -23,6 +23,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
  if(type==='navigate-back') {if(s.stage==='result'){s.topic=s.results.at(-1)?.topic||s.topic;s.dismissed=[];}const previous={register:'invite',welcome:'invite','source-result':'welcome',guess:'source-result',plan:'guess',result:'plan'}[s.stage];if(previous){s.stage=previous;event(s,type,{effect:'Returned to previous screen; earlier responses retained'});}return s;}
  if(type==='sign-out'){s.signedOut=true;return s;}
  if(type==='sign-in'){s.signedOut=false;if(!s.profile){s.profile={name:String(data.name||'Guest').slice(0,24),cohort:'ML researcher',localDemo:true};s.invitation={code:'LOKA-ML-01',cohort:'ML researcher',accepted:true};s.stage='welcome';}return s;}
+ if(type==='continue-explore'){s.signedOut=false;s.undo=null;if(s.stage==='result'&&s.source!=='none')return step(s,'next');if(['sample','local','app'].includes(s.source)&&s.topic!=='general'){s.stage='guess';s.discoveryDepth=0;s.index++;s.dismissed=[];event(s,type,{effect:'Continue discovery with existing sources'});return s;}s.stage='welcome';s.discoveryDepth=0;s.deepChoice=null;event(s,type,{effect:'Choose a source to continue discovery'});return s;}
  if(type==='start-new-goal'){s.stage='welcome';s.signedOut=false;s.source='none';s.manualGoal=false;s.sourceGoal=false;s.previewFocus=null;s.index=0;s.discoveryDepth=0;s.deepChoice=null;s.localGuess='';s.dismissed=[];s.undo=null;event(s,type,{effect:'Start another goal; previous results retained'});return s;}
  if(type==='open-result'){const i=s.results.findIndex(r=>r.id===data.id);if(i<0)return s;const result=s.results.splice(i,1)[0];s.results.push(result);s.topic=result.topic;const goalAllowed=!result.goalIsInput&&result.sourceKind!=='manual'||(s.confirmedMemories||[]).some(m=>m.kind==='goal'&&m.value===result.sourceFocus);s.source=goalAllowed?(result.sourceKind==='manual'?'local':result.sourceKind||s.source):'none';s.manualGoal=goalAllowed&&result.sourceKind==='manual';s.sourceGoal=goalAllowed&&!!result.goalIsInput&&!s.manualGoal;s.localFocus=goalAllowed?result.sourceFocus||'':'';s.localTitle=result.sourceTitle||'';s.localExcerpt=result.sourceExcerpt||'';s.evidence=goalAllowed&&Array.isArray(result.sourceEvidence)?result.sourceEvidence.slice():[];s.localGuess=s.manualGoal&&s.localFocus?`Your goal: “${s.localFocus}”. Would a focused plan help you move forward?`:'';s.stage='result';s.undo=null;event(s,type,{effect:'Opened a saved result'});return s;}
  if(type==='agree-v1'){s.agreement={version:'1',acceptedAt:Date.now()};return s;}
