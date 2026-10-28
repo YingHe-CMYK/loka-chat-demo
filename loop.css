@@ -198,3 +198,5 @@ header{gap:10px}.prototype{color:#706b79;font-size:12px;letter-spacing:0}.header
 .result-swipe{touch-action:pan-y;cursor:grab;user-select:none;transition:transform .24s cubic-bezier(.2,.8,.2,1),opacity .24s}.result-swipe.dragging{transition:none;cursor:grabbing}.result-swipe-hint{margin:12px 4px 0}.result-reveal{margin:3px 0 0;color:var(--violet)}
 
 .daily-draft-label{display:block;margin-top:20px;color:#f2e9f0;font-size:12px}.daily-card textarea{display:block;margin-top:7px;width:100%;min-height:90px;padding:12px;border:1px solid #ffffff50;border-radius:13px;background:#ffffff20;color:#fff;font:inherit;font-size:14px;line-height:1.5;resize:vertical}.daily-card textarea::placeholder{color:#ffffffa8}.daily-card textarea:focus-visible{outline:2px solid #fff;outline-offset:2px}
+
+.daily-progress{display:flex;gap:6px;margin:0 0 14px}.daily-progress i{display:block;width:18px;height:3px;background:#ded9e4;border-radius:5px}.daily-progress i.active{background:#776b87}
