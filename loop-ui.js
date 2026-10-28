@@ -1,15 +1,15 @@
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=flow-20';
-import {hypothesisCopy} from './hypothesis-copy.js?v=flow-20';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=flow-20';
-import {mirrorReading} from './need-discovery.js?v=flow-20';
-import {mirrorStage} from './mirror-stage.js?v=flow-20';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=flow-20';
-import {visualResult} from './visual-result.js?v=flow-20';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=flow-20';
-import {appSources,browserFacts} from './device-sources.js?v=flow-20';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=flow-20';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=voice-21';
+import {hypothesisCopy} from './hypothesis-copy.js?v=voice-21';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=voice-21';
+import {mirrorReading} from './need-discovery.js?v=voice-21';
+import {mirrorStage} from './mirror-stage.js?v=voice-21';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=voice-21';
+import {visualResult} from './visual-result.js?v=voice-21';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=voice-21';
+import {appSources,browserFacts} from './device-sources.js?v=voice-21';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=voice-21';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=flow-20';
+import {MirrorInputs} from './real-input.js?v=voice-21';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
@@ -26,7 +26,7 @@ function bodyResponse(text){const el=$('#body-response');if(el)el.textContent=te
 
 const input=new MirrorInputs({isActive:()=>!$('#drawer').open&&(['guess','plan','result','review'].includes(s.stage)||s.paused),onStatus:p=>{
  const opened=(p.camera==='on'&&sensor.camera!=='on')||(p.speech==='listening'&&sensor.speech!=='listening');
- sensor={...sensor,...p};const el=$('#sensor-status');if(el)el.textContent=p.tracking||p.message||'';
+ sensor={...sensor,...p};if(p.transcript)toast(`Heard: ${p.transcript} · ${p.message||''}`);const el=$('#sensor-status');if(el)el.textContent=p.transcript?`Heard: ${p.transcript} · ${p.message||''}`:p.tracking||p.message||'';
  if(opened){if(p.camera==='on')input.showPreview(true);if(popup==='inputs'&&$('#drawer').open)close();toast(p.camera==='on'?'Look at the camera, then nod.':'You can say Continue or Another.');}
  updateBody();
 },onEvent:signal=>{
