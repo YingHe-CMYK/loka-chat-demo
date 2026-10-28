@@ -140,6 +140,6 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
   s.affinity[p.topic]=(s.affinity[p.topic]||0)+(data.useful?1:-1);
   event(s,type,{useful:data.useful,effect:'将实际交付反馈用于后续方案排序'});s.undo=null;return s;
  }
- if(type==='next'&&s.stage==='result'){if(s.source==='none'){s.stage='welcome';s.index=0;event(s,type,{effect:'A new source is needed to continue'});return s;}const n=['local','app'].includes(s.source)?{topic:s.topic,depth:true,reason:'Continue from the member-provided source without inventing another interest'}:nextNeed(s);s.topic=n.topic;s.needDepth=n.depth?(s.needDepth||0)+1:0;s.evidence=['demo','sample'].includes(s.source)?sampleEvidence[s.topic]||topics[s.topic].evidence:(s.evidence||[]);s.stage='guess';s.discoveryDepth=0;s.deepChoice=null;s.deepNeed=null;s.dismissed=[];s.index++;event(s,type,{effect:n.reason});return s;}
+ if(type==='next'&&s.stage==='result'){if(s.source==='none'){s.stage='welcome';s.index=0;event(s,type,{effect:'A new source is needed to continue'});return s;}const n=['local','app'].includes(s.source)?{topic:s.topic,depth:true,reason:'Continue from the member-provided source without inventing another interest'}:nextNeed(s);s.topic=n.topic;s.needDepth=n.depth?(s.needDepth||0)+1:0;s.evidence=['demo','sample'].includes(s.source)?sampleEvidence[s.topic]||topics[s.topic].evidence:(s.evidence||[]);s.stage='guess';s.discoveryDepth=0;s.deepChoice=null;s.deepNeed=null;s.dismissed=[];s.index++;s.followUpIndex=n.depth?s.index:null;event(s,type,{effect:n.reason});return s;}
  return s;
 }
