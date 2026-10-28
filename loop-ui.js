@@ -1,15 +1,15 @@
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=voice-21';
-import {hypothesisCopy} from './hypothesis-copy.js?v=voice-21';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=voice-21';
-import {mirrorReading} from './need-discovery.js?v=voice-21';
-import {mirrorStage} from './mirror-stage.js?v=voice-21';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=voice-21';
-import {visualResult} from './visual-result.js?v=voice-21';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=voice-21';
-import {appSources,browserFacts} from './device-sources.js?v=voice-21';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=voice-21';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=input-22';
+import {hypothesisCopy} from './hypothesis-copy.js?v=input-22';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=input-22';
+import {mirrorReading} from './need-discovery.js?v=input-22';
+import {mirrorStage} from './mirror-stage.js?v=input-22';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=input-22';
+import {visualResult} from './visual-result.js?v=input-22';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=input-22';
+import {appSources,browserFacts} from './device-sources.js?v=input-22';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=input-22';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=voice-21';
+import {MirrorInputs} from './real-input.js?v=input-22';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
@@ -19,7 +19,7 @@ function updateBody(){const el=$('#body-controls');if(el)el.innerHTML=bodyBanner
  frame.dataset.camera=sensor.camera||'off';const active=sensor.camera==='on',loading=sensor.camera==='loading';
  $('#presence-state').textContent=active?'Camera on':loading?'Connecting camera':sensor.camera==='error'?'Camera unavailable':'Camera off';
  $('#presence-tracking').textContent=active?(sensor.tracking||'Look at the camera for two seconds.'):loading?(sensor.message||'Allow camera access in the system prompt.'):sensor.camera==='error'?(sensor.message||'Try again or swipe.'):'Look at the camera for two seconds.';
- const start=$('#camera-start button');if(start){start.disabled=loading;start.innerHTML=icon('eye')+(loading?'Opening…':sensor.camera==='error'?'Try camera again':'Turn on camera');}
+ const start=$('#camera-start button');if(start){start.disabled=loading;start.innerHTML=icon('eye')+(loading?'Opening…':sensor.camera==='error'?'Try camera again':'Enable camera & voice');}
 }
 function mountMirror(){const slot=$('#camera-mount');if(slot){if(input.video.parentElement!==slot)slot.append(input.video);input.showPreview(sensor.camera==='on');if(sensor.camera==='on'&&input.video.paused)input.video.play().catch(()=>toast('Video paused. Restart the camera.'));}else if(!document.body.contains(input.video))document.body.append(input.video);updateBody();}
 function bodyResponse(text){const el=$('#body-response');if(el)el.textContent=text;toast(text);}
@@ -97,7 +97,7 @@ if(kind==='computer-consent'){label='Local access';h=`<div class="computer-conse
 if(kind==='app-detail'){const a=window.lokaAppDetail||'calendar';label='Connection preview';const info=a==='health'?{name:'Apple Health',scope:'Sleep and activity summaries',sample:'Example: a weekly activity rhythm. An iPhone app would ask permission for each data type.'}:a==='oura'?{name:'Oura',scope:'Daily sleep and activity summaries',sample:'Example: seven days of sleep trends. A real connection would use Oura account permission.'}:{name:'Google Calendar',scope:'Upcoming events, read only',sample:'Example: research blocks and meetings. A real connection would use Google account permission.'};h=`<div class="app-preview"><span class="app-hub-kicker">APP PREVIEW</span><h2>${info.name}</h2><div class="app-preview-device"><i></i><b>${info.name}</b><small>${info.scope}</small></div><p>${s.previewApps?.[a]?'Connected · example data':'Permission preview · read only'}</p><p class="fine">No account data read</p>${button('preview-allow','Allow example access '+icon('arrow'),'primary full')}${button('app-sources','Back to sources','text-button full')}</div>`;}
 if(kind==='app-signal'){const a=window.lokaAppDetail||'calendar',sample=a==='health'?'Activity is lower on two days of the example week.':a==='oura'?'The example shows shorter sleep on three nights.':'The example shows three research blocks and one open afternoon.';label='Example signal';h=`<div class="app-preview"><span class="app-hub-kicker">${a.toUpperCase()} · EXAMPLE</span><h2>One more layer.</h2><div class="app-signal-card"><span>APP CONTEXT</span><strong>${sample}</strong><small>Fictional signal · not read from your account</small></div>${button('use-app-signal','Use this clue','primary full')}${button('preview-disconnect','Disconnect example app','text-button full')}${button('app-sources','Explore another source','text-button full')}${button('local-guess','Return to my guess','text-button full')}</div>`;}
 
-if(kind==='inputs'){label='Body input';h=`<h2>No need to find a button,<br>respond naturally.</h2><div class="body-instructions"><div><b>Nod</b><span>${s.stage==='result'?'This helped':'Continue this path'}</span></div><div><b>Shake</b><span>${s.stage==='result'?'This did not fit':'Change direction'}</span></div><div><b>Gaze / expression</b><span>Signals attention; never makes a decision for you</span></div></div><p class="permission-note">After enabling the camera, look at it for two seconds. You can always swipe instead.</p>${button('camera',icon('eye')+(sensor.camera==='on'?'Turn off camera':sensor.camera==='loading'?'Opening camera…':'Turn on camera and nod'),'primary full')}<p class="fine">Camera gestures are processed on device. Video is not uploaded.</p>${sensor.camera==='on'?button('recalibrate','Recalibrate gestures','text-button full'):''}<details><summary>You can also speak</summary><p class="permission-note">Say Continue, Another, No spending, or Stop. Browser speech recognition may use an online service.</p>${button('mic',icon('mic')+(sensor.speech==='listening'?'Turn off voice':'Turn on voice'),'primary full')}</details><p id="sensor-status" class="body-device-status" role="status">${esc(sensor.tracking||sensor.message||'Camera and mic are off')}</p><p class="fine">Payment always requires a separate tap. A nod never charges you.${s.stage==='welcome'?'Connect a source first.':''}</p>`;}
+if(kind==='inputs'){label='Body input';h=`<h2>No need to find a button,<br>respond naturally.</h2><div class="body-instructions"><div><b>Nod</b><span>${s.stage==='result'?'This helped':'Continue this path'}</span></div><div><b>Shake</b><span>${s.stage==='result'?'This did not fit':'Change direction'}</span></div><div><b>Gaze / expression</b><span>Signals attention; never makes a decision for you</span></div></div><p class="permission-note">After enabling the camera, look at it for two seconds. You can always swipe instead.</p>${button('camera',icon('eye')+(sensor.camera==='on'?'Turn off camera':sensor.camera==='loading'?'Opening camera…':'Enable camera & voice'),'primary full')}<p class="fine">Camera gestures are processed on device. Video is not uploaded.</p>${sensor.camera==='on'?button('recalibrate','Recalibrate gestures','text-button full'):''}<details><summary>You can also speak</summary><p class="permission-note">Say Continue, Another, No spending, or Stop. Browser speech recognition may use an online service.</p>${button('mic',icon('mic')+(sensor.speech==='listening'?'Turn off voice':'Turn on voice'),'primary full')}</details><p id="sensor-status" class="body-device-status" role="status">${esc(sensor.tracking||sensor.message||'Camera and mic are off')}</p><p class="fine">Payment always requires a separate tap. A nod never charges you.${s.stage==='welcome'?'Connect a source first.':''}</p>`;}
 if(kind==='correct'){label='Adjust';h=`<h2>Move closer to what you mean.</h2><div class="preference-grid">${button('focus','Protect my work time')}${button('budget','Spend nothing first')}${button('private','Keep this private')}${button('depth','Go deeper')}</div><label for="correction">Or add a note</label><textarea id="correction" placeholder="What matters more is…"></textarea>${button('text-correct','Save this correction','primary full')}<p class="fine">Corrections can change time, cost, privacy and depth.</p>`;}
 if(kind==='preferences'){label='Preferences';h=`<h2>On your terms.</h2>${row('correct','tune','Adjust exploration')}<label for="cap">Task budget cap <b id="cap-text">${s.cap} QB</b></label><input id="cap" type="range" min="0" max="12" value="${s.cap}"><p class="fine">Every paid task requires separate approval. Example balance only.</p>`;}
 if(kind==='ledger'){label='Usage';h=ledgerView(s);}
@@ -151,7 +151,7 @@ if(['start-model','start-local','start-blocked'].includes(a)){close();return act
 if(['result-route','result-begin','result-step'].includes(a)){const route=e.target.closest('[data-route]')?.dataset.route;act(a,{route});if($('#drawer').open&&popup==='result-detail')show('result-detail');return;}
 if(a==='helpful'||a==='unhelpful')return act('feedback',{useful:a==='helpful'});
 if(a==='recalibrate'){input.recalibrate();close();toast('Look at the camera for two seconds to recalibrate.');return;}
-if(a==='camera'){if(sensor.camera==='on')input.stopCamera();else input.startCamera();return;}
+if(a==='camera'){if(sensor.camera==='on')input.stopCamera();else {input.startCamera();input.startSpeech();}return;}
 if(a==='mic'){if(sensor.speech==='listening')input.stopSpeech();else input.startSpeech();return;}
 if(a==='reset'||a==='revoke'){input.stopAll();clearBridge();close();return act(a);}
 if(a==='pause')input.stopAll();act(a);
