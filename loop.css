@@ -251,3 +251,20 @@ header{gap:10px}.prototype{color:#706b79;font-size:12px;letter-spacing:0}.header
 .lens-spark{animation:lens-spark 8s ease-in-out infinite}
 @keyframes lens-spark{0%,100%{opacity:.65;transform:rotate(-32deg) translateX(0)}50%{opacity:1;transform:rotate(-32deg) translateX(5px)}}
 @media(prefers-reduced-motion:reduce){.lens-spark{animation:none}}
+/* Typography follows ChatGPT's platform-native UI convention; OpenAI Sans is used only if already installed. */
+body{font-family:"OpenAI Sans",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;font-size:16px;line-height:1.5}
+button,input,textarea,select{font-family:inherit}
+#shell[data-stage="invite"],#shell[data-stage="welcome"],#shell[data-stage="source-result"]{background:#f8f8f6}
+.device-entry{min-height:calc(100dvh - 145px);display:flex;flex-direction:column;align-items:stretch;padding:28px 2px 20px}
+.device-entry .landing-lens{width:194px;height:194px;margin:20px auto 30px}
+.device-entry h1{font-size:clamp(29px,7.5vw,34px);line-height:1.16;font-weight:600;letter-spacing:-.035em;max-width:11em}
+.device-entry p{font-size:15px;line-height:1.5;color:#686966;max-width:25em;margin-top:12px}
+.device-entry .device-connect{margin-top:26px;min-height:54px;background:#20211f;border-radius:15px}
+.entry-alternatives{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:12px 0 2px}.entry-alternatives .text-button{padding:8px 2px;color:#666965;font-size:13px}.device-entry>small{align-self:flex-start;color:#777a76;font-size:12px;margin-top:9px}
+#drawer{border:1px solid #ffffffa8;background:#fbfbfa;box-shadow:0 30px 85px #17171933;border-radius:26px}
+#drawer::backdrop{background:#1e211c68;backdrop-filter:blur(6px)}
+#drawer[data-kind="device-consent"] #panel{padding-top:8px}
+.permission-hero h2{font-size:27px;line-height:1.2;letter-spacing:-.025em;margin:16px 0 10px}.permission-hero p{color:#6d706c;font-size:14px;line-height:1.55}.permission-mark{display:grid;place-items:center;width:52px;height:52px;border-radius:17px;background:#e7ece7;color:#50665c}.permission-mark svg{width:22px;height:22px}
+.permission-list{margin:22px 0 0;border-top:1px solid #e9ebe7}.permission-list>div{display:flex;gap:13px;align-items:flex-start;padding:15px 0;border-bottom:1px solid #e9ebe7}.permission-list svg{color:#6f7b72;width:19px;height:19px;margin-top:2px}.permission-list b,.permission-list small{display:block}.permission-list b{font-size:14px;font-weight:600}.permission-list small{font-size:12px;color:#777c76;margin-top:3px}.permission-footnote{font-size:12px!important;line-height:1.55;color:#777b75;margin:18px 0 0}
+.device-ready{min-height:calc(100dvh - 145px);display:flex;flex-direction:column;align-items:stretch;padding:34px 2px 18px}.device-ready-kicker{font-size:11px;letter-spacing:.12em;color:#788079;font-weight:600}.ready-mark{display:grid;place-items:center;width:58px;height:58px;border-radius:20px;background:#dfeae1;color:#3f6950;margin:34px 0 20px}.device-ready h1{font-size:30px;line-height:1.2;letter-spacing:-.03em}.device-ready>p{font-size:14px;line-height:1.55;color:#6b706b;margin:12px 0 20px}.ready-facts{border-top:1px solid #e5e9e4;border-bottom:1px solid #e5e9e4;padding:6px 0}.ready-facts>div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;font-size:13px}.ready-facts span{color:#777c76}.ready-facts b{font-weight:550;text-align:right}.device-ready .primary{margin-top:24px;background:#20211f}.device-ready .text-button.full{justify-content:center;margin-top:2px}.device-ready>small{font-size:12px;color:#777c76;line-height:1.5;margin-top:12px}
+@media(max-height:720px){.device-entry{padding-top:10px}.device-entry .landing-lens{width:158px;height:158px;margin:8px auto 16px}}
