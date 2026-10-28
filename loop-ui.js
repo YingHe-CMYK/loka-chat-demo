@@ -1,15 +1,15 @@
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=journey-24';
-import {hypothesisCopy} from './hypothesis-copy.js?v=journey-24';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=journey-24';
-import {mirrorReading} from './need-discovery.js?v=journey-24';
-import {mirrorStage} from './mirror-stage.js?v=journey-24';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=journey-24';
-import {visualResult} from './visual-result.js?v=journey-24';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=journey-24';
-import {appSources,browserFacts} from './device-sources.js?v=journey-24';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=journey-24';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=github-25';
+import {hypothesisCopy} from './hypothesis-copy.js?v=github-25';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=github-25';
+import {mirrorReading} from './need-discovery.js?v=github-25';
+import {mirrorStage} from './mirror-stage.js?v=github-25';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=github-25';
+import {visualResult} from './visual-result.js?v=github-25';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=github-25';
+import {appSources,browserFacts} from './device-sources.js?v=github-25';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=github-25';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=journey-24';
+import {MirrorInputs} from './real-input.js?v=github-25';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
@@ -63,9 +63,9 @@ function planStage(p){
 function deck(content,theme){return `<div class="deck"><div class="card-behind" aria-hidden="true"></div><article class="card ${theme}" tabindex="0" aria-label="Swipe left for another, right to continue. Arrow keys also work."><div class="swipe-stamp no" aria-hidden="true">Another</div><div class="swipe-stamp yes" aria-hidden="true">Continue</div>${content}</article></div><div class="gesture-guide"><span>← Another</span><i></i><span>Continue →</span></div><div class="swipe-controls">${button('swipe-left',icon('close')+'<span>Another</span>','swipe-labeled')}${button('correct',icon('tune')+'<span>Adjust</span>','swipe-labeled')}${button('swipe-right',icon('check')+'<span>Continue</span>','swipe-labeled positive')}</div>`;}
 function render(){if(input.stream&&input.video.parentElement!==document.body)document.body.append(input.video);clearTimeout(reviewTimer);swipe=null;const p=current(s);let html='';
 $('#shell').dataset.stage=s.stage;
-if(s.signedOut)html=`<section class="journey-entry"><p class="entry-kicker">WELCOME BACK</p><h1>Your mirror is here.</h1>${button('sign-in-open','Sign in','primary full')}<p class="fine">This demo keeps your space in this browser.</p></section>`;
+if(s.signedOut)html=`<section class="journey-entry"><p class="entry-kicker">WELCOME BACK</p><h1>Your mirror is here.</h1>${button('github-open','Continue with GitHub','primary full')}<p class="fine">This demo keeps your space in this browser.</p></section>`;
 else if(s.paused)html=`<section class="welcome">${art()}<h1>Come back anytime.</h1><p>I am here.</p>${button('resume','Continue','primary')}</section>`;
-else if(s.stage==='invite')html=`<section class="journey-entry invite-entry"><p class="entry-kicker">LOKA CHAT · INVITE</p><div class="entry-orb">${art('welcome-art')}</div><h1>Meet your mirror.</h1><div class="invite-ticket"><span>ML researcher invitation</span><b>${esc(s.invitation?.code||'LOKA-ML-01')}</b></div>${button('accept-invite','Create your space '+icon('arrow'),'primary full')}${button('sign-in-open','Already have a space? Sign in','text-button full')}</section>`;
+else if(s.stage==='invite')html=`<section class="journey-entry invite-entry"><p class="entry-kicker">LOKA CHAT · INVITE</p><div class="entry-orb">${art('welcome-art')}</div><h1>Meet your mirror.</h1>${button('github-open','Continue with GitHub '+icon('arrow'),'primary full')}<p class="fine">GitHub sign-in preview · Your space stays in this browser.</p>${button('accept-invite','Use a nickname instead','text-button full')}</section>`;
 else if(s.stage==='register')html=`<section class="journey-entry register-entry"><p class="entry-kicker">CREATE YOUR SPACE</p><h1>What should I call you?</h1><label for="demo-name">Your name</label><input id="demo-name" class="register-input" maxlength="24" autocomplete="nickname" placeholder="Name or nickname">${button('register-demo','Continue '+icon('arrow'),'primary full')}</section>`;
 else if(s.stage==='welcome')html=`<section class="device-entry"><span class="device-index">01 / 04 · CONNECT</span><div class="device-orb" aria-hidden="true"><i></i><i></i><b></b></div><h1>Let me see you.</h1><p>Try the mirror with a fictional researcher profile.</p>${button('sample-connect','Start experience '+icon('arrow'),'primary full device-connect')}<small>Sample profile · no personal files accessed</small></section>`;
 else if(s.stage==='scanning'){html=`<section class="device-scan"><span class="device-index">READING / THIS DEVICE</span><div class="scan-orb" aria-hidden="true"><i></i><i></i></div><h1>Reading locally.</h1><div class="scan-list">${(s.deviceFacts||[]).map((f,i)=>`<div style="--i:${i}"><b>${esc(f.label)}</b><span>${esc(f.value)}</span></div>`).join('')}</div></section>`;clearTimeout(connectTimer);connectTimer=setTimeout(()=>act('scan-complete'),1700);}
@@ -86,6 +86,7 @@ const card=$('.card');if(card)swipe=mountSwipe(card,d=>{if(d==='left')act('left'
 }
 function show(kind){popup=kind;const p=current(s);let h='',label='';$('#drawer').dataset.kind=kind;
 if(kind==='authorize'){label='Connect sources';h=`<div class="permission-icon">${icon('doc')}</div><h2>Choose what I can read.</h2><p class="secondary">Select a local folder with notes, research, calendar exports, or other text files. I will read only the folder you choose, here in your browser.</p><div class="connection-row">${icon('shield')}<span>Your selected folder<small>Text, Markdown, CSV, JSON and calendar exports</small></span><span class="badge">Local</span></div><input id="local-files" type="file" webkitdirectory multiple hidden accept=".txt,.md,.markdown,.csv,.json,.ics,.html,.htm"><input id="local-picked-files" type="file" multiple hidden accept=".txt,.md,.markdown,.csv,.json,.ics,.html,.htm">${button('choose-local','Choose a folder','primary full')}${button('choose-files','Choose individual files','text-button full')}<p class="fine">No files are uploaded. You can remove the learned clues in My → Sources.</p>`;}
+if(kind==='github-open'){label='GitHub · preview';h=`<h2>Continue with GitHub.</h2><p>In the finished product, GitHub will confirm your identity.</p><label for="github-name">Example GitHub username</label><input id="github-name" class="register-input" autocomplete="nickname" placeholder="Username" value="${esc(s.profile?.name||'')}">${button('github-preview','Continue','primary full')}${button('close-consent','Cancel','text-button full')}<p class="fine">Preview only: no GitHub account is connected or accessed.</p>`;}
 if(kind==='sign-in-open'){label='Sign in · demo';h=`<h2>Welcome back.</h2><label for="login-name">Name</label><input id="login-name" class="register-input" value="${esc(s.profile?.name||'')}" placeholder="Name or nickname"><p>Example code: <b>123456</b></p><label for="login-code">Code</label><input id="login-code" class="register-input" inputmode="numeric" maxlength="6">${button('sign-in-submit','Sign in','primary full')}<p class="fine">Demo sign-in. Your saved space is available on this browser only.</p>`;}
 if(kind==='verify-account'){label='Create account · demo';h=`<h2>Verify your space.</h2><p>Example code: <b>123456</b></p><label for="demo-code">Verification code</label><input id="demo-code" class="register-input" inputmode="numeric" maxlength="6" autocomplete="off">${button('verify-account','Verify and continue','primary full')}${button('resend-code','Resend example code','text-button full')}<p class="fine">No real account, email or SMS is created.</p>`;}
 if(kind==='checkout'){label='Checkout · demo';h=`<h2>Try Plus.</h2><div class="cost-line"><span>Monthly plan</span><strong>$12 / month</strong></div><p>Example price. Heavy tasks use separately confirmed QB.</p>${button('pay-demo','Confirm example payment','primary full')}${button('payment-fail','Test a declined payment','text-button full')}${button('membership','Cancel','text-button full')}<p class="fine">No payment information collected. No charge.</p>`;}
@@ -119,6 +120,8 @@ function close(){clearTimeout(connectTimer);connecting=false;$('#drawer').close(
 function correct(k){close();act('correct',{key:k});toast('Saved. I will try a closer fit.');}
 document.addEventListener('click',e=>{const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;
 if(['checkout','payment-error','receipt','history','membership','settings','sources','inputs','correct','preferences','culture','invite-preview','guide-preview','ledger','activity','why','about','quote','dispute','result-detail','app-sources'].includes(a))return show(a);
+if(a==='github-open')return show('github-open');
+if(a==='github-preview'){const name=$('#github-name')?.value?.trim();if(!name)return toast('Enter an example username.');close();return act('sign-in',{name});}
 if(a==='sign-in-open')return show('sign-in-open');
 if(a==='sign-in-submit'){const name=$('#login-name')?.value?.trim();if(!name||$('#login-code')?.value!=='123456')return toast('Enter a name and the example code 123456.');close();return act('sign-in',{name});}
 if(a==='sign-out'){input.stopAll();close();return act('sign-out');}
