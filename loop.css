@@ -181,3 +181,5 @@ header{gap:10px}.prototype{color:#706b79;font-size:12px;letter-spacing:0}.header
 
 /* Keep the actionable cost view close to its introduction. */
 .health-result.cost{min-height:230px;padding:24px}.health-result.cost .health-result-main strong{font-size:29px;line-height:1.2;letter-spacing:-.7px}.health-result.cost .health-result-main p{margin-top:9px}.health-result.cost .health-result-steps{display:none}.health-result.cost .health-result-art{opacity:.48}.cost-editor{margin-top:12px}
+
+.reflection-editor h2{font-size:18px}.reflection-editor p{font-size:13px;color:var(--muted);margin:6px 0 16px}.reflection-editor label{margin:14px 0 6px}.reflection-editor textarea{min-height:68px}
