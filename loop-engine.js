@@ -28,7 +28,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
  if(type==='recover-plans'&&s.stage==='plan'){s.dismissed=[];s.stage='guess';s.index++;return s;}
  if(type==='app-preview-connect'){s.previewApps={...s.previewApps,[data.app]:true};return s;}
  if(type==='app-preview-disconnect'){s.previewApps={...s.previewApps,[data.app]:false};return s;}
- if(type==='use-app-preview'){if(!s.previewApps?.[data.app])return s;s.source='sample';s.topic='health';s.stage='guess';s.evidence=[...sampleEvidence.health,`Fictional ${data.app} signal; not read from your account`];s.weights.focus+=1;return s;}
+ if(type==='use-app-preview'){if(!s.previewApps?.[data.app])return s;s.source='sample';s.topic='health';s.stage='guess';s.previewFocus=data.app;s.previewFocusIndex=s.index;s.evidence=[...sampleEvidence.health,`Fictional ${data.app} signal; not read from your account`];s.weights.focus+=1;return s;}
  if(type==='reset')return freshJourney();
  if(type==='accept-invite'&&s.stage==='invite'){s.invitation={...s.invitation,accepted:true};s.stage='register';event(s,type,{effect:'接受演示邀请；尚未创建账号或分享资料'});return s;}
  if(type==='register'&&s.stage==='register'&&s.invitation?.accepted){const name=String(data.name||'').trim().slice(0,24);if(!name){s.notice='Enter a name for this experience.';return s;}s.profile={name,cohort:s.invitation.cohort,localDemo:true};s.stage='welcome';event(s,type,{effect:'创建仅存于本机浏览器的演示身份；未注册真实账号'});return s;}

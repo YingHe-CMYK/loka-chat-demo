@@ -35,7 +35,7 @@ const input=new MirrorInputs({isActive:()=>!$('#drawer').open&&(['guess','plan',
 },onEvent:signal=>{
  if($('#drawer').open&&signal!=='stop')return;const intent=bodyIntent(signal,s.stage,s.paused);if(!intent)return;
  if(intent==='pause'){input.stopAll();act('pause');return;}
- const explicit=['right','left','helpful','unhelpful','budget','resume'].includes(intent);if(explicit&&Date.now()-lastSignal<1000)return;if(explicit)lastSignal=Date.now();
+ const explicit=['right','left','helpful','unhelpful','budget','resume'].includes(intent);if(explicit&&Date.now()-lastSignal<3000)return;if(explicit)lastSignal=Date.now();
  if(intent==='right'||intent==='left'){dispatchDirection(intent,s.stage,act,show);bodyResponse(intent==='right'?'Got it. Continuing.':'Got it. Changing direction.');}
  else if(intent==='helpful'||intent==='unhelpful'){act('feedback',{useful:intent==='helpful'});toast(intent==='helpful'?'Saved: this helped.':'Saved: this did not help.');}
  else if(intent==='budget')correct('budget');else if(intent==='resume')act('resume');
@@ -49,7 +49,7 @@ const input=new MirrorInputs({isActive:()=>!$('#drawer').open&&(['guess','plan',
 }});
 
 function toast(t){$('#status').textContent=t;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#status').textContent='',3200);}
-function act(type,data){const previousStage=s.stage;s=step(s,type,data);try{localStorage.setItem(key,JSON.stringify(s));}catch{}render();if(previousStage!==s.stage)window.scrollTo({top:0,behavior:'instant'});if(s.notice)toast(s.notice);}
+function act(type,data){const previousStage=s.stage;s=step(s,type,data);try{localStorage.setItem(key,JSON.stringify(s));}catch{}render();if(previousStage!==s.stage){if(sensor.camera==='on')input.recalibrate();lastSignal=Date.now();window.scrollTo({top:0,behavior:'instant'});}if(s.notice)toast(s.notice);}
 const titles={health:'You may want to feel in control of your health again.',meaning:'You may already have a direction to try.',connection:'You may be waiting for a way to reconnect.'};
 function guessTitle(){return hypothesisCopy(s);}
 function planStage(p){
