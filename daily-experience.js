@@ -12,5 +12,5 @@ export function previousDailyFeedback(feedback,day,tab,outcomes){const prior=Obj
 export function savedSchedulesForDay(results,day,source,profileId){
  const date=new Date(`${day}T12:00:00`);if(Number.isNaN(date.getTime()))return [];
  const weekday=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][date.getDay()];
- return [...(results||[])].reverse().filter(r=>r.topic==='health'&&r.schedule?.name&&r.schedule?.time&&r.schedule?.day===weekday&&(source==='sample'?r.sourceKind==='sample'&&r.sampleProfileId===profileId:r.sourceKind!=='sample'&&r.sourceKind!=='demo'))||null;
+ return [...(results||[])].reverse().filter(r=>r.topic==='health'&&r.schedule?.name&&r.schedule?.time&&r.schedule?.day===weekday&&(source==='sample'?r.sourceKind==='sample'&&r.sampleProfileId===profileId:r.sourceKind!=='sample'&&r.sourceKind!=='demo')).sort((a,b)=>a.schedule.time.localeCompare(b.schedule.time));
 }
