@@ -1,16 +1,16 @@
-import {validatePillars,dailyPreview,dailyHealth} from './daily-experience.js?v=stage1-62';
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-62';
-import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-62';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-62';
-import {mirrorReading} from './need-discovery.js?v=stage1-62';
-import {mirrorStage} from './mirror-stage.js?v=stage1-62';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-62';
-import {visualResult} from './visual-result.js?v=stage1-62';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-62';
-import {appSources,browserFacts} from './device-sources.js?v=stage1-62';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-62';
+import {validatePillars,dailyPreview,dailyHealth} from './daily-experience.js?v=stage1-63';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-63';
+import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-63';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-63';
+import {mirrorReading} from './need-discovery.js?v=stage1-63';
+import {mirrorStage} from './mirror-stage.js?v=stage1-63';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-63';
+import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-63';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-63';
+import {appSources,browserFacts} from './device-sources.js?v=stage1-63';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-63';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-62';
+import {MirrorInputs} from './real-input.js?v=stage1-63';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
@@ -89,6 +89,7 @@ $('#dock').innerHTML=s.signedOut||['invite','register','welcome','scanning','sou
 const backStages=['register','welcome','source-result','guess','plan','result','daily'];let nav=$('#journey-back');if(!nav){nav=document.createElement('button');nav.id='journey-back';nav.dataset.action='journey-back';nav.setAttribute('aria-label','Go back');nav.textContent='←';document.querySelector('header').prepend(nav);}nav.hidden=s.signedOut||!backStages.includes(s.stage);
 const undo=$('[data-action="undo"]');if(undo)undo.disabled=!s.undo;
 if(s.stage==='result'&&s.results.at(-1)?.feedback)document.querySelectorAll('[data-action=helpful],[data-action=unhelpful]').forEach(b=>b.disabled=true);
+const resultCard=$('.result-swipe');if(resultCard)mountSwipe(resultCard,d=>{const r=s.results.at(-1);if(!r)return;if(d==='right'){const route=chosenRoute(r),active=r.visualStarted===route.key;if(!active||(r.visualDone||0)<3)act(active?'result-step':'result-begin');else render();}else{const routes=resultRoutes[r.topic]||[];if(routes.length<2)return render();const index=routes.findIndex(x=>x.key===chosenRoute(r).key);act('result-route',{route:routes[(index+1)%routes.length].key});}});
 const dailyCard=$('.daily-swipe');if(dailyCard)mountSwipe(dailyCard,d=>act('daily-swipe',{value:d==='right'?'yes':'no',day:today}));
 const card=$('.card');if(card)swipe=mountSwipe(card,d=>{if(d==='left')act('left');else if(s.stage==='guess')act('right');else show('delivery');});
 }

@@ -194,3 +194,5 @@ header{gap:10px}.prototype{color:#706b79;font-size:12px;letter-spacing:0}.header
 .daily-swipe{touch-action:pan-y;cursor:grab;user-select:none;transition:transform .24s cubic-bezier(.2,.8,.2,1),opacity .24s}.daily-swipe.dragging{transition:none;cursor:grabbing}.daily-swipe-hint{margin:10px 4px 0}.daily-card button{position:relative;z-index:2}
 
 .daily-pillars{display:flex;gap:13px;margin-top:10px;color:#eee3d7;letter-spacing:.06em;font-size:14px}.daily-pillars b{font-weight:500}
+
+.result-swipe{touch-action:pan-y;cursor:grab;user-select:none;transition:transform .24s cubic-bezier(.2,.8,.2,1),opacity .24s}.result-swipe.dragging{transition:none;cursor:grabbing}.result-swipe-hint{margin:12px 4px 0}.result-reveal{margin:3px 0 0;color:var(--violet)}
