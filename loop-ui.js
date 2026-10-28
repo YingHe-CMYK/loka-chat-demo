@@ -1,17 +1,17 @@
-import {validatePillars,dailyPreview,dailyHealth,previousDailyFeedback} from './daily-experience.js?v=stage1-76';
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-76';
-import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-76';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-76';
-import {mirrorReading} from './need-discovery.js?v=stage1-76';
-import {mirrorStage} from './mirror-stage.js?v=stage1-76';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-76';
-import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-76';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-76';
-import {appSources,browserFacts} from './device-sources.js?v=stage1-76';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-76';
+import {validatePillars,dailyPreview,dailyHealth,previousDailyFeedback} from './daily-experience.js?v=stage1-77';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-77';
+import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-77';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-77';
+import {mirrorReading} from './need-discovery.js?v=stage1-77';
+import {mirrorStage} from './mirror-stage.js?v=stage1-77';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-77';
+import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-77';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-77';
+import {appSources,browserFacts} from './device-sources.js?v=stage1-77';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-77';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-76';
-import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-76';
+import {MirrorInputs} from './real-input.js?v=stage1-77';
+import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-77';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
 try{const saved=JSON.parse(localStorage.getItem(key));if(saved?.stage&&['demo','none','device','sample','local','app'].includes(saved.source))s=saved;}catch{}
@@ -50,7 +50,7 @@ const input=new MirrorInputs({isActive:()=>!$('#drawer').open&&(['guess','plan',
 }});
 
 function toast(t){$('#status').textContent=t;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#status').textContent='',3200);}
-function act(type,data){const previousStage=s.stage;s=step(s,type,data);try{localStorage.setItem(key,JSON.stringify(s));}catch{}render();if(previousStage!==s.stage){if(sensor.camera==='on')input.recalibrate();lastSignal=Date.now();window.scrollTo({top:0,behavior:'instant'});}if(s.notice)toast(s.notice);}
+function act(type,data){const previousStage=s.stage;s=step(s,type,data);try{localStorage.setItem(key,JSON.stringify(s));}catch{}render();if(previousStage!==s.stage||['left','right','daily-swipe'].includes(type)){if(sensor.camera==='on')input.recalibrate();lastSignal=Date.now();window.scrollTo({top:0,behavior:'instant'});}if(s.notice)toast(s.notice);}
 const titles={health:'You may want to feel in control of your health again.',meaning:'You may already have a direction to try.',connection:'You may be waiting for a way to reconnect.'};
 function landingLens(){return '<div class="landing-lens" aria-hidden="true"><div class="lens-field"></div><div class="lens-ring lens-ring-outer"></div><div class="lens-ring lens-ring-inner"></div><div class="lens-glass"><i></i><b></b></div><div class="lens-spark"></div></div>';}
 function guessTitle(){return hypothesisCopy(s);}
