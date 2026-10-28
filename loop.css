@@ -278,3 +278,6 @@ button,input,textarea,select{font-family:inherit}
 .lens-glass b{display:none}.lens-spark{top:17%;left:35%;width:10%;height:2%;opacity:.45}
 /* Text inside a swipeable card remains editable and selectable. */
 .daily-swipe textarea,.daily-swipe input,.result-swipe textarea,.result-swipe input{-webkit-user-select:text;user-select:text;touch-action:manipulation}
+
+/* Keep the response controls adjacent to the thought; camera remains available below. */
+.simplified-guess .presence-heading{order:0}.simplified-guess .conversation-prompt{order:1}.simplified-guess .swipe-hint{order:2;margin:0 2px 4px}.simplified-guess .touch-fallback{order:3;margin:0 0 18px}.simplified-guess .touch-fallback>div{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:8px}.simplified-guess .touch-fallback button{min-width:0;min-height:48px;background:#eeebf2;color:#50495a;font-weight:550}.simplified-guess .touch-fallback button:last-child{background:#28242f;color:#fff}.simplified-guess .live-mirror{order:4}.simplified-guess .gesture-primary{order:5}.simplified-guess .gesture-primary p{color:#5d5668}.simplified-guess .swipe-hint{font-size:11px;color:#655e70}
