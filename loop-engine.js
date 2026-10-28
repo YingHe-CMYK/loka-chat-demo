@@ -1,8 +1,8 @@
-import {chosenRoute,resultRoutes} from './visual-result.js?v=stage1-48';
+import {chosenRoute,resultRoutes} from './visual-result.js?v=stage1-49';
 import {makeRun,advance} from './council-sim.js';
 import {utility,economy,governanceReview} from './loop-frameworks.js';
-import {initialLens,nextLens,nextNeed} from './need-discovery.js?v=stage1-48';
-import {sampleEvidence,deviceEvidence} from './device-sources.js?v=stage1-48';
+import {initialLens,nextLens,nextNeed} from './need-discovery.js?v=stage1-49';
+import {sampleEvidence,deviceEvidence} from './device-sources.js?v=stage1-49';
 export const topics={health:{label:'身体与生活',guess:'也许你想找的，是一个不必反复研究、又能稳妥推进的身体管理办法。',evidence:['笔记里提到了减重咨询','清单里留着几种补剂','日程里标记了连续工作的时段']},meaning:{label:'另一个角度',guess:'也许你想借一个不同的角度，看清这次犹豫究竟卡在哪里。',evidence:['笔记里提到了塔罗与选择','留下了关于稳定和改变的问题']},connection:{label:'人与关系',guess:'也许你缺的不是一个开场白，而是一个不用马上解释很多的开场。',evidence:['笔记提到想联系一位朋友','记录中有一次尚未安排的见面']},research:{label:'Research',guess:'Is this the research question on your mind right now?',evidence:[]}};
 export const plans=[
 {id:'health-focus',topic:'health',title:'Fit treatment into your week.',subtitle:'Use your own prescription to place reminders.',tags:['focus','private'],cost:0,deliver:'One-week treatment view',body:'Organize existing medicines and supplements, then bring them to a clinician. No treatment time is inferred from a wearable.'},
@@ -106,6 +106,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
   if(!utility.complete(p)){s.notice='Delivery check failed. No charge.';return s;}
   s.balance-=p.cost;s.results.push({...p,id:p.id+'-'+(s.seq+1),planId:p.id,created:Date.now()});s.stage='result';s.undo=null;event(s,type,{planId:p.id,cost:p.cost,governance,utility:utility.id,effect:'本地生成可保存的草稿，未联系外部服务'});return s;
  }
+ if(type==='save-cost-view'&&s.stage==='result'){const r=s.results.at(-1);if(r?.topic==='health'){const v=['start','monthly','exit'].map(k=>Number(data[k]));const months=Number(data.months);if(v.every(x=>Number.isFinite(x)&&x>=0&&x<=10000000)&&Number.isInteger(months)&&months>=1&&months<=120){r.costInputs={start:v[0],monthly:v[1],exit:v[2],months,total:Math.round((v[0]+v[1]*months+v[2])*100)/100};event(s,type,{effect:'Member entered and saved a private cost comparison'});}}return s;}
  if(type==='save-connection-draft'&&s.stage==='result'){const r=s.results.at(-1);if(r?.topic==='connection'){r.connectionDraft=String(data.text||'').trim().slice(0,500);event(s,type,{effect:'Private draft saved locally; nothing sent'});}return s;}
  if(type==='save-health-schedule'&&s.stage==='result'){
   const r=s.results.at(-1),day=String(data.day||''),time=String(data.time||''),name=String(data.name||'').trim().slice(0,60),oralName=String(data.oralName||'').trim().slice(0,60),oralTime=String(data.oralTime||''),oralCondition=String(data.oralCondition||'').trim().slice(0,80);

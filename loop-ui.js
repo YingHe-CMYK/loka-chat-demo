@@ -1,15 +1,15 @@
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-48';
-import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-48';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-48';
-import {mirrorReading} from './need-discovery.js?v=stage1-48';
-import {mirrorStage} from './mirror-stage.js?v=stage1-48';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-48';
-import {visualResult} from './visual-result.js?v=stage1-48';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-48';
-import {appSources,browserFacts} from './device-sources.js?v=stage1-48';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-48';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-49';
+import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-49';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-49';
+import {mirrorReading} from './need-discovery.js?v=stage1-49';
+import {mirrorStage} from './mirror-stage.js?v=stage1-49';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-49';
+import {visualResult} from './visual-result.js?v=stage1-49';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-49';
+import {appSources,browserFacts} from './device-sources.js?v=stage1-49';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-49';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-48';
+import {MirrorInputs} from './real-input.js?v=stage1-49';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
@@ -162,6 +162,7 @@ if(a==='verify-account'){if($('#demo-code')?.value!=='123456')return toast('Use 
 if(a==='accept-nickname'){close();act('register',{name:window.registrationName});return act('agree-v1');}
 if(a==='resend-code')return toast('Example code: 123456. No SMS or email sent.');
 if(a==='journey-reset'){input.stopAll();if($('#drawer').open)close();return act('reset');}
+if(a==='save-cost-view'){const values=Object.fromEntries([...document.querySelectorAll('[data-cost]')].map(el=>[el.dataset.cost,el.value]));if(['start','monthly','exit'].some(k=>values[k]===''||!Number.isFinite(Number(values[k]))||Number(values[k])<0||Number(values[k])>10000000)||!Number.isInteger(Number(values.months))||Number(values.months)<1||Number(values.months)>120)return toast('Enter non-negative amounts and 1–120 months.');act('save-cost-view',values);return toast('Cost view updated.');}
 if(a==='save-connection-draft'){const text=$('#connection-draft')?.value.trim();if(!text)return toast('Write a line first.');act('save-connection-draft',{text});return toast('Draft saved.');}
 if(a==='save-health-schedule'){act('save-health-schedule',{name:$('#med-name')?.value,day:$('#med-day')?.value,time:$('#med-time')?.value,oralName:$('#oral-name')?.value,oralTime:$('#oral-time')?.value,oralCondition:$('#oral-condition')?.value});return;}
 if(a==='authorize-device'){const facts=browserFacts({language:navigator.language,timeZone:Intl.DateTimeFormat().resolvedOptions().timeZone,localEvents:s.events.filter(x=>['accept-invite','register','feedback','signal'].includes(x.type))});close();return act('device-scan',{facts});}
