@@ -1,8 +1,8 @@
-import {chosenRoute,resultRoutes} from './visual-result.js?v=stage1-43';
+import {chosenRoute,resultRoutes} from './visual-result.js?v=stage1-44';
 import {makeRun,advance} from './council-sim.js';
 import {utility,economy,governanceReview} from './loop-frameworks.js';
-import {initialLens,nextLens,nextNeed} from './need-discovery.js?v=stage1-43';
-import {sampleEvidence,deviceEvidence} from './device-sources.js?v=stage1-43';
+import {initialLens,nextLens,nextNeed} from './need-discovery.js?v=stage1-44';
+import {sampleEvidence,deviceEvidence} from './device-sources.js?v=stage1-44';
 export const topics={health:{label:'身体与生活',guess:'也许你想找的，是一个不必反复研究、又能稳妥推进的身体管理办法。',evidence:['笔记里提到了减重咨询','清单里留着几种补剂','日程里标记了连续工作的时段']},meaning:{label:'另一个角度',guess:'也许你想借一个不同的角度，看清这次犹豫究竟卡在哪里。',evidence:['笔记里提到了塔罗与选择','留下了关于稳定和改变的问题']},connection:{label:'人与关系',guess:'也许你缺的不是一个开场白，而是一个不用马上解释很多的开场。',evidence:['笔记提到想联系一位朋友','记录中有一次尚未安排的见面']},research:{label:'Research',guess:'Is this the research question on your mind right now?',evidence:[]}};
 export const plans=[
 {id:'health-focus',topic:'health',title:'Fit treatment into your week.',subtitle:'Use your own prescription to place reminders.',tags:['focus','private'],cost:0,deliver:'One-week treatment view',body:'Organize existing medicines and supplements, then bring them to a clinician. No treatment time is inferred from a wearable.'},
@@ -23,7 +23,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
  if(type==='navigate-back') {if(s.stage==='result'){s.topic=s.results.at(-1)?.topic||s.topic;s.dismissed=[];}const previous={register:'invite',welcome:'invite','source-result':'welcome',guess:'source-result',plan:'guess',result:'plan'}[s.stage];if(previous){s.stage=previous;event(s,type,{effect:'Returned to previous screen; earlier responses retained'});}return s;}
  if(type==='sign-out'){s.signedOut=true;return s;}
  if(type==='sign-in'){s.signedOut=false;if(!s.profile){s.profile={name:String(data.name||'Guest').slice(0,24),cohort:'ML researcher',localDemo:true};s.invitation={code:'LOKA-ML-01',cohort:'ML researcher',accepted:true};s.stage='welcome';}return s;}
- if(type==='start-new-goal'){s.stage='welcome';s.signedOut=false;s.source='none';s.manualGoal=false;s.sourceGoal=false;s.previewFocus=null;s.index=0;s.localGuess='';s.dismissed=[];s.undo=null;event(s,type,{effect:'Start another goal; previous results retained'});return s;}
+ if(type==='start-new-goal'){s.stage='welcome';s.signedOut=false;s.source='none';s.manualGoal=false;s.sourceGoal=false;s.previewFocus=null;s.index=0;s.discoveryDepth=0;s.deepChoice=null;s.localGuess='';s.dismissed=[];s.undo=null;event(s,type,{effect:'Start another goal; previous results retained'});return s;}
  if(type==='open-result'){const i=s.results.findIndex(r=>r.id===data.id);if(i<0)return s;const result=s.results.splice(i,1)[0];s.results.push(result);s.topic=result.topic;const goalAllowed=!result.goalIsInput&&result.sourceKind!=='manual'||(s.confirmedMemories||[]).some(m=>m.kind==='goal'&&m.value===result.sourceFocus);s.source=goalAllowed?(result.sourceKind==='manual'?'local':result.sourceKind||s.source):'none';s.manualGoal=goalAllowed&&result.sourceKind==='manual';s.sourceGoal=goalAllowed&&!!result.goalIsInput&&!s.manualGoal;s.localFocus=goalAllowed?result.sourceFocus||'':'';s.localTitle=result.sourceTitle||'';s.localExcerpt=result.sourceExcerpt||'';s.evidence=goalAllowed&&Array.isArray(result.sourceEvidence)?result.sourceEvidence.slice():[];s.localGuess=s.manualGoal&&s.localFocus?`Your goal: “${s.localFocus}”. Would a focused plan help you move forward?`:'';s.stage='result';s.undo=null;event(s,type,{effect:'Opened a saved result'});return s;}
  if(type==='agree-v1'){s.agreement={version:'1',acceptedAt:Date.now()};return s;}
  if(type==='manual-goal'&&s.stage==='welcome'){const goal=String(data.goal||'').trim().slice(0,500);if(!goal)return s;s.source='local';s.manualGoal=true;s.sourceGoal=false;s.previewFocus=null;s.localRole='Your goal';s.localTopic='research';s.localFocus=goal;s.localGuess=`Your goal: “${goal}”. Would a focused plan help you move forward?`;s.localTitle='Goal you entered';s.localCount=1;s.localInventory={discovered:1,read:1};s.evidence=[`Goal you entered: ${goal}`];s.deviceFacts=[{label:'Source',value:'Goal entered by you'}];s.confirmedMemories=[...(s.confirmedMemories||[]).filter(m=>m.kind!=='goal'),{id:'goal',kind:'goal',value:goal,source:'entered',at:Date.now()}];s.stage='source-result';event(s,type,{effect:'Goal entered by member; no model training'});return s;}
@@ -65,7 +65,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
   if(row){s.ledger=s.ledger||[];s.ledger.push(row);s.balance=Math.round((s.balance-row.cost)*1000)/1000;}
   if(run.status==='completed'){
    if(!utility.complete(run.plan)){s.run.status='failed';s.notice='The result did not meet the delivery check.';return s;}
-   s.results.push({...run.plan,...(run.plan.topic==='research'?{workPlan:{prediction:null,predictionAt:null,outcome:null,steps:[{action:'Clarify the outcome and scope',date:'',finish:'A clear outcome is written'},{action:'Make a first working draft',date:'',finish:'A first version exists'},{action:'Review and revise',date:'',finish:'The draft is ready to share or use'}]}}:{}),cost:run.spent,id:run.id,planId:run.plan.id,sourceEvidence:(s.evidence||[]).slice(0,4),goalIsInput:!!(s.manualGoal||s.sourceGoal),sourceKind:s.manualGoal?'manual':s.source,sourceTitle:['local','app'].includes(s.source)?s.localTitle:null,sourceExcerpt:['local','app'].includes(s.source)?s.localExcerpt:null,sourceFocus:['local','app'].includes(s.source)?s.localFocus:null,body:run.plan.body+'\n\n执行范围：仅本人可见的本地材料；未外发。',created:Date.now()});
+   s.results.push({...run.plan,...(run.plan.topic==='research'?{workPlan:{prediction:null,predictionAt:null,outcome:null,steps:[{action:s.deepChoice==='space'?'Reserve an uninterrupted work block':s.deepChoice==='clarity'?'Write the decision you need to make':'Clarify the outcome and scope',date:'',finish:s.deepChoice==='space'?'A work block is reserved':s.deepChoice==='clarity'?'The decision is stated in one sentence':'A clear outcome is written'},{action:s.deepChoice==='clarity'?'Compare two possible directions':'Make a first working draft',date:'',finish:s.deepChoice==='clarity'?'Two options and trade-offs are written':'A first version exists'},{action:'Review and revise',date:'',finish:'The draft is ready to share or use'}]}}:{}),cost:run.spent,id:run.id,planId:run.plan.id,sourceEvidence:(s.evidence||[]).slice(0,4),goalIsInput:!!(s.manualGoal||s.sourceGoal),sourceKind:s.manualGoal?'manual':s.source,sourceTitle:['local','app'].includes(s.source)?s.localTitle:null,sourceExcerpt:['local','app'].includes(s.source)?s.localExcerpt:null,sourceFocus:['local','app'].includes(s.source)?s.localFocus:null,body:run.plan.body+'\n\n执行范围：仅本人可见的本地材料；未外发。',created:Date.now()});
    s.stage='result';event(s,'council-delivery',{cost:run.spent,effect:'三席投票完成，按通过的议案生成本地材料'});
   }return s;
  }
@@ -74,14 +74,14 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
  }
  if(type==='council-return'&&s.stage==='review'&&s.run?.status!=='running'){s.stage='plan';return s;}
  if(type==='connect'&&['welcome','source-result'].includes(s.stage)){
-  const source=data.source||'demo';s.stage='guess';s.source=source;
+  const source=data.source||'demo';s.stage='guess';s.discoveryDepth=0;s.deepChoice=null;s.source=source;
   s.topic=['local','app'].includes(source)?s.localTopic:source==='device'?'general':source==='sample'?'health':data.topic||initialLens(topics);
   s.evidence=['local','app'].includes(source)?s.evidence:source==='device'?deviceEvidence(s.deviceFacts||[]):source==='sample'?sampleEvidence[s.topic]:data.evidence||topics[s.topic].evidence;
   event(s,type,{effect:source==='device'?'只基于当前浏览器与 Miro 内的真实动作提出交互偏好猜测；没有私人需求证据':source==='sample'?'使用明确标注为虚构的 ML 研究员样本，不能当作本人资料':`示例线索优先指向${topics[s.topic].label}`});return s;
  }
  if(type==='budget'){s.cap=Math.max(0,Math.min(12,Number(data.cap)||0));event(s,type,{effect:`方案费用上限变为 ${s.cap} QB`});return s;}
  if(type==='revoke'){const balance=s.balance,ledger=s.ledger||[];s={...fresh(),source:'none',profile:s.profile,invitation:s.invitation};s.balance=balance;s.ledger=ledger;s.notice='Sources and local learning removed. Example balance kept.';return s;}
- if(['correct','left','right','feedback','next'].includes(type))s.undo={stage:s.stage,topic:s.topic,index:s.index,cap:s.cap,weights:clone(s.weights),affinity:clone(s.affinity),visits:clone(s.visits||{}),dismissed:[...s.dismissed],evidence:[...s.evidence]};
+ if(['correct','left','right','feedback','next'].includes(type))s.undo={stage:s.stage,topic:s.topic,index:s.index,discoveryDepth:s.discoveryDepth||0,deepChoice:s.deepChoice||null,cap:s.cap,weights:clone(s.weights),affinity:clone(s.affinity),visits:clone(s.visits||{}),dismissed:[...s.dismissed],evidence:[...s.evidence]};
  if(type==='signal'){
   if(!['gaze','smile','frown'].includes(data.signal)||!['guess','plan'].includes(s.stage))return s;
   s.signals=s.signals||[];
@@ -93,11 +93,12 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
  if(['left','right','correct'].includes(type))s.dailyGreeting=false;
  if(type==='left'){
   if(s.stage==='guess'&&s.topic==='general'){s.stage='source-result';event(s,type,{effect:'收下否定反馈；现有设备线索不足以换成私人需求判断'});}
+  else if(s.stage==='guess'&&s.discoveryDepth){if(s.discoveryDepth===1){s.discoveryDepth=2;event(s,type,{effect:'The first deeper hypothesis did not fit; offering an alternative'});}else{s.discoveryDepth=0;s.index++;event(s,type,{effect:'Neither deeper hypothesis fit; returning to the original direction'});}}
   else if(s.stage==='guess'){s.affinity[s.topic]-=1;if(!['local','app'].includes(s.source))s.topic=nextLens(s);s.index++;s.evidence=['demo','sample'].includes(s.source)?sampleEvidence[s.topic]||topics[s.topic].evidence:(s.evidence||[]);event(s,type,{effect:'撤下当前猜测，按探索记录换一个方向；不解释为永久厌恶'});}
   else if(s.stage==='plan'){const p=current(s);if(p)s.dismissed.push(p.id);event(s,type,{effect:'只换帮助方式，保留探索方向'});}
   return s;
  }
- if(type==='right'&&s.stage==='guess'){if(s.topic==='general'){s.interactionPreference='愿意让镜子主动猜测';s.stage='source-result';event(s,type,{effect:'仅记住交互方式偏好；未生成健康、意义或关系判断'});return s;}s.affinity[s.topic]=(s.affinity[s.topic]||0)+1;s.visits=s.visits||{};s.visits[s.topic]=(s.visits[s.topic]||0)+1;s.stage='plan';event(s,type,{effect:'将这一方向列为待探索假设，不确认为心理事实'});return s;}
+ if(type==='right'&&s.stage==='guess'){if(s.topic==='general'){s.interactionPreference='愿意让镜子主动猜测';s.stage='source-result';event(s,type,{effect:'仅记住交互方式偏好；未生成健康、意义或关系判断'});return s;}if(!s.discoveryDepth){s.discoveryDepth=1;event(s,type,{effect:'The member recognized the direction; exploring the underlying need'});return s;}s.deepChoice=s.discoveryDepth===1?'space':'clarity';s.weights[s.deepChoice==='space'?'focus':'depth']+=2;s.confirmedMemories=[...(s.confirmedMemories||[]).filter(m=>m.id!=='discovery-priority'),{id:'discovery-priority',kind:'preference',key:s.deepChoice==='space'?'focus':'depth',value:s.deepChoice==='space'?'Make room to act':'Find clarity before acting',source:'your response',at:Date.now()}];s.affinity[s.topic]=(s.affinity[s.topic]||0)+1;s.visits=s.visits||{};s.visits[s.topic]=(s.visits[s.topic]||0)+1;s.stage='plan';event(s,type,{effect:'将这一方向列为待探索假设，不确认为心理事实'});return s;}
  if(type==='deliver'&&s.stage==='plan'){
   const p=current(s);if(!p)return s;
   const governance=governanceReview(s,p,data);
@@ -127,6 +128,6 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
   s.affinity[p.topic]=(s.affinity[p.topic]||0)+(data.useful?1:-1);
   event(s,type,{useful:data.useful,effect:'将实际交付反馈用于后续方案排序'});s.undo=null;return s;
  }
- if(type==='next'&&s.stage==='result'){if(s.source==='none'){s.stage='welcome';s.index=0;event(s,type,{effect:'A new source is needed to continue'});return s;}const n=['local','app'].includes(s.source)?{topic:s.topic,depth:true,reason:'Continue from the member-provided source without inventing another interest'}:nextNeed(s);s.topic=n.topic;s.needDepth=n.depth?(s.needDepth||0)+1:0;s.evidence=['demo','sample'].includes(s.source)?sampleEvidence[s.topic]||topics[s.topic].evidence:(s.evidence||[]);s.stage='guess';s.dismissed=[];s.index++;event(s,type,{effect:n.reason});return s;}
+ if(type==='next'&&s.stage==='result'){if(s.source==='none'){s.stage='welcome';s.index=0;event(s,type,{effect:'A new source is needed to continue'});return s;}const n=['local','app'].includes(s.source)?{topic:s.topic,depth:true,reason:'Continue from the member-provided source without inventing another interest'}:nextNeed(s);s.topic=n.topic;s.needDepth=n.depth?(s.needDepth||0)+1:0;s.evidence=['demo','sample'].includes(s.source)?sampleEvidence[s.topic]||topics[s.topic].evidence:(s.evidence||[]);s.stage='guess';s.discoveryDepth=0;s.dismissed=[];s.index++;event(s,type,{effect:n.reason});return s;}
  return s;
 }

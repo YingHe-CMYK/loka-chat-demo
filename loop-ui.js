@@ -1,15 +1,15 @@
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-43';
-import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-43';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-43';
-import {mirrorReading} from './need-discovery.js?v=stage1-43';
-import {mirrorStage} from './mirror-stage.js?v=stage1-43';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-43';
-import {visualResult} from './visual-result.js?v=stage1-43';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-43';
-import {appSources,browserFacts} from './device-sources.js?v=stage1-43';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-43';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-44';
+import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-44';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-44';
+import {mirrorReading} from './need-discovery.js?v=stage1-44';
+import {mirrorStage} from './mirror-stage.js?v=stage1-44';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-44';
+import {visualResult} from './visual-result.js?v=stage1-44';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-44';
+import {appSources,browserFacts} from './device-sources.js?v=stage1-44';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-44';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-43';
+import {MirrorInputs} from './real-input.js?v=stage1-44';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
@@ -55,7 +55,7 @@ function guessTitle(){return hypothesisCopy(s);}
 function planStage(p){
  const cost=p.id==='health-budget',health=p.topic==='health';
  const previews={health:cost?`<div class="cost-visual" aria-label="Treatment cost: start, monthly, and exit"><div><i>01</i><b>Start</b><small>Visits & tests</small></div><div><i>02</i><b>Monthly</b><small>Treatment & care</small></div><div><i>03</i><b>Exit</b><small>Stopping & changes</small></div></div>`:`<div class="offer-week"><span>M</span><span>T</span><span>W</span><span class="lit">T</span><span>F</span><span>S</span><span>S</span></div><div class="offer-slot"><small>WEEKLY VIEW</small><strong>Treatment follows your prescription</strong></div>`,meaning:`<div class="offer-spread"><i></i><i></i><i></i></div><div class="offer-slot"><small>THREE LENSES</small><strong>Keep · Move · Try</strong></div>`,connection:`<div class="offer-people"><i>You</i><b></b><i>Friend</i></div><div class="offer-slot"><small>PRIVATE PREVIEW</small><strong>A message you have not sent</strong></div>`,research:`<div class="research-visual"><span>${(s.manualGoal||s.sourceGoal)?'YOUR GOAL':'QUESTION'}</span><strong>${esc(s.localFocus||s.localExcerpt||'A question from your work')}</strong><div><i>01</i><b>${(s.manualGoal||s.sourceGoal)?'Clarify':'Baseline'}</b><em>→</em><i>02</i><b>${(s.manualGoal||s.sourceGoal)?'Make a draft':'Comparison'}</b></div></div>`};
- const heading=cost?'See the full cost of treatment.':health?'Fit treatment into your life.':p.topic==='meaning'?'See yourself from another angle.':p.topic==='research'?((s.manualGoal||s.sourceGoal)?'Turn your goal into a plan.':'Map your next research question.'):'Start the conversation.';
+ const heading=s.deepChoice&&p.topic==='research'?(s.deepChoice==='space'?'Make space for what matters.':'Find a clear way forward.'):cost?'See the full cost of treatment.':health?'Fit treatment into your life.':p.topic==='meaning'?'See yourself from another angle.':p.topic==='research'?((s.manualGoal||s.sourceGoal)?'Turn your goal into a plan.':'Map your next research question.'):'Start the conversation.';
  const label=cost?'TREATMENT COST':health?'WEEKLY VIEW':p.topic==='meaning'?'A NEW ANGLE':p.topic==='research'?'RESEARCH':'CONNECTION';
  const note=(cost?'See consultation, treatment, follow-up and exit costs together.':health?'Medication timing appears only after you enter a prescription.':p.topic==='meaning'?'Explore your thinking through symbolic images.':p.topic==='research'?'Map a testable question from your research.':'Preview only. Nothing is sent.')+(['local','app'].includes(s.source)&&s.localTitle?` Source: ${s.localTitle}.`:'');
  return `<section class="plan-offer compact-plan"><div class="plan-step">YOUR DIRECTION</div><h1>${esc(heading)}</h1><div class="offer-object ${esc(p.topic)} ${cost?'cost-mode':''}"><span>${esc(label)}</span>${previews[p.topic]}</div><details class="offer-why"><summary>Why this</summary><p>${esc(s.localTitle||'Your response')} + your correction.</p></details><div class="plan-actions">${button('swipe-left','Try another','text-button')}${button('correct','Correct','text-button')}${button('open-delivery','Open my result '+icon('arrow'),'primary')}</div></section>`;
