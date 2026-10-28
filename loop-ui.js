@@ -1,15 +1,15 @@
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-49';
-import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-49';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-49';
-import {mirrorReading} from './need-discovery.js?v=stage1-49';
-import {mirrorStage} from './mirror-stage.js?v=stage1-49';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-49';
-import {visualResult} from './visual-result.js?v=stage1-49';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-49';
-import {appSources,browserFacts} from './device-sources.js?v=stage1-49';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-49';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-50';
+import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-50';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-50';
+import {mirrorReading} from './need-discovery.js?v=stage1-50';
+import {mirrorStage} from './mirror-stage.js?v=stage1-50';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-50';
+import {visualResult} from './visual-result.js?v=stage1-50';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-50';
+import {appSources,browserFacts} from './device-sources.js?v=stage1-50';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-50';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-49';
+import {MirrorInputs} from './real-input.js?v=stage1-50';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
@@ -99,7 +99,7 @@ if(kind==='verify-account'){label='Create account · demo';h=`<h2>Verify your sp
 if(kind==='checkout'){label='Checkout · demo';h=`<h2>Try Plus.</h2><div class="cost-line"><span>Monthly plan</span><strong>$12 / month</strong></div><p>Example price. Heavy tasks use separately confirmed QB.</p>${button('pay-demo','Confirm example payment','primary full')}${button('payment-fail','Test a declined payment','text-button full')}${button('membership','Cancel','text-button full')}<p class="fine">No payment information collected. No charge.</p>`;}
 if(kind==='payment-error'){label='Payment · demo';h=`<h2>Payment declined.</h2><p>Your plan has not changed.</p>${button('membership-plus','Try again','primary full')}${button('membership','Cancel','text-button full')}`;}
 if(kind==='receipt'){label='Receipt · demo';h=`<h2>Plus is ready.</h2><p>Example payment: $12.00</p><p>Next billing: none. This is a simulated purchase.</p>${button('membership','Manage membership','primary full')}${button('close-consent','Return to my mirror','text-button full')}`;}
-if(kind==='delivery'){label='Ready to continue';h=p?`<h2>Prepare your result.</h2><p>Based on your goal and response. You can review and edit it next.</p>${button('start-local','Continue','primary full')}<p class="fine">No charge · example usage only</p>`:'<p>Choose another direction.</p>';}
+if(kind==='delivery'){label='Ready to continue';h=p?`<h2>Prepare your result.</h2><p>Based on your selected sources and responses. Review and adjust it next.</p>${button('start-local','Continue','primary full')}<p class="fine">No charge · example usage only</p>`:'<p>Choose another direction.</p>';}
 if(kind==='history'){label='Your results';h=`<h2>What we found.</h2>${s.results.length?s.results.slice().reverse().map(r=>row('history-'+r.id,'doc',r.title,r.feedback==='useful'?'Useful':r.feedback==='not-useful'?'Did not fit':'Not rated yet')).join(''):'<p>Your completed results will appear here.</p>'}`;}
 if(kind==='membership'){label='Membership';h=`<h2>Your space, your pace.</h2><p>Current: ${s.membership==='plus'?'Plus':'Free'}</p><div class="evidence-item"><b>Free</b><p>Explore guesses, correct them and revisit your results.</p></div><div class="evidence-item"><b>Plus</b><p>Example subscription for ongoing exploration. Heavy tasks show a separate QB limit before you start.</p></div>${button(s.membership==='plus'?'membership-free':'membership-plus',s.membership==='plus'?'Switch to Free':'Try Plus preview','primary full')}<p class="fine">Plan preview · no payment or recurring charge</p>${button('ledger','View usage','text-button full')}`;}
 if(kind==='settings'){label='My';h=`<div class="profile-head"><div class="avatar">${icon('user')}</div><div><h2>${esc(s.profile?.name||'Your Loka Chat')}</h2><p>${esc(s.profile?.cohort||'Learning with you.')} · Local profile</p></div></div><div class="menu-group">${row('mirror-memory','eye','My mirror','Your confirmed preferences')}${row('sources','link','Connected sources',['invite','register','welcome'].includes(s.stage)?'None yet':s.source==='app'?s.appName:s.source==='local'?(s.manualGoal?'Your goal':`${s.localCount||0} local documents`):s.source==='sample'?'Fictional researcher sample':'No personal files')}${row('start-new-goal','tune','Explore again','Your previous results stay here')}${row('history','doc','Your results',`${s.results.length} saved in this browser`)}${row('inputs','eye','Body and voice input')}${row('preferences','tune','Preferences and budget')}</div><div class="menu-group">${row('culture','user','Explore together','One response at a time')}${row('ledger','wallet','Usage and billing')}${row('activity','clock','Decision history')}${row('about','shield','About')}${row('sign-out','user','Sign out','Your space stays on this browser')}</div>`;}
