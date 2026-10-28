@@ -126,7 +126,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
   const r=s.results.at(-1),day=String(data.day||''),time=String(data.time||''),name=String(data.name||'').trim().slice(0,60),oralName=String(data.oralName||'').trim().slice(0,60),oralTime=String(data.oralTime||''),oralCondition=String(data.oralCondition||'').trim().slice(0,80);
   if(r?.topic!=='health'||!['周一','周二','周三','周四','周五','周六','周日','Mon','Tue','Wed','Thu','Fri','Sat','Sun'].includes(day)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)||!name){s.notice='Enter a prescription name, day, and prescribed time.';return s;}
   if(oralTime&&!/^([01]\d|2[0-3]):[0-5]\d$/.test(oralTime)){s.notice='Check the oral medication time.';return s;}
-  r.schedule={name,day,time,oralName,oralTime,oralCondition};event(s,type,{effect:'仅保存本人录入的医嘱提醒时间；未验证处方或计算疗效'});return s;
+  r.schedule={name,day,time,oralName,oralTime,oralCondition};delete r.scheduleDraft;event(s,type,{effect:'仅保存本人录入的医嘱提醒时间；未验证处方或计算疗效'});return s;
  }
  if(s.stage==='result'&&['result-route','result-begin','result-step'].includes(type)){
   const r=s.results.at(-1);if(!r)return s;
