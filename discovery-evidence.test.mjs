@@ -3,6 +3,7 @@ import {learnFromFiles} from './local-reader.js';
 import {freshJourney,step} from './loop-engine.js';
 import {hypothesisCopy} from './hypothesis-copy.js';
 import {visualResult} from './visual-result.js';
+const legacySample={source:'sample',topic:'health',index:0,results:[],localGuess:'Your notes link treatment decisions with uninterrupted research time. Is protecting your focus the real priority?'};assert.match(hypothesisCopy(legacySample),/^The example notes/);console.log('PASS: older sample data is not described as the member’s own notes');
 const a=new File(['Research model training experiment. The deadline for the paper is Friday.'], 'notes.txt');
 const b=new File(['Research model experiment. I am comparing several baselines.'], 'other.txt');
 const time=await learnFromFiles([a]);const choice=await learnFromFiles([b]);
