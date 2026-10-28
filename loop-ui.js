@@ -1,4 +1,4 @@
-import {validatePillars,dailyPreview,dailyHealth,dailyConnection,previousDailyFeedback,localDay} from './daily-experience.js?v=stage1-123';
+import {validatePillars,dailyPreview,dailyHealth,dailyConnection,previousDailyFeedback,localDay} from './daily-experience.js?v=stage1-131';
 import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-91';
 import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-119';
 import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-91';
