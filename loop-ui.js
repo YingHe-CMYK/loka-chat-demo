@@ -1,17 +1,17 @@
-import {validatePillars,dailyPreview,dailyHealth,previousDailyFeedback} from './daily-experience.js?v=stage1-81';
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-81';
-import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-81';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-81';
-import {mirrorReading} from './need-discovery.js?v=stage1-81';
-import {mirrorStage} from './mirror-stage.js?v=stage1-81';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-81';
-import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-81';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-81';
-import {appSources,browserFacts} from './device-sources.js?v=stage1-81';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-81';
+import {validatePillars,dailyPreview,dailyHealth,previousDailyFeedback} from './daily-experience.js?v=stage1-82';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-82';
+import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-82';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-82';
+import {mirrorReading} from './need-discovery.js?v=stage1-82';
+import {mirrorStage} from './mirror-stage.js?v=stage1-82';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-82';
+import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-82';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-82';
+import {appSources,browserFacts} from './device-sources.js?v=stage1-82';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-82';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-81';
-import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-81';
+import {MirrorInputs} from './real-input.js?v=stage1-82';
+import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-82';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
 try{const saved=JSON.parse(localStorage.getItem(key));if(saved?.stage&&['demo','none','device','sample','local','app'].includes(saved.source))s=saved;}catch{}
@@ -60,7 +60,7 @@ function planStage(p){
  const heading=s.deepNeed==='life-space'&&p.topic==='research'?'Make room for life beyond work.':s.deepChoice&&p.topic==='research'?(s.deepChoice==='space'?'Make space for what matters.':'Find a clear way forward.'):cost?'See the full cost of treatment.':health?'Fit treatment into your life.':p.topic==='meaning'?'See yourself from another angle.':p.topic==='research'?((s.manualGoal||s.sourceGoal)?'Turn your goal into a plan.':'Map your next research question.'):'Start the conversation.';
  const label=cost?'TREATMENT COST':health?'WEEKLY VIEW':p.topic==='meaning'?'A NEW ANGLE':p.topic==='research'?'RESEARCH':'CONNECTION';
  const note=(cost?'See consultation, treatment, follow-up and exit costs together.':health?'Medication timing appears only after you enter a prescription.':p.topic==='meaning'?'Explore your thinking through symbolic images.':p.topic==='research'?'Map a testable question from your research.':'Preview only. Nothing is sent.')+(['local','app'].includes(s.source)&&s.localTitle?` Source: ${s.localTitle}.`:'');
- return `<section class="plan-offer compact-plan"><div class="plan-step">YOUR DIRECTION</div><h1>${esc(heading)}</h1><div class="offer-object plan-swipe ${esc(p.topic)} ${cost?'cost-mode':''}" tabindex="0" aria-label="Swipe left for another plan, or right to open this result"><span>${esc(label)}</span>${previews[p.topic]}</div><div class="swipe-hint plan-swipe-hint" aria-hidden="true"><span>← Another</span><span>Open →</span></div><details class="offer-why"><summary>Why this</summary><p>${esc(s.localTitle||'Your response')} + your correction.</p></details><div class="plan-actions">${button('swipe-left','Try another','text-button')}${button('correct','Correct','text-button')}${button('open-delivery','Open my result '+icon('arrow'),'primary')}</div></section>`;
+ return `<section class="plan-offer compact-plan"><div class="plan-step">YOUR DIRECTION</div><h1>${esc(heading)}</h1><div class="offer-object plan-swipe ${esc(p.topic)} ${cost?'cost-mode':''}" tabindex="0" aria-label="Swipe left for another plan, or right to open this result"><span>${esc(label)}</span>${previews[p.topic]}</div><div class="swipe-hint plan-swipe-hint" aria-hidden="true"><span>← Another</span><span>Open →</span></div><details class="offer-why"><summary>Why this</summary><p>${esc((s.evidence||[])[0]||'Your response')}</p><p>${esc(s.deepNeed==='life-space'?'You said making room for life outside work fits.':s.deepChoice==='clarity'?'You chose a clearer direction.':s.deepChoice==='space'?'You chose more room to act.':'Your response shaped this direction.')}</p></details><div class="plan-actions">${button('swipe-left','Try another','text-button')}${button('correct','Correct','text-button')}${button('open-delivery','Open my result '+icon('arrow'),'primary')}</div></section>`;
 }
 function deck(content,theme){return `<div class="deck"><div class="card-behind" aria-hidden="true"></div><article class="card ${theme}" tabindex="0" aria-label="Swipe left for another, right to continue. Arrow keys also work."><div class="swipe-stamp no" aria-hidden="true">Another</div><div class="swipe-stamp yes" aria-hidden="true">Continue</div>${content}</article></div><div class="gesture-guide"><span>← Another</span><i></i><span>Continue →</span></div><div class="swipe-controls">${button('swipe-left',icon('close')+'<span>Another</span>','swipe-labeled')}${button('correct',icon('tune')+'<span>Adjust</span>','swipe-labeled')}${button('swipe-right',icon('check')+'<span>Continue</span>','swipe-labeled positive')}</div>`;}
 function dailySnapshot(){const tab=s.dailyTab||'health',previous=previousDailyFeedback(s.dailyFeedback,today,tab,s.dailyOutcomes);if(tab==='health')return dailyHealth(today,previous).headline;if(tab==='meaning')return s.baziPillars?dailyPreview(today,s.baziPillars,previous).theme:'Four pillars not provided';return 'One conversation worth making room for';}
