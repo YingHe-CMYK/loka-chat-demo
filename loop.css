@@ -248,3 +248,6 @@ header{gap:10px}.prototype{color:#706b79;font-size:12px;letter-spacing:0}.header
 @media(prefers-reduced-motion:reduce){.daily-orb,.hexagram i{animation:none}}
 
 .review-daily{background:radial-gradient(ellipse at 80% 5%,#a493a8,#62576d 45%,#302b3b);display:flex;flex-direction:column;justify-content:center;min-height:280px}.review-daily h2{max-width:15ch}.review-daily p{font-size:16px}
+.lens-spark{animation:lens-spark 8s ease-in-out infinite}
+@keyframes lens-spark{0%,100%{opacity:.65;transform:rotate(-32deg) translateX(0)}50%{opacity:1;transform:rotate(-32deg) translateX(5px)}}
+@media(prefers-reduced-motion:reduce){.lens-spark{animation:none}}
