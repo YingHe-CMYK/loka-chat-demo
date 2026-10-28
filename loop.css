@@ -186,3 +186,5 @@ header{gap:10px}.prototype{color:#706b79;font-size:12px;letter-spacing:0}.header
 
 /* Keep navigation in a stable place; destructive reset lives in My. */
 #journey{display:none}
+
+.more-settings{margin-top:12px;border-top:1px solid var(--line)}.more-settings summary{min-height:48px;display:flex;align-items:center;cursor:pointer;color:var(--muted);font-size:14px}.more-settings summary:after{content:"＋";margin-left:auto}.more-settings[open] summary:after{content:"−"}.more-settings .menu-group{margin-top:0}
