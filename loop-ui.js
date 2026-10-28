@@ -1,4 +1,4 @@
-import {validatePillars,dailyPreview,dailyHealth,previousDailyFeedback} from './daily-experience.js?v=stage1-91';
+import {validatePillars,dailyPreview,dailyHealth,previousDailyFeedback,localDay} from './daily-experience.js?v=stage1-96';
 import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-91';
 import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-91';
 import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-91';
@@ -15,9 +15,10 @@ import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-9
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
 try{const saved=JSON.parse(localStorage.getItem(key));if(saved?.stage&&['demo','none','device','sample','local','app'].includes(saved.source))s=saved;}catch{}
-const today=new Date().toLocaleDateString('en-CA');
+let today=localDay();
 if(s.profile&&!s.signedOut&&['result','guess','plan','daily'].includes(s.stage)&&s.lastVisit&&s.lastVisit!==today){s=step(s,'open-daily',{day:today});}
 if(s.profile){s.lastVisit=today;try{localStorage.setItem(key,JSON.stringify(s));}catch{}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const nextDay=localDay();if(nextDay===today||$('#drawer').open||document.activeElement?.matches('input,textarea,select'))return;today=nextDay;if(!s.profile||s.signedOut)return;if(['result','guess','plan','daily'].includes(s.stage)){s=step(s,'open-daily',{day:today});s.lastVisit=today;try{localStorage.setItem(key,JSON.stringify(s));}catch{}render();}});
 function bodyBanner(){const active=sensor.camera==='on'||sensor.speech==='listening',compact=s.stage==='result';return `<button class="body-entry ${compact?'compact':''} ${active?'active':''}" data-action="inputs">${icon(active?'eye':'mic')}<span><b>${compact?'Nod or shake to respond':active?'Body input on':'Turn on body input'}</b>${compact?'':`<small>${active?bodyGuide(s.stage):'Nod, shake or speak'}</small>`}</span><i>${active?'Settings':'Turn on'}</i></button><p class="body-live" id="body-live" role="status">${esc(active?(sensor.tracking||sensor.message||''):sensor.camera==='error'||sensor.speech==='error'?sensor.message||'':'' )}</p>`;}
 function updateBody(){const el=$('#body-controls');if(el)el.innerHTML=bodyBanner();const frame=$('#live-mirror');if(!frame)return;
  frame.dataset.camera=sensor.camera||'off';const active=sensor.camera==='on',loading=sensor.camera==='loading';
