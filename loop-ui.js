@@ -1,17 +1,17 @@
-import {validatePillars,dailyPreview,dailyHealth,previousDailyFeedback} from './daily-experience.js?v=stage1-80';
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-80';
-import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-80';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-80';
-import {mirrorReading} from './need-discovery.js?v=stage1-80';
-import {mirrorStage} from './mirror-stage.js?v=stage1-80';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-80';
-import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-80';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-80';
-import {appSources,browserFacts} from './device-sources.js?v=stage1-80';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-80';
+import {validatePillars,dailyPreview,dailyHealth,previousDailyFeedback} from './daily-experience.js?v=stage1-81';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-81';
+import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-81';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-81';
+import {mirrorReading} from './need-discovery.js?v=stage1-81';
+import {mirrorStage} from './mirror-stage.js?v=stage1-81';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-81';
+import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-81';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-81';
+import {appSources,browserFacts} from './device-sources.js?v=stage1-81';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-81';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-80';
-import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-80';
+import {MirrorInputs} from './real-input.js?v=stage1-81';
+import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-81';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
 try{const saved=JSON.parse(localStorage.getItem(key));if(saved?.stage&&['demo','none','device','sample','local','app'].includes(saved.source))s=saved;}catch{}
@@ -97,7 +97,7 @@ const dailyCard=$('.daily-swipe');if(dailyCard)mountSwipe(dailyCard,d=>act('dail
 const card=$('.card');if(card)swipe=mountSwipe(card,d=>{if(d==='left')act('left');else if(s.stage==='guess')act('right');else act('council-start',{confirmed:true,mode:'local'});});
 }
 function show(kind){if($('#drawer').open&&popup&&popup!==kind)sheetHistory.push(popup);popup=kind;const p=current(s);let h='',label='';$('#drawer').dataset.kind=kind;
-if(kind==='authorize'){label='Connect sources';h=`<div class="permission-icon">${icon('doc')}</div><h2>Choose what I can read.</h2><p class="secondary">Select a local folder with notes, research, calendar exports, or other text files. I will read only the folder you choose, here in your browser.</p><div class="connection-row">${icon('shield')}<span>Your selected folder<small>Text, Markdown, CSV, JSON and calendar exports</small></span><span class="badge">Local</span></div><input id="local-files" type="file" webkitdirectory multiple hidden accept=".txt,.md,.markdown,.csv,.json,.ics,.html,.htm"><input id="local-picked-files" type="file" multiple hidden accept=".txt,.md,.markdown,.csv,.json,.ics,.html,.htm">${button('choose-local','Choose a folder','primary full')}${button('choose-files','Choose individual files','text-button full')}<p class="fine">No files are uploaded. You can remove the learned clues in My → Sources.</p>`;}
+if(kind==='authorize'){label='Connect sources';h=`<div class="permission-icon">${icon('doc')}</div><h2>Choose what I can read.</h2><p class="secondary">Select a local folder with notes, research, calendar exports, or other text files. I will read only the folder you choose, here in your browser.</p><div class="connection-row">${icon('shield')}<span>Your selected folder<small>Text, Markdown, CSV, JSON and calendar exports</small></span><span class="badge">Local</span></div><input id="local-files" type="file" webkitdirectory multiple hidden accept=".txt,.md,.markdown,.csv,.json,.jsonl,.ics,.html,.htm,.log,.yaml,.yml,.py,.js,.ts,.ipynb,.pdf,.docx"><input id="local-picked-files" type="file" multiple hidden accept=".txt,.md,.markdown,.csv,.json,.jsonl,.ics,.html,.htm,.log,.yaml,.yml,.py,.js,.ts,.ipynb,.pdf,.docx">${button('choose-local','Choose a folder','primary full')}${button('choose-files','Choose individual files','text-button full')}<p class="fine">No files are uploaded. You can remove the learned clues in My → Sources.</p>`;}
 if(kind==='bazi-input'){label='Four pillars';h=`<h2>Enter your four pillars.</h2><p>Year, month, day and hour, as already calculated.</p><label for="bazi-pillars">Four pillars</label><input id="bazi-pillars" class="register-input" placeholder="甲子 乙丑 丙寅 丁卯" value="${esc((s.baziPillars||[]).join(' '))}">${button('save-bazi','Save and continue','primary full')}${s.baziPillars?button('remove-bazi','Remove four pillars','text-button full'):''}<p class="fine">We do not calculate a chart from birth details in this preview. Your input stays in this browser.</p>`;}
 if(kind==='nickname-agreement'){label='Community agreement';h=`<h2>A space to understand, not decide for you.</h2><p>You can review, correct or remove what the mirror remembers. Your information is used only for sources you choose.</p><p class="fine">Agreement v1 · saved in this browser</p>${button('accept-nickname','Agree and continue','primary full')}${button('close-consent','Not now','text-button full')}`;}
 if(kind==='community-agreement'){label='Community agreement';h=`<h2>A space to understand, not decide for you.</h2><p>Keep your choices yours. You can review, correct or remove what the mirror remembers.</p><p>Use your information only for the sources you choose. Costs and actions require your confirmation.</p><p class="fine">Agreement v1 · saved in this browser · simulated account</p>${button('accept-community','Agree and continue','primary full')}${button('close-consent','Not now','text-button full')}`;}
