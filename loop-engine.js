@@ -132,7 +132,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
   if(type==='result-route'){
    if(!(resultRoutes[r.topic]||resultRoutes.health).some(x=>x.key===data.route))return s;
    if(chosenRoute(r).key===data.route)return s;
-   r.visualRoute=data.route;r.visualStarted=null;r.visualDone=0;
+   r.visualProgress=r.visualProgress||{};if(r.visualStarted)r.visualProgress[r.visualStarted]=r.visualDone||0;r.visualRoute=data.route;r.visualDone=r.visualProgress[data.route]||0;r.visualStarted=r.visualDone?data.route:null;
   }else if(type==='result-begin'){r.visualStarted=chosenRoute(r).key;r.visualDone=1;}
   else if(r.visualStarted===chosenRoute(r).key)r.visualDone=Math.min(3,(r.visualDone||0)+1);
   event(s,type,{effect:'本人选择或标记行动路径；未执行外部任务'});return s;
