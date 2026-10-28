@@ -11,6 +11,17 @@ export const sampleEvidence={
  meaning:['Fictional note: “Should I leave my research direction?”','Fictional saved item about tarot and choice.'],
  connection:['Fictional note: “I want to reconnect with an old friend.”','Fictional calendar: an unscheduled meeting idea.']
 };
+// Three complete, fictional starting points; no visitor data is used to select them.
+export const sampleProfiles={
+ focus:{topic:'health',guess:'The example notes connect a treatment decision with protected research time. Is preserving focus the priority?',facts:[{label:'Research notes',value:'Treatment and supplement questions'},{label:'Calendar',value:'Three uninterrupted research blocks'}],evidence:sampleEvidence.health},
+ direction:{topic:'meaning',guess:'The example notes return to a possible change in research direction. Is the harder part deciding what to leave behind?',facts:[{label:'Research notes',value:'Questions about a change of direction'},{label:'Saved reflection',value:'Exploring a new path'}],evidence:sampleEvidence.meaning},
+ connection:{topic:'connection',guess:'The example notes mention an old friend and an unfinished conversation. Is finding an easy way to reconnect what matters?',facts:[{label:'Personal note',value:'An unfinished conversation'},{label:'Calendar',value:'A meeting idea without a date'}],evidence:sampleEvidence.connection}
+};
+export const sampleAppSignals={
+ focus:{oura:'The example shows shorter sleep on three nights.',calendar:'The example shows three long research blocks.',health:'The example shows lower activity on two days.'},
+ direction:{oura:'The example shows variable sleep across the week.',calendar:'The example shows an open afternoon between meetings.',health:'The example shows a regular walking routine.'},
+ connection:{oura:'The example shows a steadier sleep schedule this week.',calendar:'The example shows one unscheduled evening.',health:'The example shows a change in activity over the weekend.'}
+};
 export function browserFacts({language,timeZone,localEvents=[]}={}){
  const names={'accept-invite':'Accepted invitation',register:'Created local profile',feedback:'Rated a result',signal:'Body response'};
  const actions=localEvents.map(e=>names[e.type]).filter(Boolean).slice(-3);
