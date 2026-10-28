@@ -9,3 +9,5 @@ s.results=[{id:'reflection',topic:'meaning',planId:'meaning-reflect'}];s=step(s,
 s=step(s,'save-reflection',{notes:['Keep my independence','Learn something new','']});assert.match(visualResult(s.results[0]),/Keep my independence/);
 s.results=[{id:'connection',topic:'connection',planId:'connection-private',visualStarted:'gentle',visualDone:1}];s=step(s,'save-connection-draft',{text:'A unique private draft'});assert.match(visualResult(s.results[0]),/A unique private draft/);
 console.log('PASS: cost view, first reveal, reflection and private draft');
+
+const emptyDraft=visualResult({topic:"connection",planId:"connection-private",connectionDraft:"",visualStarted:"gentle",visualDone:1});assert.match(emptyDraft,/<textarea id="connection-draft" maxlength="500"><\/textarea>/);assert.doesNotMatch(emptyDraft,/I thought of you and would like to catch up sometime/);
