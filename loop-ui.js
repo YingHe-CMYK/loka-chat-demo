@@ -21,7 +21,7 @@ function bodyBanner(){const active=sensor.camera==='on'||sensor.speech==='listen
 function updateBody(){const el=$('#body-controls');if(el)el.innerHTML=bodyBanner();const frame=$('#live-mirror');if(!frame)return;
  frame.dataset.camera=sensor.camera||'off';const active=sensor.camera==='on',loading=sensor.camera==='loading';
  $('#presence-state').textContent=active?'Camera on':loading?'Connecting camera':sensor.camera==='error'?'Camera unavailable':'Camera off';
- $('#presence-tracking').textContent=active?(sensor.tracking||'Look at the camera for two seconds.'):loading?(sensor.message||'Allow camera access in the system prompt.'):sensor.camera==='error'?(sensor.message||'Try again or swipe.'):'Look at the camera for two seconds.';
+ $('#presence-tracking').textContent=active?(sensor.tracking||'Look at the camera for two seconds.'):loading?(sensor.message||'Allow camera and microphone access.'):sensor.camera==='error'?(sensor.message||'Try again or swipe.'):'Look at the camera for two seconds.';
  const start=$('#camera-start button');if(start){start.disabled=loading;start.innerHTML=icon('eye')+(loading?'Opening…':sensor.camera==='error'?'Try camera again':'Enable camera & voice');}
 }
 function mountMirror(){const slot=$('#camera-mount');if(slot){if(input.video.parentElement!==slot)slot.append(input.video);input.showPreview(sensor.camera==='on');if(sensor.camera==='on'&&input.video.paused)input.video.play().catch(()=>toast('Video paused. Restart the camera.'));}else if(!document.body.contains(input.video))document.body.append(input.video);updateBody();}
