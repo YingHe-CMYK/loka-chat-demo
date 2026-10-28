@@ -1,16 +1,16 @@
-import {validatePillars,dailyPreview,dailyHealth} from './daily-experience.js?v=stage1-61';
-import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-61';
-import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-61';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-61';
-import {mirrorReading} from './need-discovery.js?v=stage1-61';
-import {mirrorStage} from './mirror-stage.js?v=stage1-61';
-import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-61';
-import {visualResult} from './visual-result.js?v=stage1-61';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-61';
-import {appSources,browserFacts} from './device-sources.js?v=stage1-61';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-61';
+import {validatePillars,dailyPreview,dailyHealth} from './daily-experience.js?v=stage1-62';
+import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-62';
+import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-62';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-62';
+import {mirrorReading} from './need-discovery.js?v=stage1-62';
+import {mirrorStage} from './mirror-stage.js?v=stage1-62';
+import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-62';
+import {visualResult} from './visual-result.js?v=stage1-62';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-62';
+import {appSources,browserFacts} from './device-sources.js?v=stage1-62';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-62';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-61';
+import {MirrorInputs} from './real-input.js?v=stage1-62';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
@@ -94,7 +94,7 @@ const card=$('.card');if(card)swipe=mountSwipe(card,d=>{if(d==='left')act('left'
 }
 function show(kind){if($('#drawer').open&&popup&&popup!==kind)sheetHistory.push(popup);popup=kind;const p=current(s);let h='',label='';$('#drawer').dataset.kind=kind;
 if(kind==='authorize'){label='Connect sources';h=`<div class="permission-icon">${icon('doc')}</div><h2>Choose what I can read.</h2><p class="secondary">Select a local folder with notes, research, calendar exports, or other text files. I will read only the folder you choose, here in your browser.</p><div class="connection-row">${icon('shield')}<span>Your selected folder<small>Text, Markdown, CSV, JSON and calendar exports</small></span><span class="badge">Local</span></div><input id="local-files" type="file" webkitdirectory multiple hidden accept=".txt,.md,.markdown,.csv,.json,.ics,.html,.htm"><input id="local-picked-files" type="file" multiple hidden accept=".txt,.md,.markdown,.csv,.json,.ics,.html,.htm">${button('choose-local','Choose a folder','primary full')}${button('choose-files','Choose individual files','text-button full')}<p class="fine">No files are uploaded. You can remove the learned clues in My → Sources.</p>`;}
-if(kind==='bazi-input'){label='Four pillars';h=`<h2>Enter your four pillars.</h2><p>Year, month, day and hour, as already calculated.</p><label for="bazi-pillars">Four pillars</label><input id="bazi-pillars" class="register-input" placeholder="甲子 乙丑 丙寅 丁卯" value="${esc((s.baziPillars||[]).join(' '))}">${button('save-bazi','Save and continue','primary full')}<p class="fine">We do not calculate a chart from birth details in this preview. Your input stays in this browser.</p>`;}
+if(kind==='bazi-input'){label='Four pillars';h=`<h2>Enter your four pillars.</h2><p>Year, month, day and hour, as already calculated.</p><label for="bazi-pillars">Four pillars</label><input id="bazi-pillars" class="register-input" placeholder="甲子 乙丑 丙寅 丁卯" value="${esc((s.baziPillars||[]).join(' '))}">${button('save-bazi','Save and continue','primary full')}${s.baziPillars?button('remove-bazi','Remove four pillars','text-button full'):''}<p class="fine">We do not calculate a chart from birth details in this preview. Your input stays in this browser.</p>`;}
 if(kind==='nickname-agreement'){label='Community agreement';h=`<h2>A space to understand, not decide for you.</h2><p>You can review, correct or remove what the mirror remembers. Your information is used only for sources you choose.</p><p class="fine">Agreement v1 · saved in this browser</p>${button('accept-nickname','Agree and continue','primary full')}${button('close-consent','Not now','text-button full')}`;}
 if(kind==='community-agreement'){label='Community agreement';h=`<h2>A space to understand, not decide for you.</h2><p>Keep your choices yours. You can review, correct or remove what the mirror remembers.</p><p>Use your information only for the sources you choose. Costs and actions require your confirmation.</p><p class="fine">Agreement v1 · saved in this browser · simulated account</p>${button('accept-community','Agree and continue','primary full')}${button('close-consent','Not now','text-button full')}`;}
 if(kind==='github-open'){label='GitHub · authorization preview';h=`<div class="permission-icon">${icon('user')}</div><h2>Authorize Loka Chat</h2><p>Use your GitHub identity to create or open your space.</p><div class="source-panel"><b>GitHub account</b><small>Basic profile · read only</small></div>${button('github-preview','Authorize and continue','primary full')}${button('close-consent','Cancel','text-button full')}<p class="fine">Simulated authorization. No GitHub account is connected.</p>`;}
@@ -139,6 +139,7 @@ if(['checkout','payment-error','receipt','history','membership','settings','sour
 if(a==='open-daily'){if($('#drawer').open)close();return act('open-daily',{day:today});}
 if(a==='daily-tab')return act('daily-tab',{tab:e.target.closest('[data-tab]')?.dataset.tab});
 if(a==='bazi-input')return show('bazi-input');
+if(a==='remove-bazi'){close();return act('remove-bazi');}
 if(a==='save-bazi'){const pillars=validatePillars($('#bazi-pillars')?.value);if(!pillars)return toast('Enter four valid stem–branch pillars, separated by spaces.');close();return act('save-bazi',{pillars});}
 if(a==='daily-feedback')return act('daily-swipe',{value:e.target.closest('[data-value]')?.dataset.value,day:today});
 if(a==='daily-continue'){if(s.source==='none'){return act('navigate-back');}return act('daily-continue');}
