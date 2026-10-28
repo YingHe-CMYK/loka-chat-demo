@@ -139,9 +139,9 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
   event(s,type,{effect:'本人选择或标记行动路径；未执行外部任务'});return s;
  }
  if(type==='feedback'&&s.stage==='result'){
-  const p=s.results.at(-1);if(!p||p.feedback)return s;
-  p.feedback=data.useful?'useful':'not-useful';for(const k of p.tags)s.weights[k]+=data.useful?2:-2;
-  s.affinity[p.topic]=(s.affinity[p.topic]||0)+(data.useful?1:-1);
+  const p=s.results.at(-1);if(!p)return s;const next=data.useful?'useful':'not-useful';if(p.feedback===next)return s;const old=p.feedback==='useful'?1:p.feedback==='not-useful'?-1:0,delta=(data.useful?1:-1)-old;
+  p.feedback=next;for(const k of p.tags)s.weights[k]+=2*delta;
+  s.affinity[p.topic]=(s.affinity[p.topic]||0)+delta;
   event(s,type,{useful:data.useful,effect:'将实际交付反馈用于后续方案排序'});s.undo=null;return s;
  }
  if(type==='next'&&s.stage==='result'){if(s.source==='none'){s.stage='welcome';s.index=0;event(s,type,{effect:'A new source is needed to continue'});return s;}const n=['local','app'].includes(s.source)?{topic:s.topic,depth:s.results.at(-1)?.feedback!=='not-useful',reason:s.results.at(-1)?.feedback==='not-useful'?'Try another question from the same source after unhelpful feedback':'Continue from the member-provided source without inventing another interest'}:nextNeed(s);s.topic=n.topic;s.needDepth=n.depth?(s.needDepth||0)+1:0;s.evidence=['demo','sample'].includes(s.source)?sampleEvidence[s.topic]||topics[s.topic].evidence:(s.evidence||[]);s.stage='guess';s.discoveryDepth=0;s.deepChoice=null;s.deepNeed=null;s.dismissed=[];s.index++;s.followUpIndex=n.depth?s.index:null;event(s,type,{effect:n.reason});return s;}
