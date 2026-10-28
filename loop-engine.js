@@ -20,6 +20,9 @@ export function rank(s){return plans.filter(p=>p.topic===s.topic&&!s.dismissed.i
 export function current(s){return rank(s)[0]||null;}
 function event(s,type,data){s.events.push({id:++s.seq,type,...data,time:Date.now()});s.events=s.events.slice(-100);}
 export function step(input,type,data={}){let s=clone(input);s.notice='';
+ if(type==='navigate-back') {const previous={register:'invite',welcome:'register','source-result':'welcome',guess:'source-result',plan:'guess',result:'plan'}[s.stage];if(previous){s.stage=previous;event(s,type,{effect:'Returned to previous screen; earlier responses retained'});}return s;}
+ if(type==='sign-out'){s.signedOut=true;return s;}
+ if(type==='sign-in'){s.signedOut=false;if(!s.profile){s.profile={name:String(data.name||'Guest').slice(0,24),cohort:'ML researcher',localDemo:true};s.invitation={code:'LOKA-ML-01',cohort:'ML researcher',accepted:true};s.stage='welcome';}return s;}
  if(type==='sample-read'&&s.stage==='welcome'){s.source='sample';s.stage='source-result';s.localRole='ML researcher';s.localGuess='Your notes link treatment decisions with uninterrupted research time. Is protecting your focus the real priority?';s.evidence=sampleEvidence.health;s.deviceFacts=[{label:'Research notes',value:'Treatment questions and supplements'},{label:'Calendar',value:'Three extended research blocks'}];return s;}
  if(type==='membership'){s.membership=data.plan==='plus'?'plus':'free';event(s,type,{effect:'Example subscription selection; no payment'});return s;}
  if(type==='recover-plans'&&s.stage==='plan'){s.dismissed=[];s.stage='guess';s.index++;return s;}
@@ -78,6 +81,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
   event(s,type,{signal:data.signal,effect:'记录对当前内容的反应线索，不判断情绪或替本人确认'});return s;
  }
  if(type==='correct'){if(!(data.key in s.weights))return s;s.weights[data.key]+=4;if(s.topic==='general'){s.stage='source-result';s.interactionPreference=`明确偏好：${data.key}`;event(s,type,{key:data.key,effect:'记录交互偏好；没有据此推断个人健康或关系'});return s;}if(data.key==='budget')s.cap=0;s.stage='plan';s.dismissed=[];event(s,type,{key:data.key,effect:'重排方案，优先考虑你的明确纠正'});return s;}
+ if(['left','right','correct'].includes(type))s.dailyGreeting=false;
  if(type==='left'){
   if(s.stage==='guess'&&s.topic==='general'){s.stage='source-result';event(s,type,{effect:'收下否定反馈；现有设备线索不足以换成私人需求判断'});}
   else if(s.stage==='guess'){s.affinity[s.topic]-=1;s.topic=nextLens(s);s.index++;s.evidence=['demo','sample'].includes(s.source)?sampleEvidence[s.topic]||topics[s.topic].evidence:[];event(s,type,{effect:'撤下当前猜测，按探索记录换一个方向；不解释为永久厌恶'});}
