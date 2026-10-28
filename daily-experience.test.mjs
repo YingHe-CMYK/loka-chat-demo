@@ -42,3 +42,6 @@ console.log('PASS: retrospective correction immediately changes today and undo r
 
 let carry=freshJourney();carry.stage='welcome';carry=step(carry,'sample-read',{profileId:'connection'});carry=step(carry,'open-daily',{day:'2026-10-28'});carry=step(carry,'daily-swipe',{day:'2026-10-28',value:'yes',snapshot:'A conversation'});carry.dailyDraft='Want to talk after your seminar?';carry=step(carry,'daily-continue');carry=step(carry,'right');carry=step(carry,'right');carry=step(carry,'council-start',{confirmed:true,mode:'local'});for(let i=0;i<20&&carry.stage==='review';i++)carry=step(carry,'council-next');assert.equal(carry.stage,'result');assert.equal(carry.results.at(-1).connectionDraft,'Want to talk after your seminar?');
 console.log('PASS: a private daily draft carries into its related result');
+
+let dated=freshJourney();dated.stage='guess';dated.topic='connection';dated=step(dated,'open-daily',{day:'2026-10-28'});dated=step(dated,'daily-swipe',{day:'2026-10-28',value:'yes',snapshot:'conversation'});dated.dailyDraft='Draft from yesterday';dated=step(dated,'open-daily',{day:'2026-10-29'});assert.equal(dated.dailyDraft,undefined);assert.equal(dated.dailyDrafts['2026-10-28'],'Draft from yesterday');dated=step(dated,'open-daily',{day:'2026-10-28'});assert.equal(dated.dailyDraft,'Draft from yesterday');
+console.log('PASS: daily drafts stay with their own day');
