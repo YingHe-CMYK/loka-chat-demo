@@ -87,8 +87,8 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
  if(type==='council-return'&&s.stage==='review'&&s.run?.status!=='running'){s.stage='plan';return s;}
  if(type==='connect'&&['welcome','source-result'].includes(s.stage)){
   const source=data.source||'demo';s.stage='guess';s.discoveryDepth=0;s.deepChoice=null;s.deepNeed=null;s.source=source;
-  s.topic=['local','app'].includes(source)?s.localTopic:source==='device'?'general':source==='sample'?'health':data.topic||initialLens(topics);
-  s.evidence=['local','app'].includes(source)?s.evidence:source==='device'?deviceEvidence(s.deviceFacts||[]):source==='sample'?sampleEvidence[s.topic]:data.evidence||topics[s.topic].evidence;
+  s.topic=['local','app'].includes(source)?s.localTopic:source==='device'?'general':source==='sample'?(topics[s.topic]?s.topic:sampleProfiles[s.sampleProfileId]?.topic||'health'):data.topic||initialLens(topics);
+  s.evidence=['local','app','sample'].includes(source)?s.evidence:source==='device'?deviceEvidence(s.deviceFacts||[]):data.evidence||topics[s.topic].evidence;
   event(s,type,{effect:source==='device'?'只基于当前浏览器与 Miro 内的真实动作提出交互偏好猜测；没有私人需求证据':source==='sample'?'使用明确标注为虚构的 ML 研究员样本，不能当作本人资料':`示例线索优先指向${topics[s.topic].label}`});return s;
  }
  if(type==='budget'){s.cap=Math.max(0,Math.min(12,Number(data.cap)||0));event(s,type,{effect:`方案费用上限变为 ${s.cap} QB`});return s;}

@@ -75,3 +75,5 @@ console.log('PASS: personal and example daily feedback remain separate');
 console.log('PASS: three stable fictional profiles lead to distinct guesses and matching results');
 
 const {rank}=await import("./loop-engine.js");let ranked=freshJourney();ranked.stage="welcome";ranked=step(ranked,"sample-read",{profileId:"focus"});const first=rank(ranked)[0].id;ranked.results.push({planId:first,sourceKind:"sample",sampleProfileId:"direction"});assert.equal(rank(ranked)[0].id,first,"another sample must not penalize this profile");ranked.results.push({planId:first,sourceKind:"sample",sampleProfileId:"focus"});assert.notEqual(rank(ranked)[0].id,first,"the current sample should avoid its own repeated plan");
+
+let back=freshJourney();back.stage="welcome";back=step(back,"sample-read",{profileId:"direction"});const originalEvidence=back.evidence.slice();back=step(back,"navigate-back");back=step(back,"connect",{source:"sample"});assert.equal(back.topic,"meaning");assert.deepEqual(back.evidence,originalEvidence);back=step(back,"correct",{key:"budget"});assert.equal(rank(back)[0].topic,"meaning");
