@@ -20,6 +20,9 @@ export function rank(s){return plans.filter(p=>p.topic===s.topic&&!s.dismissed.i
 export function current(s){return rank(s)[0]||null;}
 function event(s,type,data){s.events.push({id:++s.seq,type,...data,time:Date.now()});s.events=s.events.slice(-100);}
 export function step(input,type,data={}){let s=clone(input);s.notice='';
+ if(type==='sample-read'&&s.stage==='welcome'){s.source='sample';s.stage='source-result';s.localRole='ML researcher';s.localGuess='Your notes link treatment decisions with uninterrupted research time. Is protecting your focus the real priority?';s.evidence=sampleEvidence.health;s.deviceFacts=[{label:'Research notes',value:'Treatment questions and supplements'},{label:'Calendar',value:'Three extended research blocks'}];return s;}
+ if(type==='membership'){s.membership=data.plan==='plus'?'plus':'free';event(s,type,{effect:'Example subscription selection; no payment'});return s;}
+ if(type==='recover-plans'&&s.stage==='plan'){s.dismissed=[];s.stage='guess';s.index++;return s;}
  if(type==='reset')return freshJourney();
  if(type==='accept-invite'&&s.stage==='invite'){s.invitation={...s.invitation,accepted:true};s.stage='register';event(s,type,{effect:'接受演示邀请；尚未创建账号或分享资料'});return s;}
  if(type==='register'&&s.stage==='register'&&s.invitation?.accepted){const name=String(data.name||'').trim().slice(0,24);if(!name){s.notice='Enter a name for this experience.';return s;}s.profile={name,cohort:s.invitation.cohort,localDemo:true};s.stage='welcome';event(s,type,{effect:'创建仅存于本机浏览器的演示身份；未注册真实账号'});return s;}
@@ -62,7 +65,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
   event(s,type,{effect:source==='device'?'只基于当前浏览器与 Miro 内的真实动作提出交互偏好猜测；没有私人需求证据':source==='sample'?'使用明确标注为虚构的 ML 研究员样本，不能当作本人资料':`示例线索优先指向${topics[s.topic].label}`});return s;
  }
  if(type==='budget'){s.cap=Math.max(0,Math.min(12,Number(data.cap)||0));event(s,type,{effect:`方案费用上限变为 ${s.cap} QB`});return s;}
- if(type==='revoke'){const balance=s.balance,ledger=s.ledger||[];s=fresh();s.balance=balance;s.ledger=ledger;s.notice='Sources and local learning removed. Example balance kept.';return s;}
+ if(type==='revoke'){const balance=s.balance,ledger=s.ledger||[];s={...fresh(),source:'none',profile:s.profile,invitation:s.invitation};s.balance=balance;s.ledger=ledger;s.notice='Sources and local learning removed. Example balance kept.';return s;}
  if(['correct','left','right','feedback','next'].includes(type))s.undo={stage:s.stage,topic:s.topic,index:s.index,cap:s.cap,weights:clone(s.weights),affinity:clone(s.affinity),visits:clone(s.visits||{}),dismissed:[...s.dismissed],evidence:[...s.evidence]};
  if(type==='signal'){
   if(!['gaze','smile','frown'].includes(data.signal)||!['guess','plan'].includes(s.stage))return s;
