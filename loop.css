@@ -162,3 +162,7 @@
 @keyframes lokaEntryBack{from{transform:rotate(32deg) scaleX(.76)}to{transform:rotate(-328deg) scaleX(.76)}}
 @keyframes lokaEntryGlow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.1)}}
 @media(prefers-reduced-motion:reduce){.invite-entry .halo-front,.invite-entry .halo-back,.invite-entry .pearl,.device-orb i{animation:none!important}}
+
+.memory-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:14px 0}.memory-row b,.memory-row small{display:block;overflow-wrap:anywhere}.memory-row b{font-size:14px;font-weight:550}.memory-row small{font-size:12px;color:var(--muted);margin-top:3px}.memory-row .text-button{flex:none}.work-step input:focus-visible,#plan-expectation:focus-visible{outline:2px solid #9275ba;outline-offset:2px}
+
+.saved-steps{list-style:none;padding:4px 0;margin:12px 0;border-top:1px solid var(--line)}.saved-steps li{display:grid;grid-template-columns:88px 1fr;gap:3px 10px;padding:11px 0;border-bottom:1px solid var(--line)}.saved-steps span{font-size:12px;color:var(--muted)}.saved-steps b{font-size:14px}.saved-steps small{grid-column:2;margin:0;font-size:12px}
