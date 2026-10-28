@@ -8,7 +8,7 @@ import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage
 import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-100';
 import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-103';
 import {appSources,browserFacts} from './device-sources.js?v=stage1-91';
-import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-91';
+import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-106';
 import {quote} from './council-sim.js';
 import {MirrorInputs} from './real-input.js?v=stage1-91';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-93';
