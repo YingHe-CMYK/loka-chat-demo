@@ -1,0 +1,9 @@
+export const discoveryProbes=[
+ {id:0,eyebrow:'FIRST VERSION',title:'那个搁置了三年的想法，终于有了第一版。',detail:'还不成熟，也没有多少人看到。但这一次，它不只存在于脑子里。',question:'想继续看看这类经历吗？'},
+ {id:1,eyebrow:'NO AUDIENCE',title:'暂时没有观众，他还是把它做完了。',detail:'拿掉赞许和关注，只剩下一个人，以及他反复想完成的东西。',question:'拿掉别人的认可，你还想继续看吗？'},
+ {id:2,eyebrow:'SEEN AT LAST',title:'不再继续修改，他把未完成的版本拿了出来。',detail:'这一次，更重要的可能不是作品多完善，而是终于让别人看见自己的表达。',question:'这个变化更让你想继续吗？'}
+];
+export const newDiscovery=()=>({stage:'probe',probeId:0,expanded:false,brief:false,revision:0,events:[],busy:false,error:'',hypothesis:'',confirmed:false,correction:'',draft:'',saved:[],lastAction:null});
+export function discoveryEvent(state,signal,source,time){const revision=state.revision+1;const event={id:'evt-'+revision,signal,source,stage:state.stage,contentId:'probe-'+state.probeId,timestamp:time,exposureMs:Math.max(0,time-(state.exposedAt||time))};return {...state,revision,events:[...state.events,event].slice(-40),error:''};}
+export function applyJudgment(state,output,now){if(output.requestId!=='judgment-'+state.revision)return state;const a=output.action;let next={...state,busy:false,lastAction:a.type};if(a.type==='EXPAND')return {...next,expanded:true,brief:state.events.at(-1)?.signal==='frown'};if(a.type==='SHOW_PROBE')return {...next,stage:'probe',probeId:a.probeId,expanded:false,brief:false,exposedAt:now};if(['ASK_CONFIRMATION','SHOW_INFERENCE'].includes(a.type))return {...next,stage:'hypothesis',hypothesis:a.text,confirmed:false};if(a.type==='OFFER_EXPERIMENT')return {...next,stage:'experiment',experimentPrompt:a.text};return next;}
+export function discoveryRequest(state){return {schemaVersion:'1.0',requestId:'judgment-'+state.revision,context:{stage:state.stage,probeId:state.probeId,confirmed:state.confirmed,correction:state.correction,allowedActions:['EXPAND','SHOW_PROBE','ASK_CONFIRMATION','SHOW_INFERENCE','OFFER_EXPERIMENT','HOLD']},events:state.events};}

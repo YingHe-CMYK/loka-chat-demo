@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GuessYou judgment response v1",
+  "type": "object",
+  "required": [
+    "requestId",
+    "action",
+    "evidenceIds"
+  ],
+  "properties": {
+    "requestId": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "action": {
+      "type": "object",
+      "required": [
+        "type",
+        "text"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "EXPAND",
+            "SHOW_PROBE",
+            "ASK_CONFIRMATION",
+            "OFFER_EXPERIMENT",
+            "HOLD",
+            "SHOW_INFERENCE"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "probeId": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
+        }
+      }
+    },
+    "evidenceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
