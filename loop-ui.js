@@ -5,7 +5,7 @@ import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-91';
 import {mirrorReading} from './need-discovery.js?v=stage1-91';
 import {mirrorStage} from './mirror-stage.js?v=stage1-171';
 import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-91';
-import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-183';
+import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-184';
 import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-180';
 import {appSources,browserFacts,sampleAppSignals,sampleProfiles} from './device-sources.js?v=stage1-121';
 import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-106';
@@ -99,7 +99,7 @@ const backStages=['register','welcome','source-result','guess','plan','result','
 const undo=$('[data-action="undo"]');if(undo)undo.disabled=!s.undo;
 if(s.stage==='result'){const feedback=s.results.at(-1)?.feedback;document.querySelectorAll('[data-action=helpful],[data-action=unhelpful]').forEach(b=>b.setAttribute('aria-pressed',String(feedback===(b.dataset.action==='helpful'?'useful':'not-useful'))));}
 const planCard=$('.plan-swipe');if(planCard)mountSwipe(planCard,d=>{if(d==='left')act('left');else act('council-start',{confirmed:true,mode:'local'});});
-const resultCard=$('.result-swipe');if(resultCard)mountSwipe(resultCard,d=>{const r=s.results.at(-1);if(!r)return;if(r.topic==='health'||r.topic==='connection'){const routes=resultRoutes[r.topic],index=routes.findIndex(x=>x.key===chosenRoute(r).key),delta=d==='right'?1:-1;return act('result-route',{route:routes[(index+delta+routes.length)%routes.length].key});}if(d==='right'){const route=chosenRoute(r),active=r.visualStarted===route.key;if(!active||(r.visualDone||0)<3)act(active?'result-step':'result-begin');else render();}else{const routes=resultRoutes[r.topic]||[];if(routes.length<2)return render();const index=routes.findIndex(x=>x.key===chosenRoute(r).key);act('result-route',{route:routes[(index+1)%routes.length].key});}});
+const resultCard=$('.result-swipe');if(resultCard)mountSwipe(resultCard,d=>{const r=s.results.at(-1);if(!r)return;if(['health','connection','meaning'].includes(r.topic)){const routes=resultRoutes[r.topic],index=routes.findIndex(x=>x.key===chosenRoute(r).key),delta=d==='right'?1:-1;return act('result-route',{route:routes[(index+delta+routes.length)%routes.length].key});}if(d==='right'){const route=chosenRoute(r),active=r.visualStarted===route.key;if(!active||(r.visualDone||0)<3)act(active?'result-step':'result-begin');else render();}else{const routes=resultRoutes[r.topic]||[];if(routes.length<2)return render();const index=routes.findIndex(x=>x.key===chosenRoute(r).key);act('result-route',{route:routes[(index+1)%routes.length].key});}});
 const dailyCard=$('.daily-swipe');if(dailyCard)mountSwipe(dailyCard,d=>handleDailySwipe(d));
 const card=$('.card');if(card)swipe=mountSwipe(card,d=>{if(d==='left')act('left');else if(s.stage==='guess')act('right');else act('council-start',{confirmed:true,mode:'local'});});
 }
