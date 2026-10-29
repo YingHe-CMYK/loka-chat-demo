@@ -81,3 +81,17 @@ let back=freshJourney();back.stage="welcome";back=step(back,"sample-read",{profi
 let freshDirection=freshJourney();freshDirection.stage='welcome';freshDirection=step(freshDirection,'sample-read',{profileId:'focus'});freshDirection=step(freshDirection,'left');assert.notEqual(freshDirection.topic,'health');assert.match(freshDirection.evidence[0],/not a note from this profile/);assert.doesNotMatch(hypothesisCopy(freshDirection),/You keep returning|You have thought/);console.log('PASS: switching directions does not attribute another example profile’s notes');
 
 let appSwitch=freshJourney();appSwitch.stage='welcome';appSwitch=step(appSwitch,'sample-read',{profileId:'direction'});appSwitch=step(appSwitch,'app-preview-connect',{app:'oura',profileId:'direction'});appSwitch=step(appSwitch,'use-app-preview',{app:'oura'});assert.equal(appSwitch.previewFocus,'oura');appSwitch=step(appSwitch,'left');assert.equal(appSwitch.previewFocus,null);assert.ok(appSwitch.evidence[0].includes('new example direction')||appSwitch.topic==='meaning');appSwitch=step(appSwitch,'undo');assert.equal(appSwitch.previewFocus,'oura');console.log('PASS: leaving an app example clears its focus and undo restores it');
+
+{
+  let state=freshJourney();
+  state.stage='welcome';
+  state=step(state,'sample-read',{profileId:'focus'});
+  state=step(state,'app-preview-connect',{app:'calendar',profileId:'focus'});
+  state=step(state,'use-app-preview',{app:'calendar'});
+  assert.equal(state.previewFocus,'calendar');
+  state=step(state,'app-preview-disconnect',{app:'calendar'});
+  assert.equal(state.previewApps.calendar,false);
+  assert.equal(state.previewFocus,null);
+  assert.ok(!state.evidence.some(x=>x.includes('Fictional calendar signal')));
+  console.log('PASS: disconnect removes the example signal from discovery');
+}
