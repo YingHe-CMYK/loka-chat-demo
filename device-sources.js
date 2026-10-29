@@ -18,9 +18,9 @@ export const sampleProfiles={
  connection:{label:'Relationships',topic:'connection',guess:'The example notes mention an old friend and an unfinished conversation. Is finding an easy way to reconnect what matters?',facts:[{label:'Personal note',value:'An unfinished conversation'},{label:'Calendar',value:'A meeting idea without a date'}],evidence:sampleEvidence.connection}
 };
 export const sampleAppSignals={
- focus:{oura:'The example shows shorter sleep on three nights.',calendar:'The example shows three long research blocks.',health:'The example shows lower activity on two days.'},
- direction:{oura:'The example shows variable sleep across the week.',calendar:'The example shows an open afternoon between meetings.',health:'The example shows a regular walking routine.'},
- connection:{oura:'The example shows a steadier sleep schedule this week.',calendar:'The example shows one unscheduled evening.',health:'The example shows a change in activity over the weekend.'}
+ focus:{oura:'The example shows shorter sleep on three nights.',calendar:'The example shows three long research blocks.',health:'The example shows lower activity on two days.',gmail:'The example inbox includes a question about a treatment appointment.',drive:'The example documents include notes about treatment and research time.',instagram:'The example saved posts include conversations about routines.'},
+ direction:{oura:'The example shows variable sleep across the week.',calendar:'The example shows an open afternoon between meetings.',health:'The example shows a regular walking routine.',gmail:'The example inbox includes an invitation to explore a research collaboration.',drive:'The example documents include notes on possible research directions.',instagram:'The example saved posts include work from people changing fields.'},
+ connection:{oura:'The example shows a steadier sleep schedule this week.',calendar:'The example shows one unscheduled evening.',health:'The example shows a change in activity over the weekend.',gmail:'The example inbox includes an unanswered note from an old friend.',drive:'The example documents include a draft about reconnecting.',instagram:'The example saved posts include ideas for meeting friends.'}
 };
 export function browserFacts({language,timeZone,localEvents=[]}={}){
  const names={'accept-invite':'Accepted invitation',register:'Created local profile',feedback:'Rated a result',signal:'Body response'};

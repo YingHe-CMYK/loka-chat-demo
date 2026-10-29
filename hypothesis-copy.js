@@ -1,4 +1,4 @@
-import {sampleProfiles} from './device-sources.js?v=stage1-117';
+import {sampleProfiles} from './device-sources.js?v=stage1-207';
 // Authored fallback examples. A local source guess is generated from the user's selected file.
 const candidates={
  general:['You accepted the invitation and asked me to look first. Would you like me to propose a question before you explain?'],
