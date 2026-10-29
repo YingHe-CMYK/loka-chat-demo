@@ -10,7 +10,7 @@ import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-2
 import {appSources,browserFacts,sampleAppSignals,sampleProfiles} from './device-sources.js?v=stage1-207';
 import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-106';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-228';
+import {MirrorInputs} from './real-input.js?v=stage1-229';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-218';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
