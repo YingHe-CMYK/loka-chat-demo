@@ -36,10 +36,10 @@ const input=new MirrorInputs({isActive:()=>!$('#drawer').open&&(['guess','plan',
  sensor={...sensor,...p};if(sensor.camera==='loading'&&input.stream)sensor.message=input.audioAuthorized?'Camera & mic allowed · Preparing input…':'Camera allowed · Preparing gestures…';if(p.transcript)toast(`Heard: ${p.transcript} · ${p.message||''}`);const el=$('#sensor-status');if(el)el.textContent=p.transcript?`Heard: ${p.transcript} · ${p.message||''}`:p.tracking||p.message||'';
  if(opened){if(p.camera==='on')input.showPreview(true);if(popup==='inputs'&&$('#drawer').open)close();toast(p.camera==='on'?'Look at the camera, then nod.':'You can say Continue or Another.');}
  updateBody();
-},onEvent:signal=>{
+},onEvent:(signal,source)=>{
  if($('#drawer').open&&signal!=='stop')return;const intent=bodyIntent(signal,s.stage,s.paused);if(!intent)return;
  if(intent==='pause'){input.stopAll();act('pause');return;}
- const explicit=['right','left','helpful','unhelpful','budget','resume'].includes(intent);if(explicit&&Date.now()-lastSignal<3000)return;if(explicit)lastSignal=Date.now();
+ const explicit=['right','left','helpful','unhelpful','budget','resume'].includes(intent);if(explicit&&Date.now()-lastSignal<(source==='voice'?750:3000)){bodyResponse('One moment, then respond again.');return;}if(explicit)lastSignal=Date.now();
  if(intent==='right'||intent==='left'){dispatchDirection(intent,s.stage,act,show);bodyResponse(intent==='right'?'Got it. Continuing.':'Got it. Changing direction.');}
  else if(intent==='helpful'||intent==='unhelpful'){act('feedback',{useful:intent==='helpful'});toast(intent==='helpful'?'Saved: this helped.':'Saved: this did not help.');}
  else if(intent==='budget')correct('budget');else if(intent==='resume')act('resume');
