@@ -1,6 +1,6 @@
 import {validatePillars,dailyPreview,dailyHealth,dailyConnection,previousDailyFeedback,localDay,savedSchedulesForDay} from './daily-experience.js?v=stage1-179';
 import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-91';
-import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-198';
+import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-200';
 import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-91';
 import {mirrorReading} from './need-discovery.js?v=stage1-91';
 import {mirrorStage} from './mirror-stage.js?v=stage1-188';

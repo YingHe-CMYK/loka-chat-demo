@@ -55,3 +55,13 @@ let free=freshJourney();free.stage='welcome';free=step(free,'sample-read',{profi
  assert.ok(!state.results.at(-1).sourceEvidence.some(x=>x.includes('A private correction')));
  console.log('PASS: deleting a correction also clears it from saved result context');
 }
+
+{
+ let state=freshJourney();state.stage='welcome';state=step(state,'sample-read',{profileId:'focus'});
+ state=step(state,'correct-note',{text:'I miss making things with other people.'});
+ state=step(state,'right');const first=hypothesisCopy(state);
+ state=step(state,'left');const alternative=hypothesisCopy(state);
+ assert.notEqual(first,alternative);
+ assert.match(alternative,/I miss making things with other people/);
+ console.log('PASS: changing direction after a correction offers a different question');
+}
