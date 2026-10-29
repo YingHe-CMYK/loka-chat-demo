@@ -6,7 +6,7 @@ import {mirrorReading} from './need-discovery.js?v=stage1-91';
 import {mirrorStage} from './mirror-stage.js?v=stage1-230';
 import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-91';
 import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-185';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-235';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-236';
 import {appSources,browserFacts,sampleAppSignals,sampleProfiles} from './device-sources.js?v=stage1-207';
 import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-106';
 import {quote} from './council-sim.js';
@@ -15,6 +15,7 @@ import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-2
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
 try{const saved=JSON.parse(localStorage.getItem(key));if(saved?.stage&&['demo','none','device','sample','local','app'].includes(saved.source))s=saved;}catch{}
+if(!s.profile&&s.stage==='invite'&&new URLSearchParams(location.search).get('invite')==='LOKA-ML-01')s.invitation={...s.invitation,code:'LOKA-ML-01',source:'shared-link'};
 let today=localDay();
 if(s.profile&&!s.signedOut&&['result','guess','plan','daily'].includes(s.stage)&&s.lastVisit&&s.lastVisit!==today){s=step(s,'open-daily',{day:today});}
 if(s.profile&&!s.signedOut){s.lastVisit=today;try{localStorage.setItem(key,JSON.stringify(s));}catch{}}
@@ -175,7 +176,7 @@ if(a==='return-personal-source'){close();return act('return-personal-source');}
 if(a==='local-return')return act('sign-in',{day:today});
 if(a==='sign-out'){input.stopAll();close();return act('sign-out');}
 if(a==='journey-back'){if($('#drawer').open)close();return act('navigate-back');}
-if(a==='copy-invite')return navigator.clipboard.writeText(new URL('index.html',location.href).href).then(()=>toast('Invitation link copied. No personal data included.')).catch(()=>toast('Copy the page address to share this experience.'));
+if(a==='copy-invite'){const url=new URL('index.html',location.href);url.searchParams.set('invite','LOKA-ML-01');return navigator.clipboard.writeText(url.href).then(()=>toast('Invitation link copied.')).catch(()=>toast('Copy the page address to share this experience.'));}
 if(a==='folder-access'||a==='device-consent'||a==='mirror-memory')return show(a);
 if(a==='open-folder')return connectComputer();
 if(a==='memory-delete'){const id=e.target.closest('[data-memory-id]')?.dataset.memoryId;act('delete-memory',{id});return show('mirror-memory');}
