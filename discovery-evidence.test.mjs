@@ -65,3 +65,13 @@ let free=freshJourney();free.stage='welcome';free=step(free,'sample-read',{profi
  assert.match(alternative,/I miss making things with other people/);
  console.log('PASS: changing direction after a correction offers a different question');
 }
+
+{
+ let state=freshJourney();state.stage='welcome';state=step(state,'sample-read',{profileId:'focus'});
+ state=step(state,'correct-note',{text:'I miss making things with other people.'});
+ state=step(state,'right');state=step(state,'right');
+ assert.equal(state.stage,'plan');
+ assert.equal(state.deepChoice,null);
+ assert.ok(!(state.confirmedMemories||[]).some(m=>m.id==='discovery-priority'));
+ console.log('PASS: accepting a correction follow-up does not invent a preference');
+}
