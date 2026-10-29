@@ -6,7 +6,7 @@ import {mirrorReading} from './need-discovery.js?v=stage1-91';
 import {mirrorStage} from './mirror-stage.js?v=stage1-188';
 import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-91';
 import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-185';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-203';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-204';
 import {appSources,browserFacts,sampleAppSignals,sampleProfiles} from './device-sources.js?v=stage1-121';
 import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-106';
 import {quote} from './council-sim.js';
@@ -17,7 +17,7 @@ let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,c
 try{const saved=JSON.parse(localStorage.getItem(key));if(saved?.stage&&['demo','none','device','sample','local','app'].includes(saved.source))s=saved;}catch{}
 let today=localDay();
 if(s.profile&&!s.signedOut&&['result','guess','plan','daily'].includes(s.stage)&&s.lastVisit&&s.lastVisit!==today){s=step(s,'open-daily',{day:today});}
-if(s.profile){s.lastVisit=today;try{localStorage.setItem(key,JSON.stringify(s));}catch{}}
+if(s.profile&&!s.signedOut){s.lastVisit=today;try{localStorage.setItem(key,JSON.stringify(s));}catch{}}
 function refreshDayIfSafe(){if(document.hidden)return;const nextDay=localDay();if(nextDay===today||$('#drawer').open||document.activeElement?.matches('input,textarea,select'))return;today=nextDay;if(!s.profile||s.signedOut)return;if(['result','guess','plan','daily'].includes(s.stage)){s=step(s,'open-daily',{day:today});s.lastVisit=today;try{localStorage.setItem(key,JSON.stringify(s));}catch{}render();}}
 document.addEventListener('visibilitychange',refreshDayIfSafe);document.addEventListener('focusout',()=>setTimeout(refreshDayIfSafe,0));setInterval(()=>{if(s.stage==='daily')refreshDayIfSafe();},60000);
 function bodyBanner(){const active=sensor.camera==='on'||sensor.speech==='listening',compact=s.stage==='result';return `<button class="body-entry ${compact?'compact':''} ${active?'active':''}" data-action="inputs">${icon(active?'eye':'mic')}<span><b>${compact?'Nod or shake to respond':active?'Body input on':'Turn on body input'}</b>${compact?'':`<small>${active?bodyGuide(s.stage):'Nod, shake or speak'}</small>`}</span><i>${active?'Settings':'Turn on'}</i></button><p class="body-live" id="body-live" role="status">${esc(active?(sensor.tracking||sensor.message||''):sensor.camera==='error'||sensor.speech==='error'?sensor.message||'':'' )}</p>`;}
@@ -165,9 +165,9 @@ if(a==='daily-feedback')return handleDailySwipe(e.target.closest('[data-value]')
 if(a==='daily-continue'){if(s.source==='none'){return act('navigate-back');}return act('daily-continue');}
 if(a==='github-open')return show('github-open');
 if(a==='github-preview')return show('community-agreement');
-if(a==='accept-community'){close();act('sign-in',{name:s.profile?.name||'GitHub user'});return act('agree-v1');}
+if(a==='accept-community'){close();act('sign-in',{name:s.profile?.name||'GitHub user',day:today});return act('agree-v1');}
 if(a==='sign-in-open')return show('sign-in-open');
-if(a==='sign-in-submit'){const name=$('#login-name')?.value?.trim();if(!name||$('#login-code')?.value!=='123456')return toast('Enter a name and the example code 123456.');close();return act('sign-in',{name});}
+if(a==='sign-in-submit'){const name=$('#login-name')?.value?.trim();if(!name||$('#login-code')?.value!=='123456')return toast('Enter a name and the example code 123456.');close();return act('sign-in',{name,day:today});}
 if(a==='export-data'){const blob=new Blob([JSON.stringify({format:'loka-chat-local-data',version:1,exportedAt:new Date().toISOString(),data:s},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='loka-chat-data.json';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);return toast('Your local data was exported.');}
 if(a==='action-ask'||a==='action-block'){act('action-policy',{value:a==='action-block'?'block':'ask'});return show('approval-settings');}
 if(a==='sign-out'){input.stopAll();close();return act('sign-out');}

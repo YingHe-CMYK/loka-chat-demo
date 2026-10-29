@@ -69,3 +69,12 @@ let version=freshJourney();version=step(version,'open-daily',{day:'2026-10-28'})
 const profiles=['focus','direction','connection'].map(id=>dailyConnection('2026-10-29',null,null,id));assert.equal(new Set(profiles.map(p=>p.headline)).size,3);assert.equal(new Set(profiles.map(p=>p.draft)).size,3);let exampleDraft=freshJourney();exampleDraft.stage='guess';exampleDraft.topic='connection';exampleDraft=step(exampleDraft,'open-daily',{day:'2026-10-29'});exampleDraft=step(exampleDraft,'daily-swipe',{day:'2026-10-29',value:'yes',draft:profiles[0].draft});assert.equal(exampleDraft.dailyDraft,profiles[0].draft);console.log('PASS: distinct sample profiles offer distinct editable connection drafts');
 
 let personalDraft=freshJourney();personalDraft=step(personalDraft,'sign-in');personalDraft=step(personalDraft,'local-read',{topic:'connection',count:1,titles:['notes.txt'],evidence:['Selected note'],guess:'A conversation?',probe:'What would help?'});personalDraft=step(personalDraft,'open-daily',{day:'2026-10-29'});personalDraft=step(personalDraft,'daily-swipe',{day:'2026-10-29',value:'yes',snapshot:'A conversation'});personalDraft.dailyDraft='A message I wrote';personalDraft=step(personalDraft,'daily-continue');personalDraft=step(personalDraft,'right');personalDraft=step(personalDraft,'right');personalDraft=step(personalDraft,'council-start',{confirmed:true,mode:'local'});for(let i=0;i<20&&personalDraft.stage==='review';i++)personalDraft=step(personalDraft,'council-next');assert.equal(personalDraft.stage,'result');assert.equal(personalDraft.results.at(-1).connectionDraft,'A message I wrote');console.log('PASS: personal-source daily drafts carry into the related result');
+
+{
+ let state=freshJourney();state=step(state,'sign-in',{name:'Test',day:'2026-10-28'});
+ state=step(state,'sample-read',{profileId:'focus'});state=step(state,'sign-out');
+ state=step(state,'sign-in',{day:'2026-10-29'});
+ assert.equal(state.stage,'daily');assert.equal(state.dailyDay,'2026-10-29');
+ assert.equal(state.dailyReturnStage,'guess');assert.equal(state.lastVisit,'2026-10-29');
+ console.log('PASS: signing in on a later day opens today and preserves the prior path');
+}
