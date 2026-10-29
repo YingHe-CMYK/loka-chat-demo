@@ -129,3 +129,15 @@ let appSwitch=freshJourney();appSwitch.stage='welcome';appSwitch=step(appSwitch,
  assert.equal(state.source,'local');assert.equal(state.localGuess,'My selected source guess');assert.deepEqual(state.evidence,['Selected source clue']);
  console.log('PASS: personal source context survives a separate app example');
 }
+
+{
+ let state=freshJourney();state.stage='welcome';
+ state=step(state,'app-preview-connect',{app:'gmail',profileId:'connection'});
+ state=step(state,'app-preview-connect',{app:'oura',profileId:'connection'});
+ state=step(state,'use-app-preview',{app:'oura'});assert.equal(state.topic,'health');
+ state=step(state,'app-preview-disconnect',{app:'oura'});
+ assert.equal(state.previewFocus,'gmail');assert.equal(state.topic,'connection');
+ assert.match(hypothesisCopy(state),/unanswered note/);
+ assert.doesNotMatch(hypothesisCopy(state),/sleep schedule/);
+ console.log('PASS: disconnecting the lead app reorients the guess to the remaining source');
+}
