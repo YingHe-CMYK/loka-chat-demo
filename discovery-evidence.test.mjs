@@ -31,3 +31,12 @@ let budgetChange=freshJourney();budgetChange.stage="guess";budgetChange=step(bud
 let recovery=freshJourney();recovery.stage="guess";recovery.source="sample";recovery=step(recovery,"right");recovery=step(recovery,"right");assert.equal(recovery.stage,"plan");while(rank(recovery).length)recovery=step(recovery,"left");recovery=step(recovery,"recover-plans");assert.equal(recovery.stage,"guess");assert.equal(recovery.discoveryDepth,0);assert.equal(recovery.deepChoice,null);
 
 let free=freshJourney();free.stage='welcome';free=step(free,'sample-read',{profileId:'focus'});free=step(free,'correct-note',{text:'I miss making things with other people.'});assert.equal(free.stage,'guess');assert.equal(free.confirmedMemories.at(-1).value,'I miss making things with other people.');assert.ok(free.evidence[0].includes('I miss making things'));free=step(free,'undo');assert.ok(!free.correctionText);assert.ok(!free.confirmedMemories.some(m=>m.id==='correction-note'));console.log('PASS: free-form correction remains editable and reversible without pretending to interpret it');
+
+{
+ let state=freshJourney();state.stage='welcome';
+ state=step(state,'sample-read',{profileId:'focus'});
+ state=step(state,'correct-note',{text:'I miss making things with other people.'});
+ state=step(state,'right');
+ assert.match(hypothesisCopy(state),/I miss making things with other people/);
+ console.log('PASS: the follow-up keeps the written correction in context');
+}
