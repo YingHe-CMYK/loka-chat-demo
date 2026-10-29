@@ -118,3 +118,14 @@ let appSwitch=freshJourney();appSwitch.stage='welcome';appSwitch=step(appSwitch,
  assert.ok(!state.evidence.some(x=>x.startsWith('Fictional gmail signal:')));
  console.log('PASS: multiple app clues contribute and disconnect removes the selected clue');
 }
+
+{
+ let state=freshJourney();state.stage='welcome';
+ state=step(state,'local-read',{topic:'research',guess:'My selected source guess',role:'Possible ML researcher',count:1,evidence:['Selected source clue']});
+ state=step(state,'app-preview-connect',{app:'gmail',profileId:'connection'});
+ state=step(state,'use-app-preview',{app:'gmail'});
+ assert.equal(state.source,'sample');
+ state=step(state,'return-personal-source');
+ assert.equal(state.source,'local');assert.equal(state.localGuess,'My selected source guess');assert.deepEqual(state.evidence,['Selected source clue']);
+ console.log('PASS: personal source context survives a separate app example');
+}
