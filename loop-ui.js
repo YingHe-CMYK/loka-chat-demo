@@ -6,7 +6,7 @@ import {mirrorReading} from './need-discovery.js?v=stage1-91';
 import {mirrorStage} from './mirror-stage.js?v=stage1-230';
 import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-91';
 import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-185';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-234';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-235';
 import {appSources,browserFacts,sampleAppSignals,sampleProfiles} from './device-sources.js?v=stage1-207';
 import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-106';
 import {quote} from './council-sim.js';
@@ -202,7 +202,7 @@ if(a==='open-delivery')return act('council-start',{confirmed:true,mode:'local'})
 if(a==='accept-invite')return act('accept-invite');
 if(a==='register-demo'){const name=$('#demo-name')?.value?.trim();if(!name)return toast('Enter your name.');window.registrationName=name;return show('nickname-agreement');}
 if(a==='verify-account'){if($('#demo-code')?.value!=='123456')return toast('Use the example code 123456.');return show('nickname-agreement');}
-if(a==='accept-nickname'){close();act('register',{name:window.registrationName});return act('agree-v1');}
+if(a==='accept-nickname'){close();act('register',{name:window.registrationName,day:today});return act('agree-v1');}
 if(a==='resend-code')return toast('Example code: 123456. No SMS or email sent.');
 if(a==='journey-reset'){input.stopAll();if($('#drawer').open)close();return act('reset');}
 if(a==='save-reflection'){const notes=[...document.querySelectorAll('[data-reflection]')].map(x=>x.value.trim());if(!notes.some(Boolean))return toast('Add a thought first.');act('save-reflection',{notes});return toast('Reflection saved.');}

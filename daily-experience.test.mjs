@@ -78,3 +78,13 @@ let personalDraft=freshJourney();personalDraft=step(personalDraft,'sign-in');per
  assert.equal(state.dailyReturnStage,'guess');assert.equal(state.lastVisit,'2026-10-29');
  console.log('PASS: signing in on a later day opens today and preserves the prior path');
 }
+
+{
+ let state=freshJourney();state=step(state,'accept-invite');
+ state=step(state,'register',{name:'Sam',day:'2026-10-28'});
+ state=step(state,'sample-read',{profileId:'focus'});state=step(state,'sign-out');
+ state=step(state,'sign-in',{day:'2026-10-29'});
+ assert.equal(state.profile.provider,'nickname');assert.equal(state.stage,'daily');
+ assert.equal(state.dailyReturnStage,'guess');
+ console.log('PASS: nickname registration keeps the first visit for next-day return');
+}
