@@ -36,3 +36,16 @@ assert.equal(direct.topic, 'connection');
 assert.equal(direct.browserContext[0].value, 'en-US');
 assert.ok(direct.evidence.every(x => x.startsWith('Fictional')));
 console.log('PASS: consent leads directly to a clearly fictional assigned guess without files');
+
+{
+  let state=freshJourney();
+  state.stage='plan'; state.topic='health';
+  state=step(state,'action-policy',{value:'block'});
+  state=step(state,'council-start',{confirmed:true,mode:'local',scenario:'external'});
+  assert.equal(state.stage,'plan');
+  assert.match(state.notice,/blocked/i);
+  state=step(state,'action-policy',{value:'ask'});
+  state=step(state,'council-start',{confirmed:true,mode:'local',scenario:'external'});
+  assert.equal(state.stage,'review');
+  console.log('PASS: action preference blocks external examples before review');
+}

@@ -50,6 +50,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
  if(type==='sample-read'&&(['welcome','source-result'].includes(s.stage)||(data.switchProfile&&s.source==='sample'&&s.stage!=='review'))){const id=data.switchProfile&&sampleProfiles[data.profileId]?data.profileId:sampleProfiles[s.sampleProfileId]?s.sampleProfileId:sampleProfiles[data.profileId]?data.profileId:'focus',profile=sampleProfiles[id];activateSample(s,id);s.correctionText='';s.needDepth=0;s.followUpIndex=null;s.deepNeed=null;s.deepChoice=null;s.undo=null;s.dismissed=[];s.localProbe='';s.localProbeKey='';s.manualGoal=false;s.previewFocus=null;s.source='sample';s.stage='guess';s.topic=profile.topic;s.index=0;s.discoveryDepth=0;s.localRole='ML researcher';s.localGuess=profile.guess;s.evidence=profile.evidence;s.deviceFacts=profile.facts;return s;}
  if(type==='membership'){s.membership=data.plan==='plus'?'plus':'free';event(s,type,{effect:'Example subscription selection; no payment'});return s;}
  if(type==='recover-plans'&&s.stage==='plan'){s.dismissed=[];s.stage='guess';s.discoveryDepth=0;s.deepChoice=null;s.deepNeed=null;s.followUpIndex=null;s.index++;return s;}
+ if(type==='action-policy'&&['ask','block'].includes(data.value)){s.actionPolicy=data.value;event(s,type,{effect:data.value==='block'?'External action examples blocked':'External action examples require review'});return s;}
  if(type==='app-preview-connect'){s.previewProfileId=sampleProfiles[s.sampleProfileId]?s.sampleProfileId:sampleProfiles[data.profileId]?data.profileId:'focus';s.previewApps={...s.previewApps,[data.app]:true};return s;}
  if(type==='app-preview-disconnect'){s.previewApps={...s.previewApps,[data.app]:false};if(s.previewFocus===data.app){s.previewFocus=null;s.previewSignal=null;s.previewFocusIndex=null;const profile=sampleProfiles[s.sampleProfileId];s.evidence=profile&&profile.topic===s.topic?[...profile.evidence]:[];}event(s,type,{effect:'Example connection removed; its example signal is no longer used'});return s;}
  if(type==='use-app-preview'){if(!s.previewApps?.[data.app])return s;activateSample(s,s.previewProfileId||s.sampleProfileId||'focus');s.manualGoal=false;s.source='sample';s.topic='health';s.stage='guess';s.previewFocus=data.app;s.previewFocusIndex=s.index;s.sampleProfileId=s.previewProfileId||s.sampleProfileId||'focus';s.previewSignal=sampleAppSignals[s.sampleProfileId]?.[data.app]||sampleAppSignals.focus[data.app];s.evidence=[`Fictional ${data.app} signal: ${s.previewSignal}`, 'Example data; not read from your account'];s.weights.focus+=1;return s;}
@@ -67,6 +68,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
  if(type==='resume'){s.paused=false;return s;}
  if(s.paused)return s;
  if(type==='council-start'&&s.stage==='plan'){
+  if(data.scenario==='external'&&s.actionPolicy==='block'){s.notice='External action examples are blocked in your settings.';return s;}
   const p=current(s);if(!p)return s;
   const run=makeRun(p,s,data.mode||'model',data.scenario||'normal');
   if(!data.confirmed){s.notice='Confirm this run’s example budget first.';return s;}
