@@ -309,3 +309,5 @@ button,input,textarea,select{font-family:inherit}
 .health-result{background:linear-gradient(145deg,#315950,#1d3734);border:1px solid #ffffff20}.health-result-main strong{max-width:100%;font-size:clamp(31px,8vw,38px);line-height:1.12;letter-spacing:-1px}.health-result-main p{max-width:100%;font-size:13px;line-height:1.5}.health-result-steps>div{font-size:13px;line-height:1.4;padding:11px 13px}.health-result.research{background:linear-gradient(145deg,#41424e,#272933)}
 
 .health-result{min-height:260px;gap:24px}.health-result.scheduled{min-height:245px}
+
+.live-mirror[data-camera="off"] .face-contour,.live-mirror[data-camera="off"] .scan-corner{display:none}

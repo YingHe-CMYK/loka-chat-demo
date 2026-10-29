@@ -3,7 +3,7 @@ import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAu
 import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-177';
 import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-91';
 import {mirrorReading} from './need-discovery.js?v=stage1-91';
-import {mirrorStage} from './mirror-stage.js?v=stage1-171';
+import {mirrorStage} from './mirror-stage.js?v=stage1-186';
 import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-91';
 import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-185';
 import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-180';
@@ -24,7 +24,7 @@ function bodyBanner(){const active=sensor.camera==='on'||sensor.speech==='listen
 function updateBody(){const el=$('#body-controls');if(el)el.innerHTML=bodyBanner();const frame=$('#live-mirror');if(!frame)return;
  frame.dataset.camera=sensor.camera||'off';const active=sensor.camera==='on',loading=sensor.camera==='loading';
  $('#presence-state').textContent=active?'Camera on':loading?'Connecting camera':sensor.camera==='error'?'Camera unavailable':'Camera off';
- $('#presence-tracking').textContent=active?(sensor.tracking||'Look at the camera for two seconds.'):loading?(sensor.message||'Allow camera and microphone access.'):sensor.camera==='error'?(sensor.message||'Try again or swipe.'):'Look at the camera for two seconds.';
+ $('#presence-tracking').textContent=active?(sensor.tracking||'Look at the camera for two seconds.'):loading?(sensor.message||'Allow camera and microphone access.'):sensor.camera==='error'?(sensor.message||'Try again or swipe.'):'Swipe above, or enable camera and voice.';
  const start=$('#camera-start button');if(start){start.disabled=loading;start.innerHTML=icon('eye')+(loading?'Opening…':sensor.camera==='error'?'Try camera again':'Enable camera & voice');}
 }
 function mountMirror(){const slot=$('#camera-mount');if(slot){if(input.video.parentElement!==slot)slot.append(input.video);input.showPreview(sensor.camera==='on');if(sensor.camera==='on'&&input.video.paused)input.video.play().catch(()=>toast('Video paused. Restart the camera.'));}else if(!document.body.contains(input.video))document.body.append(input.video);updateBody();}
