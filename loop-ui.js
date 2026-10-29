@@ -6,7 +6,7 @@ import {mirrorReading} from './need-discovery.js?v=stage1-91';
 import {mirrorStage} from './mirror-stage.js?v=stage1-230';
 import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-91';
 import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-185';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-216';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-234';
 import {appSources,browserFacts,sampleAppSignals,sampleProfiles} from './device-sources.js?v=stage1-207';
 import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-106';
 import {quote} from './council-sim.js';
@@ -79,7 +79,7 @@ else content=`<div class="daily-card daily-swipe connection-daily" tabindex="0" 
 return `<section class="daily-view"><div class="daily-heading"><div><span>${esc(date)}</span><h1>Today, with you.</h1></div></div><div class="daily-progress" aria-label="Card ${position} of 3">${order.map((_,i)=>`<i class="${i+1===position?'active':''}"></i>`).join('')}</div>${content}<div class="swipe-hint daily-swipe-hint" aria-hidden="true"><span>← ${tab==='meaning'&&!s.baziPillars?'Skip':tab==='connection'&&s.dailyReady?'Back':'Not quite'}</span><span>${tab==='meaning'&&!s.baziPillars?'Add':tab==='connection'&&s.dailyReady?'Continue':'Yes'} →</span></div><div class="daily-feedback"><span>${tab==='meaning'&&!s.baziPillars?'Add your four pillars':tab==='connection'&&s.dailyReady?'Your private draft':'Does this fit?'}</span><div><button data-action="daily-feedback" data-value="no" aria-pressed="${!s.dailyReady&&vote==='no'}">${tab==='meaning'&&!s.baziPillars?'Skip':tab==='connection'&&s.dailyReady?'Back':'Not quite'}</button><button data-action="daily-feedback" data-value="yes" aria-pressed="${!s.dailyReady&&vote==='yes'}">${tab==='meaning'&&!s.baziPillars?'Add':tab==='connection'&&s.dailyReady?'Continue':'Yes'}</button></div></div>${dailyScheduleMarkup()}${dailyRecentResult()}${prior?`<details class="daily-history"><summary>Previous check-in</summary><p><b>${esc(prior.text)}</b><br>${esc(priorDate)} · ${prior.response==='yes'?'Initially felt right':'Initially did not fit'}${s.dailyOutcomes?.[priorDate]?.[tab]?` · Later: ${s.dailyOutcomes[priorDate][tab]==='yes'?'felt right':'did not fit'}`:''}</p><small>Your reflection, not a measured outcome.</small>${tab==='connection'&&typeof s.dailyDrafts?.[priorDate]==='string'?`<p><b>Private draft</b><br>${esc(s.dailyDrafts[priorDate])}</p>`:''}</details>`:''}${button('daily-continue','Back to mirror '+icon('arrow'),'text-button full daily-return')}</section>`;}
 function render(){if(input.stream&&input.video.parentElement!==document.body)document.body.append(input.video);clearTimeout(reviewTimer);swipe=null;const p=current(s);let html='';
 $('#shell').dataset.stage=s.stage;
-if(s.signedOut)html=`<section class="journey-entry"><p class="entry-kicker">WELCOME BACK</p><h1>Your mirror is here.</h1>${button('github-open','Continue with GitHub','primary full')}<p class="fine">This demo keeps your space in this browser.</p></section>`;
+if(s.signedOut)html=`<section class="journey-entry"><p class="entry-kicker">WELCOME BACK</p><h1>Your mirror is here.</h1>${s.profile?.provider==='nickname'?button('local-return',`Continue as ${esc(s.profile.name)}`,'primary full'):button('github-open','Continue with GitHub','primary full')}<p class="fine">Your space is saved in this browser.</p></section>`;
 else if(s.paused)html=`<section class="welcome">${art()}<h1>Come back anytime.</h1><p>I am here.</p>${button('resume','Continue','primary')}</section>`;
 else if(s.stage==='invite')html=`<section class="journey-entry invite-entry"><p class="entry-kicker">LOKA CHAT · INVITE</p><h1>A little more<br>understood.</h1><p>A mirror that notices what matters, and learns as you respond.</p><div class="entry-example"><span>A GLIMPSE OF YOUR MIRROR</span><strong>“Is it time for a different direction?”</strong><small>Example · Your response shapes what comes next.</small></div>${button('github-open','Continue with GitHub '+icon('arrow'),'primary full')}<p class="fine">GitHub sign-in preview · Your space stays in this browser.</p>${button('accept-invite','Use a nickname instead','text-button full')}</section>`;
 else if(s.stage==='register')html=`<section class="journey-entry register-entry"><p class="entry-kicker">CREATE YOUR SPACE</p><h1>What should I call you?</h1><label for="demo-name">Your name</label><input id="demo-name" class="register-input" maxlength="24" autocomplete="nickname" placeholder="Name or nickname">${button('register-demo','Continue '+icon('arrow'),'primary full')}</section>`;
@@ -172,6 +172,7 @@ if(a==='export-data'){const blob=new Blob([JSON.stringify({format:'loka-chat-loc
 if(a==='toggle-training'){act('training-preference',{enabled:!s.trainingPreference});return show('data-controls');}
 if(a==='action-ask'||a==='action-block'){act('action-policy',{value:a==='action-block'?'block':'ask'});return show('approval-settings');}
 if(a==='return-personal-source'){close();return act('return-personal-source');}
+if(a==='local-return')return act('sign-in',{day:today});
 if(a==='sign-out'){input.stopAll();close();return act('sign-out');}
 if(a==='journey-back'){if($('#drawer').open)close();return act('navigate-back');}
 if(a==='copy-invite')return navigator.clipboard.writeText(new URL('index.html',location.href).href).then(()=>toast('Invitation link copied. No personal data included.')).catch(()=>toast('Copy the page address to share this experience.'));
@@ -199,7 +200,7 @@ if(a==='app-google'){if(s.previewApps?.calendar||!connectorReady('calendar')){wi
 if(a==='choose-files')return $('#global-picked-files')?.click();
 if(a==='open-delivery')return act('council-start',{confirmed:true,mode:'local'});
 if(a==='accept-invite')return act('accept-invite');
-if(a==='register-demo'){const name=$('#demo-name')?.value?.trim();if(!name)return toast('Enter your name.');window.registrationName=name;return show('verify-account');}
+if(a==='register-demo'){const name=$('#demo-name')?.value?.trim();if(!name)return toast('Enter your name.');window.registrationName=name;return show('nickname-agreement');}
 if(a==='verify-account'){if($('#demo-code')?.value!=='123456')return toast('Use the example code 123456.');return show('nickname-agreement');}
 if(a==='accept-nickname'){close();act('register',{name:window.registrationName});return act('agree-v1');}
 if(a==='resend-code')return toast('Example code: 123456. No SMS or email sent.');
