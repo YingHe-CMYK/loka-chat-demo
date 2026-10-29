@@ -32,7 +32,7 @@ function bodyResponse(text){const el=$('#body-response');if(el)el.textContent=te
 
 const input=new MirrorInputs({isActive:()=>!$('#drawer').open&&(['guess','plan','result','review'].includes(s.stage)||s.paused),onStatus:p=>{
  const opened=(p.camera==='on'&&sensor.camera!=='on')||(p.speech==='listening'&&sensor.speech!=='listening');
- sensor={...sensor,...p};if(p.transcript)toast(`Heard: ${p.transcript} · ${p.message||''}`);const el=$('#sensor-status');if(el)el.textContent=p.transcript?`Heard: ${p.transcript} · ${p.message||''}`:p.tracking||p.message||'';
+ sensor={...sensor,...p};if(sensor.camera==='loading'&&input.stream)sensor.message='Camera allowed · Loading gesture recognition…';if(p.transcript)toast(`Heard: ${p.transcript} · ${p.message||''}`);const el=$('#sensor-status');if(el)el.textContent=p.transcript?`Heard: ${p.transcript} · ${p.message||''}`:p.tracking||p.message||'';
  if(opened){if(p.camera==='on')input.showPreview(true);if(popup==='inputs'&&$('#drawer').open)close();toast(p.camera==='on'?'Look at the camera, then nod.':'You can say Continue or Another.');}
  updateBody();
 },onEvent:signal=>{
