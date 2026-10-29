@@ -95,3 +95,12 @@ let appSwitch=freshJourney();appSwitch.stage='welcome';appSwitch=step(appSwitch,
   assert.ok(!state.evidence.some(x=>x.includes('Fictional calendar signal')));
   console.log('PASS: disconnect removes the example signal from discovery');
 }
+
+{
+ let state=freshJourney();state.stage='welcome';
+ state=step(state,'app-preview-connect',{app:'calendar',profileId:'connection'});
+ state=step(state,'use-app-preview',{app:'calendar'});
+ assert.equal(state.topic,'connection');assert.equal(state.weights.focus,0);
+ assert.match(state.previewSignal,/unscheduled evening/);
+ console.log('PASS: calendar preview follows the assigned profile without inventing a preference');
+}
