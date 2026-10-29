@@ -299,3 +299,7 @@ button,input,textarea,select{font-family:inherit}
 
 /* Daily cards give space to the actual thought and its supporting information. */
 .health-daily,.connection-daily{min-height:0;padding:25px 24px 22px}.health-daily h2,.connection-daily h2{max-width:17ch;margin:26px 0 12px;font-size:27px;line-height:1.16;letter-spacing:-.6px}.health-daily p,.connection-daily p{max-width:31ch;font-size:14px;line-height:1.5}.health-daily .daily-clue,.health-daily .daily-action{margin-top:18px;padding-top:14px}.connection-daily .daily-draft-label{margin-top:22px}.calm-source .source-hero{height:auto;min-height:150px;background:linear-gradient(130deg,#42404d,#65606c);justify-content:center}
+
+.connection-scene{min-height:0;padding:24px}.connection-scene .message-preview{margin:26px 0 18px;padding:20px;border-radius:16px}.connection-scene .message-preview p{font-size:18px;line-height:1.45}.connection-scene .connection-options{margin:10px 0 18px}.connection-scene .not-sent-mark{margin-top:16px}
+
+.connection-scene .message-preview textarea{display:block;width:100%;min-height:82px;margin-top:10px;padding:0;border:0;resize:vertical;background:transparent;color:#263c37;font:inherit;font-size:18px;line-height:1.45;outline-offset:5px}.connection-scene .message-preview textarea:focus-visible{outline:2px solid #6e9389;border-radius:4px}

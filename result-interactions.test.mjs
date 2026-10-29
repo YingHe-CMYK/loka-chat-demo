@@ -10,7 +10,7 @@ s=step(s,'save-reflection',{notes:['Keep my independence','Learn something new',
 s.results=[{id:'connection',topic:'connection',planId:'connection-private',visualStarted:'gentle',visualDone:1}];s=step(s,'save-connection-draft',{text:'A unique private draft'});assert.match(visualResult(s.results[0]),/A unique private draft/);
 console.log('PASS: cost view, first reveal, reflection and private draft');
 
-const emptyDraft=visualResult({topic:"connection",planId:"connection-private",connectionDraft:"",visualStarted:"gentle",visualDone:1});assert.match(emptyDraft,/<textarea id="connection-draft" maxlength="500"><\/textarea>/);assert.doesNotMatch(emptyDraft,/I thought of you and would like to catch up sometime/);
+const emptyDraft=visualResult({topic:"connection",planId:"connection-private",connectionDraft:"",visualStarted:"gentle",visualDone:1});assert.match(emptyDraft,/<textarea id="connection-draft" maxlength="500"[^>]*><\/textarea>/);assert.doesNotMatch(emptyDraft,/I thought of you and would like to catch up sometime/);
 
 const appHealth=visualResult({topic:"health",planId:"health-focus",sourceKind:"app",schedule:{name:"Example",day:"Mon",time:"09:00"}});assert.match(appHealth,/Based on the connected source/);assert.match(appHealth,/entered by you and has not been verified/);assert.doesNotMatch(appHealth,/fictional researcher sample/);
 
