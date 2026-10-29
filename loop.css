@@ -318,3 +318,5 @@ button,input,textarea,select{font-family:inherit}
 .app-hub .app-skip{justify-content:flex-start;margin:-8px 0 14px;padding:0;min-height:40px;color:var(--muted)}
 
 .scan-progress{height:3px;width:100%;max-width:200px;margin:28px 0;border-radius:4px;background:#e7e5e9;overflow:hidden}.scan-progress i{display:block;height:100%;width:45%;border-radius:inherit;background:#746987;animation:scan-progress-slide 1s ease-in-out infinite alternate}@keyframes scan-progress-slide{from{transform:translateX(-30%)}to{transform:translateX(155%)}}@media (prefers-reduced-motion:reduce){.scan-progress i{animation:none;width:65%}}
+
+.training-toggle{width:100%;margin-top:12px;background:#fff;border-radius:16px}.switch-track{display:block;width:38px;height:22px;border-radius:12px;background:#d8d5dc;padding:2px;flex:none}.switch-track>i{display:block;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px #0002;transition:transform .18s}.switch-track.on{background:#75658d}.switch-track.on>i{transform:translateX(16px)}@media (prefers-reduced-motion:reduce){.switch-track>i{transition:none}}
