@@ -3,17 +3,17 @@ export class GestureInterpreter {
  constructor(){this.reset();}
  reset(){this.samples=[];this.base=null;this.motion=null;this.hold={};this.last=-Infinity;this.gazeAt=null;this.attentionSent=false;this.expression=null;}
  consume(f,now){
-  if(!f){this.motion=null;this.gazeAt=null;this.attentionSent=false;this.hold={};return {status:'请让一张脸保持在画面中央'};}
+  if(!f){this.motion=null;this.gazeAt=null;this.attentionSent=false;this.hold={};return {status:'Keep one face centered in view'};}
   if(!this.base){
    this.samples.push(f);if(this.samples.length>20)this.samples.shift();
    const stable=this.samples.length===20&&['pitch','yaw'].every(k=>Math.max(...this.samples.map(x=>x[k]))-Math.min(...this.samples.map(x=>x[k]))<.12);
-   if(stable){this.base={};for(const k of ['pitch','yaw','eyeX','eyeY'])this.base[k]=this.samples.reduce((a,x)=>a+x[k],0)/20;return {status:'校准完成，可以自然点头或摇头'};}
-   return {status:'请平视屏幕并保持自然表情约两秒 · '+Math.round(this.samples.length/20*100)+'%'};
+   if(stable){this.base={};for(const k of ['pitch','yaw','eyeX','eyeY'])this.base[k]=this.samples.reduce((a,x)=>a+x[k],0)/20;return {status:'Ready · Nod or shake naturally'};}
+   return {status:'Look at the screen for two seconds · '+Math.round(this.samples.length/20*100)+'%'};
   }
   const p=f.pitch-this.base.pitch,y=f.yaw-this.base.yaw;
   const attentive=Math.abs(p)<.17&&Math.abs(y)<.20&&Math.abs(f.eyeX-this.base.eyeX)<.13&&Math.abs(f.eyeY-this.base.eyeY)<.10&&f.blink<.45;
-  const emit=event=>{if(event==='nod'||event==='next')this.last=now;this.motion=null;this.gazeAt=null;return {event,status:({gaze:'看向屏幕 · 展开内容',nod:'识别到点头',next:'识别到摇头',smile:'检测到微笑动作',frown:'检测到皱眉动作'})[event]};};
-  if(now-this.last<1000)return {status:'已回应你，等待下一次动作'};
+  const emit=event=>{if(event==='nod'||event==='next')this.last=now;this.motion=null;this.gazeAt=null;return {event,status:({gaze:'Looking at the screen',nod:'Nod detected',next:'Head shake detected',smile:'Smile detected',frown:'Brow movement detected'})[event]};};
+  if(now-this.last<1000)return {status:'Response received · Ready shortly'};
   if(this.motion&&now-this.motion.at>1700)this.motion=null;
   if(Math.abs(y)>.13&&Math.abs(p)<.20){
    if(this.motion?.axis==='yaw'&&Math.sign(y)!==this.motion.sign&&now-this.motion.at>100)return emit('next');
@@ -29,7 +29,7 @@ export class GestureInterpreter {
   }
   if(!attentive){this.gazeAt=null;this.attentionSent=false;}
   else if(!this.motion&&!expression&&!this.attentionSent){if(this.gazeAt===null)this.gazeAt=now;else if(now-this.gazeAt>1100){this.attentionSent=true;return emit('gaze');}}
-  return {status:attentive?'看向屏幕 · 等待你的动作':'视线偏离或头部移动中'};
+  return {status:attentive?'Looking at the screen · Waiting for a response':'Looking away or moving'};
  }
 }
 export function frameFeatures(result){

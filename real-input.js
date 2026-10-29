@@ -1,4 +1,4 @@
-import {GestureInterpreter,frameFeatures,speechCommand} from './sensor-gestures.js?v=local-7';
+import {GestureInterpreter,frameFeatures,speechCommand} from './sensor-gestures.js?v=local-8';
 export class MirrorInputs {
  constructor({onEvent,onStatus,isActive}){this.onEvent=onEvent;this.onStatus=onStatus;this.isActive=isActive;this.gestures=new GestureInterpreter();this.generation=0;this.camera='off';this.speech='off';this.stream=null;this.model=null;this.recognition=null;this.raf=null;this.disposed=false;this.video=document.createElement('video');this.video.id='mirror-camera-preview';this.video.muted=true;this.video.autoplay=true;this.video.playsInline=true;this.video.setAttribute('aria-label','On-device camera preview');this.video.hidden=true;document.body.append(this.video);this.lastVideo=-1;this.lastFrame=0;this.noticeAt=0;
   document.addEventListener('visibilitychange',()=>{if(document.hidden)this.stopAll('Page moved to background. Input stopped.');});window.addEventListener('pagehide',()=>this.stopAll());

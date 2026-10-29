@@ -10,7 +10,7 @@ import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-2
 import {appSources,browserFacts,sampleAppSignals,sampleProfiles} from './device-sources.js?v=stage1-207';
 import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-106';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-227';
+import {MirrorInputs} from './real-input.js?v=stage1-228';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-218';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
@@ -25,6 +25,7 @@ function updateBody(){const el=$('#body-controls');if(el)el.innerHTML=bodyBanner
  frame.dataset.camera=sensor.camera||'off';const active=sensor.camera==='on',loading=sensor.camera==='loading';
  $('#presence-state').textContent=active?'Camera on':loading?'Connecting camera':sensor.camera==='error'?'Camera unavailable':'Camera off';
  $('#presence-tracking').textContent=active?(sensor.tracking||'Look at the camera for two seconds.'):loading?(sensor.message||'Allow camera and microphone access.'):sensor.camera==='error'?(sensor.message||'Try again or swipe.'):'Swipe above, or enable camera and voice.';
+ const voice=$('.voice-alternative');if(voice){const label=sensor.speech==='listening'?'Listening':sensor.speech==='starting'?'Starting':sensor.speech==='unsupported'?'Voice unavailable':sensor.speech==='error'?'Retry voice':'Speak';const text=voice.querySelector('span');if(text)text.textContent=label;voice.setAttribute('aria-label',label);}
  const start=$('#camera-start button');if(start){start.disabled=loading;start.innerHTML=icon('eye')+(loading?'Opening…':sensor.camera==='error'?'Try camera again':'Enable camera & voice');}
 }
 function mountMirror(){const slot=$('#camera-mount');if(slot){if(input.video.parentElement!==slot)slot.append(input.video);input.showPreview(sensor.camera==='on');if(sensor.camera==='on'&&input.video.paused)input.video.play().catch(()=>toast('Video paused. Restart the camera.'));}else if(!document.body.contains(input.video))document.body.append(input.video);updateBody();}
