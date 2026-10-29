@@ -163,7 +163,7 @@ if(a==='skip-daily-review')return act('skip-daily-review');
 if(a==='daily-feedback')return handleDailySwipe(e.target.closest('[data-value]')?.dataset.value==='yes'?'right':'left');
 if(a==='daily-continue'){if(s.source==='none'){return act('navigate-back');}return act('daily-continue');}
 if(a==='github-open')return show('github-open');
-if(a==='github-preview')return show('community-agreement');
+if(a==='github-preview'){if(s.profile&&s.agreement){close();return act('sign-in',{name:s.profile.name,day:today});}return show('community-agreement');}
 if(a==='accept-community'){close();act('sign-in',{name:s.profile?.name||'GitHub user',day:today});return act('agree-v1');}
 if(a==='sign-in-open')return show('sign-in-open');
 if(a==='sign-in-submit'){const name=$('#login-name')?.value?.trim();if(!name||$('#login-code')?.value!=='123456')return toast('Enter a name and the example code 123456.');close();return act('sign-in',{name,day:today});}
