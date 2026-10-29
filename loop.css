@@ -312,3 +312,5 @@ button,input,textarea,select{font-family:inherit}
 
 .live-mirror[data-camera="off"] .face-contour,.live-mirror[data-camera="off"] .scan-corner{display:none}
 @media(max-height:700px){.invite-entry{padding-top:8px}.invite-entry .entry-kicker{margin-bottom:8px}.invite-entry h1{font-size:30px;line-height:1.06;margin-bottom:8px}.invite-entry>p:not(.entry-kicker):not(.fine){font-size:13px;line-height:1.4}.entry-example{margin:14px 0 10px;padding:13px;gap:7px}.entry-example strong{font-size:18px}.invite-entry .fine{font-size:10px;line-height:1.35}.invite-entry .text-button.full{margin-top:2px;min-height:40px}.device-entry{padding-top:8px}.device-entry h1{font-size:29px;margin:10px 0 6px}.device-entry>p{font-size:13px;line-height:1.4}.permission-preview{margin:14px 0 10px}.permission-preview div{padding:10px 2px}.device-entry .device-connect{margin-top:8px}.entry-alternatives{margin:6px 0 0}.device-entry>small{margin-top:2px}}
+
+.daily-recent{margin-top:18px}.daily-recent>span{display:block;margin:0 0 8px;color:var(--muted);font-size:10px;letter-spacing:.12em}.daily-recent .menu-row{background:rgba(255,255,255,.65);border-radius:16px}
