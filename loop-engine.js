@@ -97,7 +97,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
   event(s,type,{effect:source==='device'?'只基于当前浏览器与 Miro 内的真实动作提出交互偏好猜测；没有私人需求证据':source==='sample'?'使用明确标注为虚构的 ML 研究员样本，不能当作本人资料':`示例线索优先指向${topics[s.topic].label}`});return s;
  }
  if(type==='budget'){s.cap=Math.max(0,Math.min(12,Number(data.cap)||0));if(s.cap>0&&(s.confirmedMemories||[]).some(m=>m.id==='preference-budget')){s.confirmedMemories=s.confirmedMemories.filter(m=>m.id!=='preference-budget');s.weights.budget-=4;}event(s,type,{effect:`方案费用上限变为 ${s.cap} QB`});return s;}
- if(type==='revoke'){const balance=s.balance,ledger=s.ledger||[];s={...fresh(),source:'none',profile:s.profile,invitation:s.invitation};s.balance=balance;s.ledger=ledger;s.notice='Sources and local learning removed. Example balance kept.';return s;}
+ if(type==='revoke'){const {balance,ledger=[],profile,invitation,membership,actionPolicy,agreement,lastVisit}=s;s={...fresh(),source:'none',profile,invitation,balance,ledger,membership,actionPolicy,agreement,lastVisit};s.notice='Sources, learning and saved results removed.';return s;}
  if(['correct','left','right','feedback','next'].includes(type))s.undo={stage:s.stage,topic:s.topic,index:s.index,discoveryDepth:s.discoveryDepth||0,needDepth:s.needDepth||0,followUpIndex:s.followUpIndex??null,localGuess:s.localGuess||'',previewFocus:s.previewFocus??null,dailyGreeting:!!s.dailyGreeting,deepChoice:s.deepChoice||null,deepNeed:s.deepNeed||null,confirmedMemories:clone(s.confirmedMemories||[]),cap:s.cap,weights:clone(s.weights),affinity:clone(s.affinity),visits:clone(s.visits||{}),dismissed:[...s.dismissed],evidence:[...s.evidence]};
  if(type==='signal'){
   if(!['gaze','smile','frown'].includes(data.signal)||!['guess','plan'].includes(s.stage))return s;

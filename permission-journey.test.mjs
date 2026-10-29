@@ -49,3 +49,11 @@ console.log('PASS: consent leads directly to a clearly fictional assigned guess 
   assert.equal(state.stage,'review');
   console.log('PASS: action preference blocks external examples before review');
 }
+
+{
+ let state=freshJourney();state.membership='plus';state.actionPolicy='block';state.balance=7;state.agreement={version:'1'};state.results=[{id:'old'}];state.previewApps={calendar:true};
+ state=step(state,'revoke');
+ assert.equal(state.membership,'plus');assert.equal(state.actionPolicy,'block');assert.equal(state.balance,7);
+ assert.deepEqual(state.agreement,{version:'1'});assert.equal(state.results.length,0);assert.equal(state.previewApps,undefined);
+ console.log('PASS: clearing source data preserves account settings while clearing results and previews');
+}
