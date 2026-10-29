@@ -109,7 +109,7 @@ export function step(input,type,data={}){let s=clone(input);s.notice='';
  if(type==='left'){
   if(s.stage==='guess'&&s.topic==='general'){s.stage='source-result';event(s,type,{effect:'收下否定反馈；现有设备线索不足以换成私人需求判断'});}
   else if(s.stage==='guess'&&s.discoveryDepth){if(s.discoveryDepth===1){s.discoveryDepth=2;event(s,type,{effect:'The first deeper hypothesis did not fit; offering an alternative'});}else{s.discoveryDepth=0;s.index++;event(s,type,{effect:'Neither deeper hypothesis fit; returning to the original direction'});}}
-  else if(s.stage==='guess'){s.affinity[s.topic]-=1;if(!['local','app'].includes(s.source))s.topic=nextLens(s);s.index++;s.evidence=['demo','sample'].includes(s.source)?sampleClues(s):(s.evidence||[]);event(s,type,{effect:'撤下当前猜测，按探索记录换一个方向；不解释为永久厌恶'});}
+  else if(s.stage==='guess'){s.affinity[s.topic]-=1;if(!['local','app'].includes(s.source)){s.topic=nextLens(s);s.previewFocus=null;}s.index++;s.evidence=['demo','sample'].includes(s.source)?sampleClues(s):(s.evidence||[]);event(s,type,{effect:'撤下当前猜测，按探索记录换一个方向；不解释为永久厌恶'});}
   else if(s.stage==='plan'){const p=current(s);if(p)s.dismissed.push(p.id);event(s,type,{effect:'只换帮助方式，保留探索方向'});}
   return s;
  }
