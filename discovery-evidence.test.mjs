@@ -40,3 +40,18 @@ let free=freshJourney();free.stage='welcome';free=step(free,'sample-read',{profi
  assert.match(hypothesisCopy(state),/I miss making things with other people/);
  console.log('PASS: the follow-up keeps the written correction in context');
 }
+
+{
+ let state=freshJourney();state.stage='welcome';state=step(state,'sample-read',{profileId:'focus'});
+ state=step(state,'correct-note',{text:'A private correction'});
+ state=step(state,'right');state=step(state,'right');
+ state=step(state,'council-start',{confirmed:true,mode:'local'});
+ for(let i=0;i<20&&state.stage==='review';i++)state=step(state,'council-next');
+ const id=state.results.at(-1).id;
+ assert.ok(state.results.at(-1).sourceEvidence.some(x=>x.includes('A private correction')));
+ state=step(state,'delete-memory',{id:'correction-note'});
+ state=step(state,'open-result',{id});
+ assert.ok(!state.evidence.some(x=>x.includes('A private correction')));
+ assert.ok(!state.results.at(-1).sourceEvidence.some(x=>x.includes('A private correction')));
+ console.log('PASS: deleting a correction also clears it from saved result context');
+}
