@@ -104,3 +104,17 @@ let appSwitch=freshJourney();appSwitch.stage='welcome';appSwitch=step(appSwitch,
  assert.match(state.previewSignal,/unscheduled evening/);
  console.log('PASS: calendar preview follows the assigned profile without inventing a preference');
 }
+
+{
+ let state=freshJourney();state.stage='welcome';
+ state=step(state,'app-preview-connect',{app:'gmail',profileId:'connection'});
+ state=step(state,'app-preview-connect',{app:'calendar',profileId:'connection'});
+ state=step(state,'use-app-preview',{app:'calendar'});
+ assert.ok(state.evidence.some(x=>x.startsWith('Fictional gmail signal:')));
+ assert.ok(state.evidence.some(x=>x.startsWith('Fictional calendar signal:')));
+ assert.match(hypothesisCopy(state),/inbox/);
+ state=step(state,'app-preview-disconnect',{app:'gmail'});
+ assert.doesNotMatch(hypothesisCopy(state),/inbox/);
+ assert.ok(!state.evidence.some(x=>x.startsWith('Fictional gmail signal:')));
+ console.log('PASS: multiple app clues contribute and disconnect removes the selected clue');
+}
