@@ -10,7 +10,7 @@ import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-2
 import {appSources,browserFacts,sampleAppSignals,sampleProfiles} from './device-sources.js?v=stage1-207';
 import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-106';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-226';
+import {MirrorInputs} from './real-input.js?v=stage1-227';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-218';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
@@ -32,7 +32,7 @@ function bodyResponse(text){const el=$('#body-response');if(el)el.textContent=te
 
 const input=new MirrorInputs({isActive:()=>!$('#drawer').open&&(['guess','plan','result','review'].includes(s.stage)||s.paused),onStatus:p=>{
  const opened=(p.camera==='on'&&sensor.camera!=='on')||(p.speech==='listening'&&sensor.speech!=='listening');
- sensor={...sensor,...p};if(sensor.camera==='loading'&&input.stream)sensor.message='Camera allowed · Loading gesture recognition…';if(p.transcript)toast(`Heard: ${p.transcript} · ${p.message||''}`);const el=$('#sensor-status');if(el)el.textContent=p.transcript?`Heard: ${p.transcript} · ${p.message||''}`:p.tracking||p.message||'';
+ sensor={...sensor,...p};if(sensor.camera==='loading'&&input.stream)sensor.message=input.audioAuthorized?'Camera & mic allowed · Preparing input…':'Camera allowed · Preparing gestures…';if(p.transcript)toast(`Heard: ${p.transcript} · ${p.message||''}`);const el=$('#sensor-status');if(el)el.textContent=p.transcript?`Heard: ${p.transcript} · ${p.message||''}`:p.tracking||p.message||'';
  if(opened){if(p.camera==='on')input.showPreview(true);if(popup==='inputs'&&$('#drawer').open)close();toast(p.camera==='on'?'Look at the camera, then nod.':'You can say Continue or Another.');}
  updateBody();
 },onEvent:signal=>{
