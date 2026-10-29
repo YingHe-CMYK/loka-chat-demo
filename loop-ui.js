@@ -10,7 +10,7 @@ import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-2
 import {appSources,browserFacts,sampleAppSignals,sampleProfiles} from './device-sources.js?v=stage1-207';
 import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-106';
 import {quote} from './council-sim.js';
-import {MirrorInputs} from './real-input.js?v=stage1-225';
+import {MirrorInputs} from './real-input.js?v=stage1-226';
 import {esc,icon,button,ib,row,art,mountSwipe} from './miro-ui-kit.js?v=stage1-218';
 const $=q=>document.querySelector(q),key='miro-swipe-v3';
 let s=freshJourney(),sensor={},popup='',sheetHistory=[],reviewTimer,toastTimer,connectTimer,swipe,connecting=false,lastSignal=0,bridgeToken='',bridgeTimer=null;
@@ -228,7 +228,7 @@ if(['start-model','start-local','start-blocked'].includes(a)){close();return act
 if(['result-route','result-begin','result-step'].includes(a)){const route=e.target.closest('[data-route]')?.dataset.route;act(a,{route});if($('#drawer').open&&popup==='result-detail')show('result-detail');return;}
 if(a==='helpful'||a==='unhelpful')return act('feedback',{useful:a==='helpful'});
 if(a==='recalibrate'){input.recalibrate();close();toast('Look at the camera for two seconds to recalibrate.');return;}
-if(a==='camera'){if(sensor.camera==='on')input.stopCamera();else {input.startCamera();input.startSpeech();}return;}
+if(a==='camera'){if(sensor.camera==='on')input.stopAll();else input.startCamera().then(()=>{if(input.camera==='on'&&!document.hidden)input.startSpeech();});return;}
 if(a==='mic'){if(sensor.speech==='listening')input.stopSpeech();else input.startSpeech();return;}
 if(a==='reset')return show('reset-confirm');
 if(a==='revoke'){scanController?.abort();input.stopAll();clearBridge();close();return act(a);}
