@@ -336,3 +336,11 @@ button,input,textarea,select{font-family:inherit}
 /* Body input stays available without competing with the current card. */
 .simplified-guess .live-mirror[data-camera="off"]{height:84px;border-radius:18px;box-shadow:none}.simplified-guess .live-mirror[data-camera="off"] .mirror-placeholder,.simplified-guess .live-mirror[data-camera="off"] .presence-top,.simplified-guess .live-mirror[data-camera="off"] .presence-bottom,.simplified-guess .live-mirror[data-camera="off"] .camera-start h2{display:none}.simplified-guess .live-mirror[data-camera="off"] .camera-start{inset:0;background:none}.simplified-guess .live-mirror[data-camera="off"] .mirror-start-button{min-height:44px}.simplified-guess .gesture-primary{margin:8px 0 14px}.simplified-guess .live-mirror[data-camera="on"]{height:230px}
 .simplified-guess .live-mirror[data-camera="off"]{min-height:84px;aspect-ratio:auto}.simplified-guess .live-mirror[data-camera="on"]{min-height:230px;aspect-ratio:auto}
+/* Mobile discovery: the card is the primary touch surface. */
+@media(max-width:600px){
+ .simplified-guess .conversation-prompt.card{min-height:clamp(280px,43dvh,390px);padding:24px;display:flex;flex-direction:column;justify-content:flex-start;border-radius:26px}
+ .simplified-guess .conversation-prompt .prompt-label{flex:none}
+ .simplified-guess .conversation-prompt h2{margin:auto 0;font-size:clamp(21px,5.8vw,25px);line-height:1.4;letter-spacing:-.35px;overflow-wrap:anywhere}
+ .simplified-guess .conversation-prompt #signal-trail:not(:empty){margin:12px 0 0}
+ .simplified-guess .touch-fallback>div{gap:8px}
+}
