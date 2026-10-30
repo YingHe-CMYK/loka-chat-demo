@@ -1,0 +1,3 @@
+{$LOKA_DOMAIN} {
+  reverse_proxy loka:8780
+}

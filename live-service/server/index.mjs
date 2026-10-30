@@ -1,0 +1,11 @@
+import {mkdirSync} from 'node:fs';
+import {dirname,resolve} from 'node:path';
+import {createApp,openDatabase} from './app.mjs';
+import {createIdentity} from './privy.mjs';
+const dbPath=process.env.DATABASE_PATH||'./data/loka.sqlite';mkdirSync(dirname(resolve(dbPath)),{recursive:true});
+const config={appId:process.env.PRIVY_APP_ID||'',clientId:process.env.PRIVY_CLIENT_ID||'',trustProxyHops:Number(process.env.TRUST_PROXY_HOPS||0)};
+const identity=config.appId&&process.env.PRIVY_APP_SECRET?createIdentity(config.appId,process.env.PRIVY_APP_SECRET):null;
+if(process.env.NODE_ENV==='production'&&!identity)throw Error('Set PRIVY_APP_ID and PRIVY_APP_SECRET before production startup.');
+const app=createApp({db:openDatabase(dbPath),identity,config,staticDir:'dist'});
+const server=app.listen(Number(process.env.PORT||8780),'0.0.0.0',()=>console.log('Loka service listening; authentication configured:',!!identity));
+process.on('SIGTERM',()=>server.close());
