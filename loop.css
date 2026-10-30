@@ -353,3 +353,146 @@ button,input,textarea,select{font-family:inherit}
 .simplified-guess .conversation-prompt .prompt-tools{gap:6px}
 .simplified-guess .conversation-prompt .prompt-tools .icon-button{width:44px;height:44px;min-height:44px}
 @media(max-width:360px){.simplified-guess .conversation-prompt .card-reading h2{font-size:22px}}
+
+/* Reference direction: quiet invitation and an illuminated mirror. */
+#shell { --paper:#f7f6f9; --ink:#26232f; --muted:#746d7e; --line:#e4dfeb; --accent:#252130; --soft:#ece9f1; }
+#shell[data-stage="invite"] .invite-entry { padding-top:28px; }
+.invite-entry .entry-kicker { letter-spacing:.16em; font-size:10px; color:#777087; }
+.entry-art { height:155px; display:grid; place-items:center; margin:0 0 16px; }
+.entry-art .mirror-art { width:160px; height:160px; animation:loka-float 8s ease-in-out infinite; }
+.entry-art .halo-front { animation:loka-ring 18s linear infinite; }
+.invite-entry h1 { max-width:300px; }
+.name-entry label { margin-top:24px; }
+#shell[data-stage="welcome"] { background:radial-gradient(ellipse at 50% 24%,#394054 0,#222637 42%,#171c29 100%); color:#f7f5fa; border-color:#ffffff24; }
+#shell[data-stage="welcome"] .brand,#shell[data-stage="welcome"] #journey-back { color:#fff; }
+#shell[data-stage="welcome"] .prototype { color:#c7c2d1; }
+#shell[data-stage="welcome"] #settings { background:#ffffff16; color:#fff; }
+#shell[data-stage="welcome"] .home-bar { background:#ffffff42; }
+#shell[data-stage="welcome"] .device-entry { padding-top:20px; }
+.device-orb { position:relative; width:min(65vw,240px); aspect-ratio:1; margin:24px auto 30px; border-radius:50%; background:radial-gradient(circle at 30% 25%,#fff 0,#e5e8fa 19%,#a7b0cd 48%,#465369 78%,#283143 100%); box-shadow:inset -13px -17px 35px #18203480,0 0 45px #b2b8ed2e; animation:loka-float 9s ease-in-out infinite; }
+.device-orb:before,.device-orb:after { content:""; position:absolute; inset:7% 1%; border:1px solid #ffffff62; border-radius:50%; transform:rotate(69deg) scaleX(.42); }
+.device-orb:after { transform:rotate(-20deg) scaleY(.44); }
+.device-orb i { position:absolute; inset:37%; border-radius:50%; background:radial-gradient(circle at 30% 25%,#fff,#d4d9ea 45%,#8d9bb8 100%); box-shadow:0 6px 20px #20273c55; }
+#shell[data-stage="welcome"] .device-index { color:#cbc6da; letter-spacing:.14em; }
+#shell[data-stage="welcome"] .device-entry h1 { margin-top:0; color:#fff; }
+#shell[data-stage="welcome"] .device-entry>p,#shell[data-stage="welcome"] .device-entry>small { color:#c9c8d4; }
+#shell[data-stage="welcome"] .permission-preview { border-color:#ffffff32; margin:20px 0; }
+#shell[data-stage="welcome"] .permission-preview div+div { border-color:#ffffff24; }
+#shell[data-stage="welcome"] .permission-preview small,#shell[data-stage="welcome"] .entry-alternatives .text-button { color:#c9c8d4; }
+#shell[data-stage="welcome"] .device-connect { background:#f0eef4; color:#242230; box-shadow:none; }
+#shell[data-stage="source-result"] .source-result h1,#shell[data-stage="source-result"] .device-ready h1 { letter-spacing:-1px; line-height:1.15; }
+.simplified-guess .conversation-prompt.card { background:linear-gradient(145deg,#f4f1f6,#eae6ef); border:1px solid #e3dce8; box-shadow:0 18px 45px #3329400d; }
+.compact-plan .offer-object,.outcome .result-swipe { border-radius:26px; }
+@keyframes loka-float { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-6px) } }
+@keyframes loka-ring { from { transform:rotate(-33deg) scaleX(.8) } to { transform:rotate(327deg) scaleX(.8) } }
+@media(max-height:700px) { .entry-art{height:105px;margin-bottom:8px}.entry-art .mirror-art{width:112px;height:112px}.device-orb{width:150px;margin:14px auto 18px} }
+@media(prefers-reduced-motion:reduce) { .entry-art .mirror-art,.entry-art .halo-front,.device-orb { animation:none } }
+#shell[data-stage="welcome"] #journey-back { background:#ffffff1c; color:#fff; }
+
+/* One continuous palette across the journey: pearl surfaces, ink and muted violet. */
+#shell { --paper:#f7f6f9; --surface:#fff; --ink:#26232f; --muted:#716b7c; --accent:#282432; --soft:#ece9f2; --line:#e4dfeb; }
+#shell[data-stage="welcome"] { background:var(--paper); color:var(--ink); border-color:#fff; }
+#shell[data-stage="welcome"] .brand { color:var(--ink); }
+#shell[data-stage="welcome"] #journey-back { background:#fff; color:var(--ink); }
+#shell[data-stage="welcome"] .prototype,#shell[data-stage="welcome"] .device-index { color:var(--muted); }
+#shell[data-stage="welcome"] #settings { background:#fff; color:var(--ink); }
+#shell[data-stage="welcome"] .home-bar { background:#342c4033; }
+#shell[data-stage="welcome"] .device-entry h1 { color:var(--ink); }
+#shell[data-stage="welcome"] .device-entry>p,#shell[data-stage="welcome"] .device-entry>small,#shell[data-stage="welcome"] .permission-preview small,#shell[data-stage="welcome"] .entry-alternatives .text-button { color:var(--muted); }
+#shell[data-stage="welcome"] .permission-preview,#shell[data-stage="welcome"] .permission-preview div+div { border-color:var(--line); }
+#shell[data-stage="welcome"] .device-connect { background:var(--accent); color:#fff; }
+.device-orb { background:radial-gradient(circle at 30% 25%,#fff 0,#e9e7f3 19%,#b4adc6 48%,#777288 78%,#5b566c 100%); box-shadow:inset -13px -17px 35px #42394c45,0 12px 45px #6c617c20; }
+.device-orb i { background:radial-gradient(circle at 30% 25%,#fff,#e0dce9 45%,#a49bb5 100%); }
+.permission-mark,.ready-mark { background:#edeaf2; color:#6d607d; }
+.compact-plan .offer-object,.daily-card.health-daily,.daily-card.fortune-daily,.daily-card.connection-daily,.health-result,.health-result.research,.connection-scene,.meaning-scene { background:radial-gradient(ellipse at 78% 4%,#746c80 0%,#4c465b 42%,#292633 100%); }
+.conversation-prompt.card.health,.conversation-prompt.card.meaning,.conversation-prompt.card.connection,.conversation-prompt.card.research { background:linear-gradient(145deg,#f5f2f7,#ebe7f0); border-color:#e2dce8; }
+
+/* Keep the mirror's geometry stable; only its light and position move. */
+.entry-art { width:100%; overflow:visible; }
+.entry-art .mirror-art { aspect-ratio:1; flex:none; }
+.invite-entry .entry-art .halo { inset:10%; width:auto; height:auto; border:0; mask:radial-gradient(circle,transparent 44%,#000 46% 68%,transparent 70%); -webkit-mask:radial-gradient(circle,transparent 44%,#000 46% 68%,transparent 70%); background:conic-gradient(from 25deg,#aca3bf,#fdfcff 15%,#bbb5cb 30%,#777088 44%,#f1eef9 62%,#a49ab5 82%,#aca3bf); box-shadow:none; }
+.invite-entry .entry-art .halo-front { transform:rotate(-32deg); animation:loka-halo-light 16s linear infinite; }
+.invite-entry .entry-art .halo-back { inset:15%; transform:rotate(32deg); animation:loka-halo-light-back 20s linear infinite; opacity:.65; }
+.invite-entry .entry-art .pearl { width:36%; height:36%; left:32%; top:32%; }
+.device-orb i:first-child { transform:none; animation:none; }
+.device-orb:before { animation:none; transform:rotate(69deg) scaleX(.42); }
+.device-orb:after { transform:rotate(-20deg) scaleY(.44); }
+.consent-orb i { animation:none; transform:rotateX(70deg); }
+@keyframes loka-halo-light { from { transform:rotate(-32deg) } to { transform:rotate(328deg) } }
+@keyframes loka-halo-light-back { from { transform:rotate(32deg) } to { transform:rotate(-328deg) } }
+@media(prefers-reduced-motion:reduce) { .invite-entry .entry-art .halo-front,.invite-entry .entry-art .halo-back { animation:none!important; } }
+.device-orb { height:auto; }
+.device-orb:before,.device-orb:after { background:transparent; box-shadow:none; }
+.device-orb i { border:0; box-shadow:0 6px 20px #20273c55; }
+.device-orb b { display:none; }
+
+#shell[data-stage="scanning"]{background:var(--paper);color:var(--ink);border-color:#fff}#shell[data-stage="scanning"] .brand{color:var(--ink)}#shell[data-stage="scanning"] #settings{background:#fff;color:var(--ink)}#shell[data-stage="scanning"] #journey{color:var(--muted)}#shell[data-stage="scanning"] .device-index{color:var(--muted)}#shell[data-stage="scanning"] .scan-list>div{background:#fff;border-color:var(--line)}
+
+/* The invitation and connection use the same mirror, scaled to the layout. */
+.entry-art .device-orb { width:150px; height:auto; aspect-ratio:1; margin:0; flex:none; }
+@media(max-height:700px){.entry-art .device-orb{width:108px}}
+
+/* A single mirror emerges from light, then becomes a quiet solid presence. */
+.device-orb {
+ isolation:isolate;
+ background:radial-gradient(circle at 30% 24%,#fff 0%,#f7f5ff 10%,#dbd9e9 28%,#a5a8c0 53%,#666b83 76%,#363c52 100%);
+ box-shadow:inset 8px 9px 24px #ffffff9c,inset -18px -22px 42px #30375066,0 18px 36px #55506e25,0 0 55px #beb7dd38;
+ animation:mirror-emerge 2.8s cubic-bezier(.2,.7,.2,1) both,mirror-hover 8s ease-in-out 2.8s infinite;
+}
+.device-orb:before,.device-orb:after {
+ inset:4%; border:1px solid #fff9; background:transparent; box-shadow:0 0 10px #fff4;
+ transform-origin:center; animation:mirror-orbit 22s linear infinite;
+}
+.device-orb:after { inset:7%; border-color:#e6e4f280; animation:mirror-orbit-alt 28s linear infinite; }
+.device-orb i:first-child {
+ inset:37%; border:1px solid #ffffff65; transform:none; animation:mirror-core 5s ease-in-out infinite;
+ background:radial-gradient(circle at 29% 23%,#fff,#f4f2fc 22%,#d2d2e1 50%,#939bb1 100%);
+ box-shadow:inset 3px 3px 8px #ffffffbc,inset -5px -5px 12px #777f9b55,0 6px 18px #4249603b;
+}
+.entry-art .device-orb { animation-duration:3.6s,8s; animation-delay:0s,3.6s; }
+@keyframes mirror-emerge { 0% { opacity:.32; filter:blur(18px) brightness(1.45); transform:scale(.78) rotate(-12deg); } 55% { opacity:.85; filter:blur(4px) brightness(1.13); } 100% { opacity:1; filter:blur(0) brightness(1); transform:scale(1) rotate(0); } }
+@keyframes mirror-hover { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-5px) } }
+@keyframes mirror-orbit { from { transform:rotate(65deg) scaleX(.38) } to { transform:rotate(425deg) scaleX(.38) } }
+@keyframes mirror-orbit-alt { from { transform:rotate(-24deg) scaleY(.46) } to { transform:rotate(-384deg) scaleY(.46) } }
+@keyframes mirror-core { 0%,100% { filter:brightness(1) } 50% { filter:brightness(1.1) } }
+@media(prefers-reduced-motion:reduce) { .device-orb,.entry-art .device-orb,.device-orb:before,.device-orb:after,.device-orb i:first-child { animation:none!important; opacity:1; filter:none; } }
+
+/* The glow forms once; the orbit continues without competing transforms. */
+.device-orb { animation:mirror-emerge 3s cubic-bezier(.2,.7,.2,1) both; }
+.entry-art .device-orb { animation-duration:3.6s; animation-delay:0s; }
+.shared-orb { width:146px; height:auto; aspect-ratio:1; margin:16px auto 22px; }
+.shared-orb.small { width:105px; }
+@media(prefers-reduced-motion:reduce){.device-orb,.entry-art .device-orb {animation:none!important;transform:none;opacity:1;filter:none}}
+
+/* Formation belongs to the first entry; later surfaces inherit the formed mirror. */
+.device-orb { animation:none; opacity:1; filter:none; transform:none; }
+.entry-art .device-orb { animation:mirror-emerge 3.6s cubic-bezier(.2,.7,.2,1) both; }
+@media(prefers-reduced-motion:reduce) { .entry-art .device-orb { animation:none!important; opacity:1; filter:none; transform:none; } }
+
+/* One fixed-size mirror carries its state through the journey. */
+.journey-orb-slot { width:100%; min-height:166px; display:grid; place-items:center; margin:12px 0 20px; }
+.entry-art.journey-orb-slot { height:166px; min-height:166px; margin:0 0 16px; }
+.journey-orb-slot .journey-orb { width:150px; height:150px; min-width:150px; min-height:150px; margin:0; flex:none; animation:none!important; transform:none; transition:filter 1.4s ease,opacity 1.4s ease,box-shadow 1.4s ease; }
+.journey-orb[data-level="0"] { filter:blur(4px) brightness(1.24); opacity:.73; }
+.journey-orb[data-level="1"] { filter:blur(1.5px) brightness(1.1); opacity:.9; }
+.journey-orb[data-level="2"] { filter:blur(0) brightness(1); opacity:1; }
+@media(max-height:700px) { .journey-orb-slot,.entry-art.journey-orb-slot { min-height:146px; height:146px; margin:0 0 10px; } .journey-orb-slot .journey-orb { width:132px; height:132px; min-width:132px; min-height:132px; } }
+@media(prefers-reduced-motion:reduce){.journey-orb-slot .journey-orb{transition:none;}}
+
+/* The mirror begins as a wireframe and gains a cool silver-blue surface. */
+#shell { --paper:#f6f7fa; --ink:#222733; --muted:#667080; --line:#e0e5ec; --soft:#edf0f5; --accent:#202635; --violet:#667791; }
+.device-orb { background:radial-gradient(circle at 30% 24%,#fff 0%,#f1f4ff 14%,#c8d3e7 35%,#8597b2 60%,#485b76 83%,#293b55 100%); box-shadow:inset 8px 9px 24px #ffffff9c,inset -18px -22px 42px #263b5666,0 18px 36px #44566e25,0 0 55px #b8c8e038; }
+.device-orb i:first-child { background:radial-gradient(circle at 29% 23%,#fff,#edf3ff 22%,#c6d2e4 53%,#8598b1 100%); }
+.journey-orb-slot .journey-orb { background:none; box-shadow:none; filter:none; opacity:1; border:1px solid #91a3bd; transition:border-color 1.2s ease; }
+.journey-orb b { display:block; position:absolute; inset:0; border-radius:50%; z-index:0; pointer-events:none; opacity:0; transform:none; background:radial-gradient(circle at 30% 24%,#fff 0%,#f1f4ff 14%,#c8d3e7 35%,#8597b2 60%,#485b76 83%,#293b55 100%); box-shadow:inset 8px 9px 24px #ffffff9c,inset -18px -22px 42px #263b5666,0 18px 36px #44566e25; transition:opacity 1.4s ease; }
+.journey-orb:before,.journey-orb:after { z-index:2; border-color:#8da2bd; box-shadow:none; transition:border-color 1.4s ease; }
+.journey-orb i:first-child { z-index:3; opacity:0; transition:opacity 1.4s ease; }
+.journey-orb[data-level="0"] b,.journey-orb[data-level="0"] i:first-child { opacity:0; }
+.journey-orb[data-level="1"] b { opacity:.38; }
+.journey-orb[data-level="1"] i:first-child { opacity:.3; }
+.journey-orb[data-level="2"] b,.journey-orb[data-level="2"] i:first-child { opacity:1; }
+.journey-orb[data-level="2"] { border-color:#b6c6dc; }
+.journey-orb[data-level="2"]:before,.journey-orb[data-level="2"]:after { border-color:#edf4ffb5; }
+.conversation-prompt.card.health,.conversation-prompt.card.meaning,.conversation-prompt.card.connection,.conversation-prompt.card.research,.simplified-guess .conversation-prompt.card { background:linear-gradient(145deg,#f3f5f9,#e8edf4); border-color:#dce3ed; }
+.compact-plan .offer-object,.daily-card.health-daily,.daily-card.fortune-daily,.daily-card.connection-daily,.health-result,.health-result.research,.connection-scene,.meaning-scene { background:radial-gradient(ellipse at 78% 4%,#77899d 0%,#46576d 42%,#222c3b 100%); }
+@media(prefers-reduced-motion:reduce){.journey-orb,.journey-orb b,.journey-orb i:first-child,.journey-orb:before,.journey-orb:after{transition:none!important;}}
