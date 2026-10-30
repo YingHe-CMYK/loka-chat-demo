@@ -344,3 +344,12 @@ button,input,textarea,select{font-family:inherit}
  .simplified-guess .conversation-prompt #signal-trail:not(:empty){margin:12px 0 0}
  .simplified-guess .touch-fallback>div{gap:8px}
 }
+
+/* Keep the insight dominant and the supporting context close to it. */
+.simplified-guess .conversation-prompt .prompt-label{font-size:11px;letter-spacing:.035em;text-transform:none;color:#66616c}
+.simplified-guess .card-reading{margin:auto 0;width:100%}
+.simplified-guess .conversation-prompt .card-reading h2{margin:0;font-size:clamp(23px,6.1vw,27px);line-height:1.28;letter-spacing:-.6px;font-weight:600;text-wrap:balance}
+.simplified-guess .conversation-prompt .card-context{font-size:13px;line-height:1.5;color:#5d6260;margin:20px 0 0;max-width:31ch}
+.simplified-guess .conversation-prompt .prompt-tools{gap:6px}
+.simplified-guess .conversation-prompt .prompt-tools .icon-button{width:44px;height:44px;min-height:44px}
+@media(max-width:360px){.simplified-guess .conversation-prompt .card-reading h2{font-size:22px}}
