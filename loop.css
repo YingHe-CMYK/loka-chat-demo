@@ -325,3 +325,6 @@ button,input,textarea,select{font-family:inherit}
 
 /* Clear source choices without numbered steps. */
 .permission-preview div{display:flex;align-items:baseline;justify-content:space-between;gap:12px}.permission-preview small{text-align:right}.simplified-guess .touch-fallback button:nth-child(2){background:transparent;box-shadow:inset 0 0 0 1px #ddd7e3}
+
+/* Keep the result itself prominent and make optional details compact. */
+.meeting-details{margin:12px 0;padding:0 16px}.meeting-details summary{min-height:52px;display:flex;align-items:center;cursor:pointer;font-size:14px;font-weight:600;list-style:none}.meeting-details summary::after{content:"+";margin-left:auto;font-size:20px;font-weight:400;color:#706581}.meeting-details[open] summary::after{content:"−"}.meeting-details .meeting-editor{margin:0 0 12px}.meeting-details small{margin:0 0 16px}.compact-plan .plan-actions{margin-top:14px}.compact-plan .offer-why{margin-top:4px}
