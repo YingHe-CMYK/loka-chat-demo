@@ -1,0 +1,20 @@
+/* Desktop and web workspaces share the same journey and local state. */
+@media(min-width:760px){
+ body.platform-web,body.platform-desktop{background:#eeedf0;min-height:100vh;padding:28px 30px 28px 246px}
+ .platform-sidebar{position:fixed;inset:0 auto 0 0;width:220px;padding:32px 18px 22px;background:#f7f6f5;border-right:1px solid #e4e1e5;display:flex;flex-direction:column;z-index:2}
+ .platform-brand{font-size:25px;font-weight:650;letter-spacing:-1px;padding:0 12px}.platform-brand span{font-size:13px;color:#746987;letter-spacing:0}.platform-caption{margin:4px 12px 34px;color:#88818c;font-size:10px;letter-spacing:.12em}
+ .workspace-nav{display:grid;gap:4px}.workspace-nav button{text-align:left;padding:10px 12px;border-radius:10px;color:#59545e;font-size:14px}.workspace-nav button:hover,.workspace-nav button:focus-visible{background:#eae7ed;color:#25212b}
+ .platform-links{display:flex;gap:12px;margin:auto 12px 0;font-size:12px}.platform-links a{color:#716c79;text-decoration:none}.platform-links a:hover{text-decoration:underline}
+ body.platform-web #shell,body.platform-desktop #shell{width:min(100%,1040px);max-width:none;min-height:calc(100vh - 56px);margin:0 auto;padding:0 48px 28px;border-radius:22px;background:#faf9f8;border:1px solid #e6e3e7;box-shadow:0 18px 50px #29222e0b}
+ body.platform-web #shell header,body.platform-desktop #shell header{max-width:920px;margin:0 auto}
+ body.platform-web #app,body.platform-desktop #app{max-width:680px;margin:0 auto}
+ body.platform-web #dock,body.platform-desktop #dock{max-width:680px;margin-left:auto;margin-right:auto}
+ body.platform-web .home-bar,body.platform-desktop .home-bar{display:none}
+ body.platform-web #shell[data-stage=invite] #app,body.platform-desktop #shell[data-stage=invite] #app,body.platform-web #shell[data-stage=welcome] #app,body.platform-desktop #shell[data-stage=welcome] #app{max-width:500px}
+ body:has(#shell[data-stage=invite]) .workspace-nav,body:has(#shell[data-stage=register]) .workspace-nav,body:has(#shell[data-stage=welcome]) .workspace-nav{visibility:hidden}
+ .window-chrome{height:38px;border-bottom:1px solid #e8e5e9;display:flex;align-items:center;gap:7px;color:#8c8590}.window-chrome i{width:9px;height:9px;border-radius:50%;background:#ddd8df}.window-chrome span{margin:auto;font-size:10px;letter-spacing:.12em}.platform-web .window-chrome{display:none}
+ body.platform-web .simplified-guess .conversation-prompt.card,body.platform-desktop .simplified-guess .conversation-prompt.card{min-height:200px}
+}
+@media(max-width:759px){.platform-sidebar{display:none}.window-chrome{display:none}}
+
+@media(min-width:760px){body:has(#shell[data-signed-out="true"]) .workspace-nav{visibility:hidden}}
