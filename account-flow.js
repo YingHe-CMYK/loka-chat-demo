@@ -1,0 +1,12 @@
+export const normalizeEmail=value=>String(value||'').trim().toLowerCase();
+export function emailError(value){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)&&value.length<=254?'':'Enter a valid email address.';}
+export function usernameError(value){return /^[\p{L}\p{N}][\p{L}\p{N}_. -]{1,23}$/u.test(value)?'':'Use 2–24 letters or numbers, with spaces, dots, hyphens or underscores.';}
+export function accountPage(flow,profile,{esc,button}){
+ const stage=flow.step||'email',login=flow.mode==='login';
+ const field=(id,label,type,value,extra='')=>`<label for="${id}">${label}</label><input id="${id}" class="register-input" type="${type}" value="${esc(value||'')}" ${extra}>`;
+ let body='';
+ if(stage==='email')body=`<h1>${login?'Welcome back.':'Meet your mirror.'}</h1><p>${login?'Sign in to continue where you left off.':'Create your space. Your wallet comes with it.'}</p>${field('account-email','Email','email',flow.email,'autocomplete="email" maxlength="254" placeholder="you@example.com"')}${button('account-email-next',login?'Continue to sign in':'Create account','primary full')}${!profile?button('account-switch',login?'New here? Create account':'Already have an account? Sign in','text-button full'):''}`;
+ if(stage==='verify')body=`<h1>Verify your email.</h1><p>${esc(flow.email)}</p>${field('account-code','Verification code','text','','inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code"')}<p class="fine">Demo code: <b>123456</b> · No email sent.</p>${button('account-verify','Verify and continue','primary full')}${button('account-resend','Resend code','text-button full')}${button('account-back','Change email','text-button full')}`;
+ if(stage==='name')body=`<h1>What should I call you?</h1>${field('account-name','Username','text',flow.name,'autocomplete="nickname" maxlength="24" placeholder="Your name"')}<p class="fine">You can change this later in your account.</p>${button('account-create','Create my space','primary full')}${button('account-back','Back','text-button full')}`;
+ return `<section class="journey-entry register-entry account-entry"><p class="entry-kicker">${login?'SIGN IN':'CREATE ACCOUNT'}</p>${stage==='email'?'<div class="entry-art journey-orb-slot"></div>':''}${body}<p id="account-error" role="alert" class="account-error"></p><p class="fine">Demo account · saved on this browser, not a secure online login.</p></section>`;
+}
