@@ -88,3 +88,12 @@ let personalDraft=freshJourney();personalDraft=step(personalDraft,'sign-in');per
  assert.equal(state.dailyReturnStage,'guess');
  console.log('PASS: nickname registration keeps the first visit for next-day return');
 }
+{
+ const {dailyInterestOrder,dailyPreview,dailyHealth,dailyConnection}=await import('./daily-experience.js');
+ const s={source:'local',topic:'health',localTopic:'health',interestEvidence:{health:3,meaning:0,connection:0},affinity:{},dailyFeedback:{'2026-10-28':{health:'no',connection:'yes'}},dailyOrder:['health','meaning','connection']};
+ assert.equal(dailyInterestOrder(s,'2026-10-29')[0],'connection');
+ const h=dailyHealth('2026-10-29',null,null,'focus');assert.notEqual(dailyHealth('2026-10-29',null,h.headline,'focus').headline,h.headline);
+ const c=dailyConnection('2026-10-29',null,null,'connection');assert.notEqual(dailyConnection('2026-10-29',null,c.headline,'connection').headline,c.headline);
+ const m=dailyPreview('2026-10-29',['甲子','乙丑','丙寅','丁卯']);assert.notEqual(dailyPreview('2026-10-29',['甲子','乙丑','丙寅','丁卯'],null,m.theme).theme,m.theme);
+ console.log('PASS: source and feedback rank interests; yesterday does not repeat');
+}
