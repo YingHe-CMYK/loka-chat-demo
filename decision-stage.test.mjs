@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {nextPresentation,afterAcceptance} from './decision-stage.js';
+const base={stage:'guess',source:'local',topic:'connection',discoveryDepth:0,paused:false};
+assert.equal(nextPresentation({...base,source:'none'}).kind,'more-context');
+assert.equal(nextPresentation({...base,topic:'general'}).kind,'more-context');
+assert.equal(afterAcceptance(base),'probe');
+assert.equal(afterAcceptance({...base,discoveryDepth:1}),'offer');
+assert.equal(nextPresentation({...base,stage:'plan'}).kind,'offer');
+assert.equal(nextPresentation({...base,stage:'result'}).kind,'outcome');
+assert.equal(afterAcceptance({...base,paused:true}),'hold');
+console.log('PASS: missing context, hypothesis, probe, offer, outcome and pause');
