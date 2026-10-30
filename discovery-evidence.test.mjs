@@ -78,7 +78,7 @@ let free=freshJourney();free.stage='welcome';free=step(free,'sample-read',{profi
 {
  const source=await learnFromFiles([new File(['I want to reconnect with a friend. An unfinished conversation has stopped me from reaching out.'],'note.txt')]);
  assert.equal(source.planHint,'connection-private');
- let state=step(freshJourney(),'sign-in');state=step(state,'local-read',source);state=step(state,'right');assert.match(hypothesisCopy(state),/unfinished conversation/i);state=step(state,'right');assert.equal(rank(state)[0].id,'connection-private');
+ let state=step(freshJourney(),'sign-in');state=step(state,'local-read',source);assert.match(hypothesisCopy(state),/unfinished conversation/i);state=step(state,'right');assert.equal(state.stage,'plan');assert.equal(rank(state)[0].id,'connection-private');
  state=step(state,'undo');assert.equal(state.acceptedPlanId,null);state=step(state,'right');state=step(state,'correct',{key:'focus'});assert.equal(state.acceptedPlanId,null);
  console.log('PASS: combined clues guide the accepted plan and correction can override it');
 }

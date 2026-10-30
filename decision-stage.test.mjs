@@ -4,6 +4,10 @@ const base={stage:'guess',source:'local',topic:'connection',discoveryDepth:0,pau
 assert.equal(nextPresentation({...base,source:'none'}).kind,'more-context');
 assert.equal(nextPresentation({...base,topic:'general'}).kind,'more-context');
 assert.equal(afterAcceptance(base),'probe');
+const direct={...base,localDirectOffer:true,localPlanHint:'connection-private'};
+assert.equal(afterAcceptance(direct),'offer');
+assert.equal(afterAcceptance({...direct,index:1}),'probe');
+assert.equal(afterAcceptance({...direct,correctionText:'A different need'}),'probe');
 assert.equal(afterAcceptance({...base,discoveryDepth:1}),'offer');
 assert.equal(nextPresentation({...base,stage:'plan'}).kind,'offer');
 assert.equal(nextPresentation({...base,stage:'result'}).kind,'outcome');

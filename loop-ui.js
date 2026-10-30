@@ -1,13 +1,13 @@
-import {nextPresentation} from './decision-stage.js?v=1';
+import {nextPresentation} from './decision-stage.js?v=2';
 import {validatePillars,dailyPreview,dailyHealth,dailyConnection,previousDailyFeedback,localDay,savedSchedulesForDay} from './daily-experience.js?v=stage1-179';
 import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-91';
 import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-210';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-94';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-95';
 import {mirrorReading} from './need-discovery.js?v=stage1-91';
 import {mirrorStage} from './mirror-stage.js?v=stage1-232';
 import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-91';
 import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-188';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-238';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-239';
 import {appSources,browserFacts,sampleAppSignals,sampleProfiles} from './device-sources.js?v=stage1-207';
 import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-106';
 import {quote} from './council-sim.js';

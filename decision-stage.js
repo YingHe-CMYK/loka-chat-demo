@@ -9,4 +9,4 @@ export function nextPresentation(state){
  if(!state.discoveryDepth)return {kind:'hypothesis',reason:'Offer a tentative direction based on the available source.'};
  return {kind:'probe',reason:'The first direction was accepted; test a more specific need.'};
 }
-export function afterAcceptance(state){const view=nextPresentation(state);if(view.kind==='more-context')return 'more-context';if(view.kind==='hypothesis')return 'probe';if(view.kind==='probe')return 'offer';return 'hold';}
+export function afterAcceptance(state){const view=nextPresentation(state);if(view.kind==='more-context')return 'more-context';if(view.kind==='hypothesis')return state.source==='local'&&!state.correctionText&&(state.index||0)===0&&state.localDirectOffer&&state.localPlanHint?'offer':'probe';if(view.kind==='probe')return 'offer';return 'hold';}
