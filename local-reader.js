@@ -1,7 +1,7 @@
 // Reads only a folder or files explicitly selected in the browser. No raw content is uploaded.
 const groups=[
  {topic:'health',words:/减重|减肥|补剂|药物|注射|体重|glp.?1|semaglutide|tirzepatide|weight loss|supplement|prescription|injection|oura|sleep/ig},
- {topic:'meaning',words:/塔罗|八字|命理|方向|意义|转行|离开|选择|tarot|career change|meaning|purpose/ig},
+ {topic:'meaning',words:/塔罗|八字|命理|方向|意义|转行|离开|选择|tarot|bazi|four pillars|career change|meaning|purpose/ig},
  {topic:'connection',words:/朋友|关系|约见|联系|聊天|聚会|friend|relationship|meet up|reconnect/ig},
  {topic:'research',words:/论文|实验|模型|训练|研究|arxiv|paper|experiment|model|training|research|retrieval|benchmark|inference/ig}
 ];
@@ -42,9 +42,9 @@ export async function learnFromFiles(fileList,onProgress=()=>{},{signal}={}){
  const focus=(top[0].excerpt.match(/(?:test\s+whether|whether)\s+([^.!?]{8,95})/i)||[])[1]?.trim()||'';
  const groundedCue=topic==='general'?null:ranked.find(r=>r.points[topic]>0&&r.cue);const cueSet=new Set(ranked.filter(r=>r.points[topic]>0).flatMap(r=>r.cueKeys||[]));
  // Combined observations guide the next question; they do not establish a diagnosis.
- const pairedProbe=topic==='connection'&&cueSet.has('connection')&&cueSet.has('continuity')?'Your notes mention reconnecting and an unfinished conversation. Would it help to write one opening line without sending it?':topic==='health'&&cueSet.has('time')&&cueSet.has('uncertainty')?'Your notes mention both scheduling and a choice. Would comparing follow-up and timing help you prepare questions for a clinician?':topic==='research'&&cueSet.has('time')&&cueSet.has('continuity')?'Your notes mention an unfinished piece of research and timing. Would protecting one block for it help you restart?':'';
+ const pairedProbe=topic==='connection'&&cueSet.has('connection')&&cueSet.has('continuity')?'Your notes mention reconnecting and an unfinished conversation. Would it help to write one opening line without sending it?':topic==='health'&&cueSet.has('time')&&cueSet.has('uncertainty')?'Your notes mention both scheduling and a choice. Would a cost view help you compare the initial visit, ongoing treatment and follow-up?':topic==='meaning'&&cueSet.has('uncertainty')?'Your notes mention a choice you are comparing. Would a private reflection help you separate what to keep from what to change?':topic==='research'&&cueSet.has('time')&&cueSet.has('continuity')?'Your notes mention an unfinished piece of research and timing. Would protecting one block for it help you restart?':'';
  const probe=pairedProbe||groundedCue?.cue?.probe||'';
- const planHint=pairedProbe&&topic==='connection'?'connection-private':pairedProbe&&topic==='health'?'health-budget':pairedProbe&&topic==='research'?'research-focus':topic==='health'&&groundedCue?.cue?.key==='time'?'health-focus':topic==='health'&&groundedCue?.cue?.key==='uncertainty'?'health-budget':topic==='connection'&&['connection','continuity'].includes(groundedCue?.cue?.key)?'connection-private':null;
+ const planHint=pairedProbe&&topic==='connection'?'connection-private':pairedProbe&&topic==='health'?'health-budget':pairedProbe&&topic==='meaning'?'meaning-reflect':pairedProbe&&topic==='research'?'research-focus':topic==='health'&&groundedCue?.cue?.key==='time'?'health-focus':topic==='health'&&groundedCue?.cue?.key==='uncertainty'?'health-budget':topic==='connection'&&['connection','continuity'].includes(groundedCue?.cue?.key)?'connection-private':null;
  const guesses={health:'Your selected material contains health-related terms. Is there a health decision you want to explore?',meaning:'Your selected material mentions questions of direction. Is there a choice you want to examine?',connection:'Your selected material mentions relationships or conversation. Is there a connection you want to revisit?',research:focus?`Your note asks whether ${focus}. Is this the question you want to test?`:'Your selected material discusses research. Is finding a useful next direction on your mind?',general:'I need more context before I can make a useful personal guess.'};
 
  // A concrete question is only used when the corresponding cue appears in selected text.

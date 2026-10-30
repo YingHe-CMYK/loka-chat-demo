@@ -2,11 +2,11 @@ import {nextPresentation} from './decision-stage.js?v=2';
 import {validatePillars,dailyPreview,dailyHealth,dailyConnection,previousDailyFeedback,localDay,savedSchedulesForDay} from './daily-experience.js?v=stage1-179';
 import {connectorReady,connectGoogleCalendar,beginOuraAuthorization,finishOuraAuthorization,readCalendarExport} from './app-connectors.js?v=stage1-91';
 import {hypothesisCopy} from './hypothesis-copy.js?v=stage1-210';
-import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-95';
+import {learnFromFiles,filesFromDirectory} from './local-reader.js?v=stage1-96';
 import {mirrorReading} from './need-discovery.js?v=stage1-91';
 import {mirrorStage} from './mirror-stage.js?v=stage1-232';
 import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-91';
-import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-188';
+import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-189';
 import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-239';
 import {appSources,browserFacts,sampleAppSignals,sampleProfiles} from './device-sources.js?v=stage1-207';
 import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-106';
@@ -158,6 +158,7 @@ function close(){clearTimeout(connectTimer);connecting=false;sheetHistory=[];pop
 function correct(k){close();act('correct',{key:k});toast('Saved. I will try a closer fit.');}
 document.addEventListener('click',e=>{const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;
 if(['checkout','payment-error','receipt','history','membership','settings','sources','inputs','permissions','community-agreement','device-permission','data-controls','approval-settings','remove-clues-confirm','correct','preferences','culture','invite-preview','guide-preview','ledger','activity','why','about','reset-confirm','quote','dispute','result-detail','app-sources'].includes(a))return show(a);
+if(a==='open-bazi-daily'){if($('#drawer').open)close();act('open-daily',{day:today});act('daily-tab',{tab:'meaning'});return show('bazi-input');}
 if(a==='open-daily'){if($('#drawer').open)close();return act('open-daily',{day:today});}
 if(a==='daily-tab')return act('daily-tab',{tab:e.target.closest('[data-tab]')?.dataset.tab});
 if(a==='bazi-input')return show('bazi-input');

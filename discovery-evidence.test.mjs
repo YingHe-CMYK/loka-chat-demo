@@ -82,3 +82,12 @@ let free=freshJourney();free.stage='welcome';free=step(free,'sample-read',{profi
  state=step(state,'undo');assert.equal(state.acceptedPlanId,null);state=step(state,'right');state=step(state,'correct',{key:'focus'});assert.equal(state.acceptedPlanId,null);
  console.log('PASS: combined clues guide the accepted plan and correction can override it');
 }
+{
+ const examples=[
+  ['Prescription injection schedule calendar. I am comparing options and uncertain about treatment costs.','health','health-budget'],
+  ['My bazi notes: I am uncertain and comparing which option to choose for my career change.','meaning','meaning-reflect'],
+  ['I want to reconnect with a friend. An unfinished conversation has stopped me from reaching out.','connection','connection-private']
+ ];
+ for(const [text,topic,plan] of examples){const source=await learnFromFiles([new File([text],'notes.txt')]);assert.equal(source.topic,topic);assert.equal(source.planHint,plan);let state=step(freshJourney(),'sign-in');state=step(state,'local-read',source);state=step(state,'right');if(state.stage==='guess')state=step(state,'right');assert.equal(state.stage,'plan');assert.equal(rank(state)[0].id,plan);}
+ console.log('PASS: health, four pillars and relationship clues lead to their matched plans');
+}
