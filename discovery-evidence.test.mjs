@@ -91,3 +91,13 @@ let free=freshJourney();free.stage='welcome';free=step(free,'sample-read',{profi
  for(const [text,topic,plan] of examples){const source=await learnFromFiles([new File([text],'notes.txt')]);assert.equal(source.topic,topic);assert.equal(source.planHint,plan);let state=step(freshJourney(),'sign-in');state=step(state,'local-read',source);state=step(state,'right');if(state.stage==='guess')state=step(state,'right');assert.equal(state.stage,'plan');assert.equal(rank(state)[0].id,plan);}
  console.log('PASS: health, four pillars and relationship clues lead to their matched plans');
 }
+{
+ const source=await learnFromFiles([new File(['My prescription and supplement treatment needs a schedule.'],'health.txt'),new File(['I want to reconnect with a friend and begin a conversation.'],'friend.txt')]);
+ assert.equal(source.topic,'health');assert.ok(source.alternativeNeeds.some(x=>x.topic==='connection'));
+ let state=step(freshJourney(),'sign-in');state=step(state,'local-read',source);const original=state.localGuess;state=step(state,'left');assert.equal(state.topic,'connection');assert.match(state.evidence[0],/friend/);state=step(state,'undo');assert.equal(state.topic,'health');assert.equal(state.localGuess,original);state=step(state,'left');state=step(state,'right');state=step(state,'right');assert.equal(state.stage,'plan');assert.equal(rank(state)[0].topic,'connection');
+ console.log('PASS: rejecting one need explores another supported source and undo restores it');
+}
+{
+ const source=await learnFromFiles([new File(['My prescription treatment and supplements need a schedule.'],'health.txt'),new File(['I want to reconnect with my friend and talk.'],'friend.txt')]);
+ let state=step(freshJourney(),'sign-in');state=step(state,'local-read',source);state=step(state,'right');state=step(state,'right');state=step(state,'council-start',{confirmed:true,mode:'local'});for(let i=0;i<20&&state.stage==='review';i++)state=step(state,'council-next');assert.equal(state.stage,'result');state=step(state,'feedback',{useful:false});state=step(state,'next');assert.equal(state.topic,'connection');assert.match(state.evidence[0],/friend/);state=step(state,'undo');assert.equal(state.stage,'result');assert.equal(state.topic,'health');console.log('PASS: unhelpful outcome explores another authorized clue and undo restores result');
+}
