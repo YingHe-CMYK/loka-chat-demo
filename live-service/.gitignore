@@ -5,3 +5,6 @@ dist/
 !.env.example
 data/
 *.sqlite*
+
+.wrangler/
+.dev.vars*

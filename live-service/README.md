@@ -1,6 +1,12 @@
 # Loka 真实账户与内嵌钱包服务
 
-本目录是可构建的真实接入代码，和上层静态 demo 分开。没有配置 Privy 时只显示配置缺失；不会接受 123456 或生成模拟钱包。当前未上线，也未进行真实邮箱收信与钱包创建验收。
+本目录是可构建的真实接入代码，和上层静态 demo 分开。没有配置 Privy 时只显示配置缺失；不会接受 123456 或生成模拟钱包。Cloudflare 公网入口已上线，真实邮箱收信与钱包创建待 Privy 配置后验收。
+
+## Cloudflare 线上入口
+
+公网首页 https://loka-chat-mirror-v1.yinghe-vela-live.workers.dev/ ，体验入口位于 /mirror/mirror-loop 。使用 Workers Static Assets 提供前端与镜子资源，Worker 处理 /api/*，D1 绑定 DB 保存真实账户。预览资料保存在浏览器。真实登录需在 Privy 的 allowed origins 加入上述 HTTPS origin，并在该 Worker 的 Settings → Variables and Secrets 中配置 PRIVY_APP_ID 与 PRIVY_APP_SECRET（Secret）。可选 PRIVY_CLIENT_ID。
+
+在本目录执行 `npm ci` 和 `npm run cf:deploy` 可重新构建、应用远端迁移和发布。上线后 `/api/health` 会实际查询 accounts 表；`authenticationConfigured` 表示配置状态，收信、钱包创建和跨设备登录仍需单独验证。Docker Compose 是独立部署选项。
 
 ## 真实用户路径
 

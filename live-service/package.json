@@ -7,23 +7,25 @@
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && node scripts/pack-mirror.mjs",
     "start": "node --env-file-if-exists=.env server/index.mjs",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "cf:deploy": "npm run build && wrangler d1 migrations apply DB --remote --config wrangler.jsonc && wrangler deploy --config wrangler.jsonc"
   },
   "dependencies": {
-    "@privy-io/react-auth": "3.51.0",
     "@privy-io/node": "0.37.0",
-    "react": "19.3.1",
-    "react-dom": "19.3.1",
+    "@privy-io/react-auth": "3.51.0",
     "express": "5.3.0",
     "express-rate-limit": "8.7.2",
-    "helmet": "8.3.0"
+    "helmet": "8.3.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
     "typescript": "5.9.3",
     "vite": "7.3.7",
-    "@types/react": "19.3.0",
-    "@types/react-dom": "19.3.0"
+    "wrangler": "^4.156.0"
   }
 }
