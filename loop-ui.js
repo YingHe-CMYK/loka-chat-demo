@@ -10,7 +10,7 @@ import {mirrorReading} from './need-discovery.js?v=stage1-91';
 import {mirrorStage} from './mirror-stage.js?v=stage1-233';
 import {bodyIntent,bodyGuide,dispatchDirection} from './body-controls.js?v=stage1-91';
 import {visualResult,chosenRoute,resultRoutes} from './visual-result.js?v=stage1-189';
-import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-244';
+import {freshJourney,step,current,rank,topics} from './loop-engine.js?v=stage1-245';
 import {appSources,browserFacts,sampleAppSignals,sampleProfiles} from './device-sources.js?v=stage1-209';
 import {review as councilView,ledger as ledgerView,costRows} from './council-views.js?v=stage1-106';
 import {quote} from './council-sim.js';
@@ -188,8 +188,8 @@ if(a.startsWith('account-')){
  if(a==='account-back'){accountFlow.step=accountFlow.step==='name'?'verify':'email';render();return;}
  if(a==='account-email-next'){if(s.profile)accountFlow.mode='login';const email=normalizeEmail($('#account-email').value),error=emailError(email);if(error)return fail(error);if(accountFlow.mode==='login'&&(!s.profile||(s.profile.email&&email!==s.profile.email)))return fail('No matching account on this browser. Use the browser where you registered.');accountFlow={...accountFlow,email,step:'verify',expires:Date.now()+600000,sent:Date.now()};render();return;}
  if(a==='account-resend'){const remaining=Math.ceil((30000-(Date.now()-accountFlow.sent))/1000);if(remaining>0)return fail(`Try again in ${remaining} seconds.`);accountFlow.expires=Date.now()+600000;accountFlow.sent=Date.now();render();return toast('New demo code: 123456. No email sent.');}
- if(a==='account-verify'){if(Date.now()>accountFlow.expires)return fail('This code expired. Request a new code.');if($('#account-code').value.trim()!=='123456')return fail('Incorrect code. Use the demo code 123456.');if(accountFlow.mode==='login'){s.profile.email=accountFlow.email;save();return act('sign-in',{day:today});}accountFlow.verified=true;accountFlow.step='name';render();return;}
- if(a==='account-create'){if(!accountFlow.verified)return;const name=$('#account-name').value.trim(),error=usernameError(name);if(error)return fail(error);act('accept-invite');act('register',{name,day:today});s.profile.email=accountFlow.email;s.profile.emailVerified='simulated';save();accountFlow.verified=false;act('agree-v1');return toast('Your account and demo wallet are ready.');}
+ if(a==='account-verify'){if(Date.now()>accountFlow.expires)return fail('This code expired. Request a new code.');if($('#account-code').value.trim()!=='123456')return fail('Incorrect code. Use the demo code 123456.');if(accountFlow.mode==='login'){s.profile.email=accountFlow.email;accountFlow.step='email';return act('sign-in',{day:today});}accountFlow.verified=true;accountFlow.step='name';render();return;}
+ if(a==='account-create'){if(!accountFlow.verified)return;const name=$('#account-name').value.trim(),error=usernameError(name);if(error)return fail(error);act('accept-invite');act('register',{name,day:today});s.profile.email=accountFlow.email;s.profile.emailVerified='simulated';save();accountFlow={mode:'login',step:'email',email:s.profile.email};act('agree-v1');return toast('Your account and demo wallet are ready.');}
 }
 if(a.startsWith('wallet')){
  ensureWallet(s);const save=()=>localStorage.setItem(key,JSON.stringify(s));
@@ -291,6 +291,12 @@ if(a==='pause')input.stopAll();act(a);
 });
 $('#settings').innerHTML=icon('user')+'<span>My</span>';$('#settings').onclick=()=>show('settings');$('#close').innerHTML=icon('close');$('#close').onclick=close;$('#drawer').addEventListener('cancel',()=>{clearTimeout(connectTimer);connecting=false;});$('#back').innerHTML=icon('back');$('#back').onclick=()=>{const previous=sheetHistory.pop();if(previous){popup='';show(previous);}else close();};
 $('#journey').onclick=()=>show('reset-confirm');
+// Typing, pasting or autofilling the demo code follows the same verification path.
+document.addEventListener('input', event => {
+ if (event.target.id === 'account-code' && event.target.value === '123456') {
+  document.querySelector('[data-action="account-verify"]')?.click();
+ }
+});
 document.addEventListener('input',e=>{if(['med-name','med-day','med-time'].includes(e.target.id)&&s.stage==='result'){const result=s.results.at(-1);if(result?.topic==='health'){result.scheduleDraft={name:$('#med-name')?.value||'',day:$('#med-day')?.value||'',time:$('#med-time')?.value||''};const pending=$('.schedule-pending');if(pending)pending.hidden=false;try{localStorage.setItem(key,JSON.stringify(s));}catch{}}return;}if(e.target.matches('[data-cost]')){const editor=e.target.closest('.cost-editor'),total=editor?.querySelector('.cost-total'),pending=editor?.querySelector('.cost-pending');if(total)total.hidden=true;if(pending)pending.hidden=false;const result=s.stage==='result'?s.results.at(-1):null;if(result?.topic==='health'){result.costDraft=Object.fromEntries([...editor.querySelectorAll('[data-cost]')].map(el=>[el.dataset.cost,el.value]));try{localStorage.setItem(key,JSON.stringify(s));}catch{}}return;}if(e.target.id==='daily-draft'&&s.stage==='daily'){s.dailyDraft=e.target.value.slice(0,300);try{localStorage.setItem(key,JSON.stringify(s));}catch{}return;}if(e.target.id==='cap'){act('budget',{cap:e.target.value});$('#cap-text').textContent=s.cap+' QB';return;}const r=s.stage==='result'?s.results.at(-1):null;if(!r)return;if(e.target.id==='connection-draft'&&r.topic==='connection'){r.connectionDraft=e.target.value.slice(0,500);}else if(e.target.matches('[data-meeting]')&&r.topic==='connection'){const i=Number(e.target.dataset.meeting);r.meetingTimes=[...(r.meetingTimes||['',''])];r.meetingTimes[i]=e.target.value;const preview=document.querySelector(`[data-meeting-preview="${i}"]`);if(preview){preview.textContent=e.target.value.replace('T',' · ');preview.hidden=!e.target.value;}}else if(e.target.matches('[data-reflection]')&&r.topic==='meaning'){const route=r.visualRoute||(['meaning-budget'].includes(r.planId)?'keep':'try');const notes=[...document.querySelectorAll('[data-reflection]')].map(x=>x.value.slice(0,300));r.reflectionNotes={...(r.reflectionNotes||{}),[route]:notes};const i=Number(e.target.dataset.reflection),preview=document.querySelector(`[data-reflection-preview="${i}"]`);if(preview){preview.textContent=notes[i];preview.hidden=!notes[i];}}else return;try{localStorage.setItem(key,JSON.stringify(s));}catch{}});
 render();
 
