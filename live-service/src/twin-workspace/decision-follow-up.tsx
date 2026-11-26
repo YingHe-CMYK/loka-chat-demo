@@ -74,7 +74,7 @@ function prepareCheck(basis: string, prediction: string): (CalibrationCheck & { 
   return undefined;
 }
 
-export function DecisionFollowUp({ basis, prediction, retained, persistent, starter = false, quietArrival = false, inline = false, observed, onObservedBack, onRemember, onNext }: {
+export function DecisionFollowUp({ basis, prediction, retained, persistent, starter = false, quietArrival = false, inline = false, observed, onObservedBack, onUseFile, onRemember, onNext }: {
   basis: string;
   prediction: string;
   retained?: boolean;
@@ -84,6 +84,7 @@ export function DecisionFollowUp({ basis, prediction, retained, persistent, star
   inline?: boolean;
   observed?: CalibrationEvidence & { reason: string };
   onObservedBack?: () => void;
+  onUseFile?: () => void;
   onRemember?: (basis: string, prediction: string) => void;
   onNext: (basis: string, prediction: string, evidence?: CalibrationEvidence) => void;
 }) {
@@ -223,9 +224,10 @@ export function DecisionFollowUp({ basis, prediction, retained, persistent, star
     </>}
   </section>;
 
-  const interaction = later ? <button ref={resumeButton} type="button" className="twin-review-later" onClick={() => setLater(false)}>
+  const interaction = later ? <><button ref={resumeButton} type="button" className="twin-review-later" onClick={() => setLater(false)}>
     {candidate ? 'Resume reviewing your example' : chosen !== undefined ? 'Resume this comparison' : 'Resume building my Twin'}
   </button>
+    {onUseFile && <button type="button" className="twin-change-source" onClick={onUseFile}>Use a trade file ↗</button>}</>
     : <section tabIndex={-1} className="twin-follow-up" aria-label="Carry this into the next review" data-twin-activity={chosen === 0 ? 'matched' : check && chosen === undefined ? 'prepared' : undefined}>
     <span className="twin-dialogue-speaker">{candidate ? 'Twin · Review before sharing' : evidence ? 'Twin · One follow-up' : 'Twin · Next check'}</span>
     {chosen === undefined && <>
@@ -274,6 +276,7 @@ export function DecisionFollowUp({ basis, prediction, retained, persistent, star
         {retained ? (persistent ? 'Kept on this device' : 'Kept for this session') : (persistent ? 'Keep on this device' : 'Keep this understanding')}
       </button>}
       {!starter && (!check || chosen === undefined) && <button type="button" onClick={() => onNext(basis, prediction)}>Add another decision ↗</button>}
+      {chosen === undefined && onUseFile && <button type="button" className="twin-change-source" onClick={onUseFile}>Use a trade file ↗</button>}
       {chosen === undefined && <button type="button" onClick={deferContribution}>Later</button>}
     </div>
     {retained && <p role="status">You’ll see this understanding beside your Twin. You can remove it there.</p>}</>}

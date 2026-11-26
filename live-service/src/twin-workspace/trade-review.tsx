@@ -1699,6 +1699,18 @@ export function TradeReview({ onResult, initiallyOpen = false, guidedSources = f
       window.requestAnimationFrame?.(() => sampleCorrectionOptions.current?.querySelector('textarea')?.focus());
     }
   }
+  const sourceSection = useRef<HTMLElement>(null);
+  function openLocalSource() {
+    setOtherSource(true);
+    setPublicReview(false);
+    setSourceChoicesOpen(false);
+    setSourcePaused(false);
+    setStarterDismissed(true);
+    window.requestAnimationFrame(() => {
+      const chooseFile = sourceSection.current?.querySelector<HTMLButtonElement>('.twin-file-drop button');
+      (chooseFile?.getClientRects().length ? chooseFile : sourceSection.current)?.focus();
+    });
+  }
   const needsCorrection = feedback === 'Partly right' || feedback === 'Needs correction';
 
   return (
@@ -1715,7 +1727,7 @@ export function TradeReview({ onResult, initiallyOpen = false, guidedSources = f
       {!publicReview && <div role="status">{saveStatus}</div>}
       {guidedSources && starterMounted && showPreparedStarter && sourceChoicesOpen && !sourcePaused && !starterDismissed && <DecisionFollowUp starter quietArrival
         basis={starterBasis} prediction={starterPrediction}
-        persistent={persistentUnderstanding} onNext={(basis, prediction, evidence) => {
+        persistent={persistentUnderstanding} onUseFile={openLocalSource} onNext={(basis, prediction, evidence) => {
           setStarterDismissed(true);
           setFollowUp({ basis, prediction, evidence });
           setFollowUpVersion(version => version + 1);
@@ -1723,7 +1735,7 @@ export function TradeReview({ onResult, initiallyOpen = false, guidedSources = f
           setOtherSource(true);
           setPublicReview(false);
         }} />}
-      {guidedSources && <section className="twin-fluid-step twin-source-switch" aria-label="Choose trading information" tabIndex={-1}>
+      {guidedSources && <section ref={sourceSection} className="twin-fluid-step twin-source-switch" aria-label="Choose trading information" tabIndex={-1}>
         {sourceChoicesOpen ? <>
           {onBackToVoice && <button type="button" className="twin-change-source" onClick={onBackToVoice}>← Back to voice</button>}
           <span className="twin-dialogue-speaker">Twin</span>
@@ -1731,7 +1743,7 @@ export function TradeReview({ onResult, initiallyOpen = false, guidedSources = f
             : 'I’ve prepared a short replay. You can try it, or share a real source for me to review.'}</p>
           <div className="twin-fluid-actions">
             <button type="button" aria-pressed={publicReview} onClick={() => { setOtherSource(false); setPublicReview(true); setSourceChoicesOpen(false); setSourcePaused(false); setStarterDismissed(true); }}>Polymarket profile</button>
-            <button type="button" aria-pressed={otherSource} onClick={() => { setOtherSource(true); setPublicReview(false); setSourceChoicesOpen(false); setSourcePaused(false); setStarterDismissed(true); }}>Other trading information</button>
+            <button type="button" aria-pressed={otherSource} onClick={openLocalSource}>Other trading information</button>
 
           </div>
         </> : <button type="button" className="twin-change-source" onClick={() => { setSourceChoicesOpen(true); setSourcePaused(true); }}>← Back to information sources</button>}
