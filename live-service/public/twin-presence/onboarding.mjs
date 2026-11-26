@@ -262,7 +262,7 @@ async function removeSavedSample(field) {
     const request = store.get(profileKey);
     request.addEventListener('success', () => {
       const sample = request.result?.[retained];
-      if (sample) store.put(retained === 'voice' ? { voice: sample, voiceLanguage: request.result.voiceLanguage } : { photo: sample }, profileKey);
+      if (sample) store.put(retained === 'voice' ? { voice: sample, voiceLanguage: request.result.voiceLanguage } : { photo: sample, faceGeometry: request.result.faceGeometry === true }, profileKey);
       else store.delete(profileKey);
     });
     return request;
@@ -900,7 +900,7 @@ function render(focusHeading = false) {
         button(photoStep ? 'Save photo on this device' : 'Save recording on this device', () => void change(async () => {
           await localProfile('readwrite', store => {
             const request = store.get(profileKey);
-            request.addEventListener('success', () => store.put({ ...request.result, [field]: sample, ...(photoStep ? {} : { voiceLanguage }) }, profileKey));
+            request.addEventListener('success', () => store.put({ ...request.result, [field]: sample, ...(photoStep ? { faceGeometry: Boolean(facePreview) } : { voiceLanguage }) }, profileKey));
             return request;
           });
           savedSamples[field] = sample;
@@ -1027,7 +1027,16 @@ try {
   if (existing) {
     if (existing.photo) {
       savedSamples.photo = existing.photo;
-      await controls.setPhoto(existing.photo);
+      const restored = await controls.setPhoto(existing.photo);
+      if (restored && existing.faceGeometry === true) {
+        const savedPhoto = existing.photo;
+        void import('./face-geometry.mjs').then(({ createFacePreview }) => createFacePreview(savedPhoto)).then(preview => {
+          if (!preview || controls.getPhoto() !== savedPhoto || savedSamples.photo !== savedPhoto) return;
+          facePreview = preview;
+          if (step === workspaceStep || (step === 1 && !editingName && !faceCamera && !pending)) render();
+          else workspace.querySelector('.twin-workspace-orb .tp-face')?.append(preview.canvas);
+        }).catch(() => { /* Keep the saved portrait available even without the geometry model. */ });
+      }
     }
     if (existing.voice) {
       voiceBlob = savedSamples.voice = existing.voice;
