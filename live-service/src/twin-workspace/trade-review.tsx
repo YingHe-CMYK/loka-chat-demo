@@ -65,13 +65,16 @@ const starterPrediction = 'You might wait for a pullback before buying.';
 const trialExampleKey = 'loka.twin.trial-example';
 const trialExampleSignIn = '/?identity=1&signin=1&view=trades&return=twin&resume-example=1';
 
-function readTrialExample(): (CalibrationEvidence & { reason: string }) | undefined {
+function readTrialExample(): (CalibrationEvidence & { reason: string; id?: string }) | undefined {
   try {
     const draft = JSON.parse(window.sessionStorage.getItem(trialExampleKey) || 'null');
     if (!draft || !Number.isFinite(draft.expiresAt) || Date.now() >= draft.expiresAt) return;
-    const { scenario, twinAction, ownerAction, reason, matched } = draft;
+    const { scenario, twinAction, ownerAction, reason, matched, id } = draft;
     if ([scenario, twinAction, ownerAction, reason].every(value => typeof value === 'string' && value.length > 0 && value.length <= 600)
-      && typeof matched === 'boolean') return { scenario, twinAction, ownerAction, reason, matched };
+      && typeof matched === 'boolean') return {
+      scenario, twinAction, ownerAction, reason, matched,
+      id: typeof id === 'string' && /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(id) ? id : undefined,
+    };
   } catch {
     // A blocked or malformed browser draft should not interrupt onboarding.
   }
@@ -1533,8 +1536,11 @@ function LocalDecisionReview({ active, onFileSelected, followUp, savedUnderstand
           <button type="button" className="twin-change-source" onClick={() => {
             const { scenario, twinAction, ownerAction, matched, reason } = baseline.evidence!;
             try {
+              const previous = readTrialExample();
               window.sessionStorage.setItem(trialExampleKey, JSON.stringify({
-                scenario, twinAction, ownerAction, matched, reason, expiresAt: Date.now() + 30 * 60_000,
+                scenario, twinAction, ownerAction, matched, reason,
+                id: (previous?.scenario === scenario && previous.reason === reason ? previous.id : undefined) ?? crypto.randomUUID(),
+                expiresAt: Date.now() + 30 * 60_000,
               }));
               window.location.assign(trialExampleSignIn);
             } catch {
@@ -1779,7 +1785,7 @@ export function TradeReview({ onResult, initiallyOpen = false, guidedSources = f
       {guidedSources && showPreparedStarter && trialExample && <section className="twin-next-example" aria-label="Resume your practice example">
         <p>Here’s the example you brought from your practice replay.</p>
         <DecisionFollowUp basis={starterBasis} prediction={starterPrediction} persistent
-          observed={trialExample} onNext={(basis, prediction, evidence) => {
+          observed={trialExample} observedId={trialExample.id} onNext={(basis, prediction, evidence) => {
             dismissTrialExample();
             setStarterDismissed(true);
             setFollowUp({ basis, prediction, evidence });

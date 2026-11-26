@@ -74,7 +74,7 @@ function prepareCheck(basis: string, prediction: string): (CalibrationCheck & { 
   return undefined;
 }
 
-export function DecisionFollowUp({ basis, prediction, retained, persistent, starter = false, quietArrival = false, inline = false, observed, onObservedBack, onUseFile, onRemember, onNext }: {
+export function DecisionFollowUp({ basis, prediction, retained, persistent, starter = false, quietArrival = false, inline = false, observed, observedId, onObservedBack, onUseFile, onRemember, onNext }: {
   basis: string;
   prediction: string;
   retained?: boolean;
@@ -83,6 +83,7 @@ export function DecisionFollowUp({ basis, prediction, retained, persistent, star
   quietArrival?: boolean;
   inline?: boolean;
   observed?: CalibrationEvidence & { reason: string };
+  observedId?: string;
   onObservedBack?: () => void;
   onUseFile?: () => void;
   onRemember?: (basis: string, prediction: string) => void;
@@ -97,7 +98,7 @@ export function DecisionFollowUp({ basis, prediction, retained, persistent, star
   const resumeButton = useRef<HTMLButtonElement>(null);
   const [comparisonPoint, setComparisonPoint] = useState<number>();
   const [candidate, setCandidate] = useState<(CalibrationEvidence & { id: string; reason: string }) | undefined>(() =>
-    persistent && observed ? { ...observed, id: crypto.randomUUID() } : undefined);
+    persistent && observed ? { ...observed, id: observedId ?? crypto.randomUUID() } : undefined);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
   const directCheck = prepareCheck(basis, prediction);
@@ -217,7 +218,7 @@ export function DecisionFollowUp({ basis, prediction, retained, persistent, star
       <span className="twin-dialogue-speaker">Twin · From this review</span>
       <p>I can use this correction as one example of how you made this decision.</p>
       <button type="button" onClick={() => {
-        if (persistent) setCandidate({ ...observed, id: crypto.randomUUID() });
+        if (persistent) setCandidate({ ...observed, id: observedId ?? crypto.randomUUID() });
         else onNext(basis, prediction, observed);
       }}>{persistent ? 'Review this correction ↗' : 'Use this correction on this device ↗'}</button>
       {onObservedBack && <button type="button" className="twin-change-source" onClick={onObservedBack}>Change my answer</button>}

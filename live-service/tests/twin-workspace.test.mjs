@@ -919,3 +919,36 @@ test('an account can review a practice draft before sending any training request
   expect(window.sessionStorage.getItem(key), null);
   expect(request.mock.callCount(), 0);
 });
+
+test('retrying a practice draft after reloading reuses the same training example ID', async t => {
+  const priorUrl = window.location.href;
+  window.history.replaceState(null, '', '/twin?resume-example=1');
+  t.after(() => window.history.replaceState(null, '', priorUrl));
+  const id = 'c82f89c3-6dbc-41ef-b41d-77ff8be4a950';
+  window.sessionStorage.setItem('loka.twin.trial-example', JSON.stringify({
+    id, scenario: 'The price rises and then pulls back.', twinAction: 'Wait',
+    ownerAction: 'Stay out', matched: false, reason: 'In this hypothetical situation, I chose to stay out.',
+    expiresAt: Date.now() + 60_000,
+  }));
+  const saves = [];
+  const user = userEvent.setup({ document });
+  for (const attempt of [1, 2]) {
+    const view = render(createElement('div', {
+      className: 'twin-root',
+      ref: node => node?.addEventListener('twin:save-calibration', event => {
+        saves.push(event.detail.example);
+        if (attempt === 1) event.detail.reject(new Error('The response was interrupted.'));
+        else event.detail.resolve(event.detail.example.id);
+      }),
+    }, createElement(TradeReview, { initiallyOpen: true, guidedSources: true, persistentUnderstanding: true })));
+    const draft = await screen.findByRole('region', { name: 'Resume your practice example' });
+    expect(saves.length, attempt - 1);
+    await user.click(within(draft).getByRole('button', { name: 'Add to my training set and continue' }));
+    if (attempt === 1) await within(draft).findByRole('alert');
+    else await screen.findByText('Saved to your Twin’s training set.');
+    view.unmount();
+  }
+  expect(saves[0].id, id);
+  expect(saves[1].id, id);
+  expect(saves[1].ownerAction, 'Stay out');
+});
