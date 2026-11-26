@@ -189,7 +189,7 @@ export function DecisionFollowUp({ basis, prediction, retained, persistent, star
 
   const preview = candidate && <section className="twin-missing-detail" aria-label="Review training example">
     <h3 ref={previewHeading} tabIndex={-1}>One example for your Twin</h3>
-    <p>Review the details before sharing them with your Twin’s training set.</p>
+    <p>Saving sends the example below to your account’s training set. Any source file stays on this device.</p>
     <dl className="twin-training-example">
       <div><dt>Situation</dt><dd>{candidate.scenario}</dd></div>
       <div><dt>Twin predicted</dt><dd>{candidate.twinAction}</dd></div>
