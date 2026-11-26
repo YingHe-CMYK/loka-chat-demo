@@ -436,13 +436,11 @@ async function adoptPhoto(photo, source) {
       clearPortraitPreview();
       facePreview = undefined;
       photoSource = source;
-      if (source === 'camera') {
-        try {
-          const { createFacePreview } = await import('./face-geometry.mjs?v=drag-1');
-          facePreview = await createFacePreview(photo);
-        } catch {
-          // The existing portrait remains available if the local geometry model fails.
-        }
+      try {
+        const { createFacePreview } = await import('./face-geometry.mjs?v=drag-1');
+        facePreview = await createFacePreview(photo);
+      } catch {
+        // The existing portrait remains available if the local geometry model fails.
       }
       notice = firstSetup ? '' : 'Your likeness is now inside the orb.';
       if (firstSetup) handoffReason = 'Appearance prepared';
@@ -607,7 +605,7 @@ function render(focusHeading = false) {
   heading.id = 'setup-title';
   if (!inlineSetup) add('p', descriptions[step]);
   if (inlineSetup && step === 1) {
-    if (pending && processingPhoto) renderHandoff('Fitting your portrait', 'I’m placing the face inside the particle orb.');
+    if (pending && processingPhoto) renderHandoff('Building your likeness', 'I’m checking your face and building a turnable preview on this device.');
     else if (controls.hasPhoto()) renderHandoff(
       photoSource === 'camera' ? 'Camera frame applied' : photoSource === 'file' ? 'Photo applied' : 'Local portrait restored',
       'Look at the orb to see your likeness. I can animate it here, or we can try your voice.',
@@ -729,7 +727,7 @@ function render(focusHeading = false) {
       camera.dataset.openFaceCamera = '';
       if (controls.hasPhoto()) {
         if (facePreview) stage.append(facePreview.controls);
-        else if (photoSource === 'camera') add('p', '3D preview needs one clear face. You can retake the photo or continue with this portrait.', stage);
+        else if (photoSource) add('p', '3D preview needs one clear face. Try another image or continue with this portrait.', stage);
         if (portraitVideoURL) {
           if (firstSetup) {
             button('Replay animation', () => {
