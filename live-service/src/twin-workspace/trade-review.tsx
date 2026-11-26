@@ -1322,8 +1322,9 @@ function inferLocalDecision(text: string): { premise?: string; prediction?: stri
   return { premise, prediction };
 }
 
-function LocalDecisionReview({ active, followUp, savedUnderstanding, onKeepUnderstanding, retainedUnderstandings, persistentUnderstanding }: {
+function LocalDecisionReview({ active, onFileSelected, followUp, savedUnderstanding, onKeepUnderstanding, retainedUnderstandings, persistentUnderstanding }: {
   active: boolean;
+  onFileSelected: () => void;
   followUp?: RetainedUnderstanding;
   savedUnderstanding?: RetainedUnderstanding;
 } & UnderstandingAccess) {
@@ -1438,7 +1439,12 @@ function LocalDecisionReview({ active, followUp, savedUnderstanding, onKeepUnder
       <input hidden ref={picker} type="file" accept=".txt,.md,.csv,text/plain,text/csv" onChange={event => {
         const file = event.currentTarget.files?.[0];
         event.currentTarget.value = '';
-        if (file) void previewFile(file);
+        if (!file) return;
+        if (!active) {
+          onFileSelected();
+          setEditingSource(true);
+        }
+        void previewFile(file);
       }} />
       {filePreview ? <section className="twin-file-preview" aria-label="Local file preview">
         <strong ref={previewHeading} tabIndex={-1}>{filePreview.name}</strong>
@@ -1700,12 +1706,13 @@ export function TradeReview({ onResult, initiallyOpen = false, guidedSources = f
     }
   }
   const sourceSection = useRef<HTMLElement>(null);
-  function openLocalSource() {
+  function openLocalSource(moveFocus = true) {
     setOtherSource(true);
     setPublicReview(false);
     setSourceChoicesOpen(false);
     setSourcePaused(false);
     setStarterDismissed(true);
+    if (!moveFocus) return;
     window.requestAnimationFrame(() => {
       const chooseFile = sourceSection.current?.querySelector<HTMLButtonElement>('.twin-file-drop button');
       (chooseFile?.getClientRects().length ? chooseFile : sourceSection.current)?.focus();
@@ -1727,7 +1734,9 @@ export function TradeReview({ onResult, initiallyOpen = false, guidedSources = f
       {!publicReview && <div role="status">{saveStatus}</div>}
       {guidedSources && starterMounted && showPreparedStarter && sourceChoicesOpen && !sourcePaused && !starterDismissed && <DecisionFollowUp starter quietArrival
         basis={starterBasis} prediction={starterPrediction}
-        persistent={persistentUnderstanding} onUseFile={openLocalSource} onNext={(basis, prediction, evidence) => {
+        persistent={persistentUnderstanding} onUseFile={() => {
+          sourceSection.current?.querySelector<HTMLInputElement>('input[type=file]')?.click();
+        }} onNext={(basis, prediction, evidence) => {
           setStarterDismissed(true);
           setFollowUp({ basis, prediction, evidence });
           setFollowUpVersion(version => version + 1);
@@ -1743,11 +1752,11 @@ export function TradeReview({ onResult, initiallyOpen = false, guidedSources = f
             : 'I’ve prepared a short replay. You can try it, or share a real source for me to review.'}</p>
           <div className="twin-fluid-actions">
             <button type="button" aria-pressed={publicReview} onClick={() => { setOtherSource(false); setPublicReview(true); setSourceChoicesOpen(false); setSourcePaused(false); setStarterDismissed(true); }}>Polymarket profile</button>
-            <button type="button" aria-pressed={otherSource} onClick={openLocalSource}>Other trading information</button>
+            <button type="button" aria-pressed={otherSource} onClick={() => openLocalSource()}>Other trading information</button>
 
           </div>
         </> : <button type="button" className="twin-change-source" onClick={() => { setSourceChoicesOpen(true); setSourcePaused(true); }}>← Back to information sources</button>}
-        <div hidden={!otherSource || sourcePaused}><LocalDecisionReview key={followUpVersion} active={otherSource && !sourcePaused} followUp={followUp} savedUnderstanding={savedUnderstanding} onKeepUnderstanding={onKeepUnderstanding}
+        <div hidden={!otherSource || sourcePaused}><LocalDecisionReview key={followUpVersion} active={otherSource && !sourcePaused} onFileSelected={() => openLocalSource(false)} followUp={followUp} savedUnderstanding={savedUnderstanding} onKeepUnderstanding={onKeepUnderstanding}
           retainedUnderstandings={retainedUnderstandings} persistentUnderstanding={persistentUnderstanding} /></div>
       </section>}
       {!guidedSources && <div hidden={publicReview || started}>
