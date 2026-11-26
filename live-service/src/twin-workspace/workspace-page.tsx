@@ -122,7 +122,7 @@ export default function TwinWorkspacePage() {
     let active = true;
     const entry = document.createElement('script');
     entry.type = 'module';
-    entry.src = '/twin-presence/onboarding.mjs?v=portrait-flow-25';
+    entry.src = '/twin-presence/onboarding.mjs?v=portrait-flow-26';
     entry.onload = () => {
       if (!active) return;
       setState('empty');

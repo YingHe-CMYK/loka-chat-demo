@@ -56,7 +56,6 @@ function closeFaceCamera() {
   faceCameraTimer = undefined;
   faceCamera?.getTracks().forEach(track => track.stop());
   faceCamera = undefined;
-  faceCameraVideo?.parentElement?.querySelector('.setup-orb-still')?.remove();
   faceCameraVideo?.remove();
   faceCameraVideo = undefined;
   delete workspace.dataset.twinLiveCamera;
@@ -80,7 +79,7 @@ function updateCameraHandoff(title, detail) {
   handoff.querySelector('p').textContent = detail;
 }
 
-async function guideFaceCapture(video, message) {
+async function guideFaceCapture(video, message, useFrame) {
   let detector;
   try { detector = await getImageDetector(); }
   catch { return; }
@@ -120,18 +119,7 @@ async function guideFaceCapture(video, message) {
       faceCameraTimer = undefined;
       const still = cameraFrame(video);
       if (!still) return;
-      still.className = 'setup-orb-camera setup-orb-still';
-      video.after(still);
-      video.hidden = true;
-      workspace.dataset.twinCameraFraming = 'held';
-      message.textContent = 'Twin held a frame.';
-      updateCameraHandoff('I found a frame that fits',
-        'You can adopt it, retake it, or close the camera. It hasn’t been applied yet.');
-      const capture = orbActions.querySelector('[data-face-capture]');
-      if (capture) capture.textContent = 'Use this frame';
-      const retake = orbActions.querySelector('[data-face-retake]');
-      if (retake) retake.hidden = false;
-      faceCamera?.getTracks().forEach(track => track.stop());
+      useFrame(still);
     } catch {
       window.clearInterval(faceCameraTimer);
       faceCameraTimer = undefined;
@@ -680,7 +668,7 @@ function render(focusHeading = false) {
           }
           faceCamera = stream;
           camera.hidden = true;
-          message.textContent = 'Center your face, then capture a frame.';
+          message.textContent = 'Center your face to prepare a preview.';
           const orb = workspace.querySelector('.twin-workspace-orb');
           const placeInOrb = firstSetup && orb;
           const live = add('video', '', placeInOrb ? orb : cameraArea);
@@ -688,7 +676,7 @@ function render(focusHeading = false) {
           if (placeInOrb) {
             workspace.dataset.twinLiveCamera = 'true';
             updateCameraHandoff('I’m checking the frame',
-              'The camera is inside the orb. When one face holds steady, I’ll pause on that frame for you.');
+              'When one face holds steady, I’ll create a 3D preview on this device and turn off the camera.');
             live.className = 'setup-orb-camera';
           }
           live.setAttribute('aria-label', 'Live camera framing preview');
@@ -696,28 +684,18 @@ function render(focusHeading = false) {
           live.muted = true;
           live.playsInline = true;
           live.srcObject = stream;
-          const capture = button('Capture face', () => {
-            const frame = live.parentElement?.querySelector('.setup-orb-still') || cameraFrame(live);
-            if (!frame) return;
-            capture.disabled = true;
+          const useFrame = frame => {
+            if (!frame || faceCameraVideo !== live) return;
             closeFaceCamera();
             frame.toBlob(photo => {
-              if (!photo || step !== 1) return;
+              if (!photo || step !== 1 || document.hidden) return;
               void adoptPhoto(photo, 'camera');
             }, 'image/jpeg', .88);
-          }, cameraArea, true);
-          capture.dataset.faceCapture = '';
-          if (placeInOrb) void guideFaceCapture(live, message);
+          };
+          const capture = button('Capture face', () => useFrame(cameraFrame(live)), cameraArea, true);
+          if (placeInOrb) void guideFaceCapture(live, message, useFrame);
           capture.disabled = !live.videoWidth;
           live.addEventListener('loadeddata', () => { capture.disabled = false; }, { once: true });
-          const retake = button('Retake', () => {
-            closeFaceCamera();
-            render();
-            const open = cameraTarget === orbActions ? orbActions.querySelector('[data-open-face-camera]') : guide.querySelector('[data-open-face-camera]');
-            open?.click();
-          }, cameraArea);
-          retake.dataset.faceRetake = '';
-          retake.hidden = true;
           button('Close camera', () => { closeFaceCamera(); render(!firstSetup); orbActions.querySelector('button')?.focus(); }, cameraArea);
         } catch {
           message.textContent = 'Camera access is unavailable. Allow it in your browser or choose a local photo.';
