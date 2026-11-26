@@ -9,18 +9,18 @@ const moments = [
   { label: 'Stay out', detail: 'You let both moments go by without buying.' },
 ];
 
-function ReplayPath({ point, revealTwin = false }: { point: number; revealTwin?: boolean }) {
+function ReplayPath({ point, revealTwin = false }: { point?: number; revealTwin?: boolean }) {
   return <div className="twin-replay-path" data-point={point} aria-hidden="true">
     <svg viewBox="0 0 320 72" preserveAspectRatio="none" focusable="false">
       <path d="M2 61 C28 60 36 20 68 16 S120 23 152 50 S219 57 278 46 L318 42" />
     </svg>
-    {point !== 2 && <span className="twin-replay-user-mark" />}
+    {point !== undefined && point !== 2 && <span className="twin-replay-user-mark" />}
     {revealTwin && <span className="twin-replay-twin-mark" />}
   </div>;
 }
 
 function CalibrationReplay({ point, chosen, onMove, onChoose }: {
-  point: number;
+  point?: number;
   chosen?: number;
   onMove: (point: number) => void;
   onChoose: (matched: number) => void;
@@ -36,8 +36,8 @@ function CalibrationReplay({ point, chosen, onMove, onChoose }: {
     </div>
     {chosen === undefined && <label className="twin-replay-scrubber">
       <span>When would you buy?</span>
-      <input type="range" min={0} max={2} step={1} value={point} disabled={chosen !== undefined}
-        aria-valuetext={moments[point].label} onChange={event => onMove(event.currentTarget.valueAsNumber)} />
+      <input type="range" min={0} max={2} step={1} value={point ?? 1}
+        aria-valuetext={point === undefined ? 'No move selected' : moments[point].label} onChange={event => onMove(event.currentTarget.valueAsNumber)} />
     </label>}
     <div className="twin-replay-ticks">
       {moments.map((moment, index) => index === 2 && chosen === undefined
@@ -45,9 +45,11 @@ function CalibrationReplay({ point, chosen, onMove, onChoose }: {
             aria-pressed={point === index} onClick={() => onMove(index)}>{moment.label}</button>
         : <span key={moment.label} aria-hidden="true">{moment.label}</span>)}
     </div>
-    {chosen === undefined && <p><strong>{moments[point].label}</strong> · {moments[point].detail}</p>}
-    {chosen !== undefined && <p className="twin-replay-result-label">Twin marked the pullback. You marked {point === 2 ? 'no entry' : moments[point].label.toLowerCase()}.</p>}
-    {chosen === undefined && <button type="button" onClick={() => onChoose(point === 1 ? 0 : 1)}>
+    {chosen === undefined && (point === undefined
+      ? <p>Choose a point on the chart, use the slider, or stay out.</p>
+      : <p><strong>{moments[point].label}</strong> · {moments[point].detail}</p>)}
+    {chosen !== undefined && point !== undefined && <p className="twin-replay-result-label">Twin marked the pullback. You marked {point === 2 ? 'no entry' : moments[point].label.toLowerCase()}.</p>}
+    {chosen === undefined && <button type="button" disabled={point === undefined} onClick={() => onChoose(point === 1 ? 0 : 1)}>
       {point === 2 ? 'Mark no entry' : 'Mark my entry'} ↗
     </button>}
   </div>;
@@ -91,7 +93,8 @@ export function DecisionFollowUp({ basis, prediction, retained, persistent, star
 }) {
   const [later, setLater] = useState(false);
   const [chosen, setChosen] = useState<number>();
-  const [point, setPoint] = useState(0);
+  const [selectedPoint, setPoint] = useState<number>();
+  const point = selectedPoint ?? 1;
   const result = useRef<HTMLDivElement>(null);
   const previewHeading = useRef<HTMLHeadingElement>(null);
   const actionControl = useRef<HTMLInputElement>(null);
@@ -237,7 +240,7 @@ export function DecisionFollowUp({ basis, prediction, retained, persistent, star
         : <p role="status">{preparing ? 'Preparing a new situation on this device…' : 'Share another real decision where you followed this rule or made an exception.'}</p>}
     </>}
     {check && <div className="twin-independent-check">
-      {!candidate && (replay ? <CalibrationReplay point={point} chosen={chosen} onMove={setPoint} onChoose={setChosen} /> : <p>{check.scenario}</p>)}
+      {!candidate && (replay ? <CalibrationReplay point={selectedPoint} chosen={chosen} onMove={setPoint} onChoose={setChosen} /> : <p>{check.scenario}</p>)}
       {chosen === undefined ? !replay && <div className="twin-fluid-actions">
         {choiceOrder.map(index => <button key={index} type="button" onClick={() => setChosen(index)}>{check.choices[index]}</button>)}
       </div> : <div tabIndex={-1} ref={result}>

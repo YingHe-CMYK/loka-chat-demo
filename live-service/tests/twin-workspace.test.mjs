@@ -362,6 +362,7 @@ test('a guided public lookup failure leaves a replay and the original address av
   await user.click(screen.getByRole('button', { name: 'Read public trades' }));
   const fallback = await screen.findByRole('region', { name: 'Continue without public fills' });
   expect(profile.value, address);
+  await user.click(within(fallback).getByRole('button', { name: 'Select price rises' }));
   await user.click(within(fallback).getByRole('button', { name: /Mark my entry/ }));
   await user.click(within(fallback).getByRole('button', { name: 'Keep only my first move' }));
   await within(screen.getByRole('region', { name: 'Compare the next decision' })).findByText(/In this hypothetical situation/);
@@ -379,6 +380,7 @@ test('a guided empty public profile can continue while retaining the submitted a
   await user.click(screen.getByRole('button', { name: 'Read public trades' }));
   const fallback = await screen.findByRole('region', { name: 'Continue without public fills' });
   expect(profile.value, address);
+  await user.click(within(fallback).getByRole('button', { name: 'Select price rises' }));
   await user.click(within(fallback).getByRole('button', { name: /Mark my entry/ }));
   await user.click(within(fallback).getByRole('button', { name: 'Keep only my first move' }));
   await within(screen.getByRole('region', { name: 'Compare the next decision' })).findByText(/In this hypothetical situation/);
@@ -400,7 +402,8 @@ test('a guided public review without enough evidence offers a replay without req
   await user.click(replay);
   await screen.findByText('I do not have enough evidence here to infer a trading habit.');
   expect(screen.queryByRole('textbox', { name: 'Trade note' }), null);
-  await user.click(await screen.findByRole('button', { name: /Mark my entry/ }));
+  await user.click(await screen.findByRole('button', { name: 'Select price rises' }));
+  await user.click(screen.getByRole('button', { name: /Mark my entry/ }));
   await user.click(screen.getByRole('button', { name: 'Keep only my first move' }));
   await within(screen.getByRole('region', { name: 'Compare the next decision' })).findByText(/In this hypothetical situation/);
 });
@@ -610,6 +613,7 @@ test('local evidence can be corrected through a replay without typing or a netwo
   await user.click(screen.getByRole('button', { name: /Back to judgment/ }));
   await user.click(within(card).getByRole('button', { name: 'Needs correction' }));
   await screen.findByRole('slider', { name: 'When would you buy?' });
+  await user.click(screen.getByRole('button', { name: 'Select price rises' }));
   await user.click(screen.getByRole('button', { name: /Mark my entry/ }));
   await user.click(screen.getByRole('button', { name: 'Keep only my first move' }));
   await within(screen.getByRole('region', { name: 'Compare the next decision' })).findByText(/In this hypothetical situation, I chose: Buy on the rise/);
@@ -684,6 +688,9 @@ test('account calibration previews the exact example before initiating an upload
     onRemember() {},
     onNext: (...value) => next.push(value),
   })));
+  expect(screen.getByRole('button', { name: /Mark my entry/ }).disabled, true);
+  expect(screen.getByRole('slider', { name: 'When would you buy?' }).getAttribute('aria-valuetext'), 'No move selected');
+  await user.click(screen.getByRole('button', { name: 'Select price rises' }));
   await user.click(screen.getByRole('button', { name: /Mark my entry/ }));
   expect(screen.queryByRole('textbox'), null);
   const slider = screen.getByRole('slider', { name: 'Your move with new information' });
@@ -786,6 +793,7 @@ test('a training receipt can revoke one example while keeping the local review',
       }, { once: true });
     },
   }, createElement(TradeReview, { initiallyOpen: true, guidedSources: true, persistentUnderstanding: true }), createElement(TrainingExamples)));
+  await user.click(screen.getByRole('button', { name: 'Select price rises' }));
   await user.click(screen.getByRole('button', { name: /Mark my entry/ }));
   await user.click(screen.getByRole('button', { name: 'Keep only my first move' }));
   await user.click(screen.getByRole('button', { name: 'Add to my training set and continue' }));
@@ -873,6 +881,7 @@ test('a replay-to-file comparison saves only the confirmed sample and can be wit
     },
   }, createElement(TradeReview, { initiallyOpen: true, guidedSources: true, persistentUnderstanding: true })));
   const user = userEvent.setup({ document });
+  await user.click(screen.getByRole('button', { name: 'Select price rises' }));
   await user.click(screen.getByRole('button', { name: /Mark my entry/ }));
   await user.click(screen.getByRole('button', { name: 'Keep only my first move' }));
   await user.click(screen.getByRole('button', { name: 'Continue on this device' }));
