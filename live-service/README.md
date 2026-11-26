@@ -1,20 +1,8 @@
-# Loka 真实账户与内嵌钱包服务
+# LokaChat Twin
 
-本目录是可构建的真实接入代码，和上层静态 demo 分开。没有配置 Privy 时只显示配置缺失；不会接受 123456 或生成模拟钱包。Cloudflare 公网入口已上线，真实邮箱收信与钱包创建待 Privy 配置后验收。
+Twin 工作台从 `/twin` 打开。注册或登录后创建或打开已有 Twin，再依次设置形象与声音。工作台会准备一个明确标注为假设的决策情境，或根据用户主动提供的 Polymarket 主页和本机资料准备判断。用户可以在回放里直接点选、左右滑判断卡、保留疑问或稍后继续。
 
-## Cloudflare 线上入口
-
-公网首页 https://loka-chat-mirror-v1.yinghe-vela-live.workers.dev/ ，体验入口位于 /mirror/mirror-loop 。使用 Workers Static Assets 提供前端与镜子资源，Worker 处理 /api/*，D1 绑定 DB 保存真实账户。预览资料保存在浏览器。真实登录需在 Privy 的 allowed origins 加入上述 HTTPS origin，并在该 Worker 的 Settings → Variables and Secrets 中配置 PRIVY_APP_ID 与 PRIVY_APP_SECRET（Secret）。可选 PRIVY_CLIENT_ID。
-
-在本目录执行 `npm ci` 和 `npm run cf:deploy` 可重新构建、应用远端迁移和发布。上线后 `/api/health` 会实际查询 accounts 表；`authenticationConfigured` 表示配置状态，收信、钱包创建和跨设备登录仍需单独验证。Docker Compose 是独立部署选项。
-
-## 真实用户路径
-
-打开页面 → Privy 官方邮箱 OTP 弹窗 → 验证成功 → Privy 创建 EVM 内嵌钱包 → Loka 服务端验证登录令牌 → 设置用户名 → SQLite 保存账户 → 查看真实钱包地址。
-
-同一 Privy 用户 ID 是账户主键，邮箱和用户名都不是身份凭证。重新登录和更换设备后，通过同一个后端取回用户名。钱包以 Privy linked_accounts 为准。若用户取消钱包创建，可以在账户页重试；不会把未创建的钱包显示为成功。此版本没有转账、资产授权、私钥导出、交易历史或余额查询入口。
-
-当前页面在账户准备完成处结束。现有镜子 demo 的推断/健康/八字/关系页面仍为模拟；没有将它们冒充真实模型结果或将旧 localStorage 内容自动上传。把真实账户接回镜子业务需要后续模型接口和逐项数据授权。
+登录用户可以预览并确认要加入个人训练集的那一条结构化样本。原始本机文件与样本分别处理。选择仅本机继续时，对照结果留在当前工作台。保存的样本可在 **My training examples** 展开或撤回。
 
 ## 本地启动
 
@@ -29,9 +17,9 @@ npm run build
 npm start
 ```
 
-浏览器打开 http://localhost:8780 。未配置也能在开发模式启动检查配置缺失页面；production 模式没有 App ID / Secret 会拒绝启动。
+浏览器打开 [Twin 工作台](http://localhost:8780/twin)。可以直接用 [本机体验入口](http://localhost:8780/twin?start=1) 走一遍，无需 Privy。真实邮箱登录需要在 Privy 配置所用的浏览器 origin，并配置服务端 App ID 和 Secret。Production 模式在缺少 Privy 配置时会拒绝启动。
 
-前端开发可另外运行 npm run dev，默认 http://localhost:5173 ，/api 自动代理到 8780。两个开发 origin 都需要按实际使用情况加入 Privy 开发应用。
+前端开发可另外运行 npm run dev，默认 http://localhost:5173 ，/api 自动代理到 8780。真实登录时，把浏览器实际访问的 origin 加入 Privy 的开发应用。
 
 ## 环境变量
 
@@ -57,31 +45,12 @@ docker compose logs --tail=50 loka
 
 Caddy 自动配置 HTTPS。只有 web 服务暴露 80/443；loka 在容器内部监听。SQLite 保存到 loka_data 卷，不能使用 docker compose down -v，否则数据卷会被删除。该模板只支持单个应用实例；横向扩容前需改用共享数据库和共享限流存储。
 
-备份时用 SQLite 一致性备份机制（或停止应用后备份整个数据卷），不能只复制运行中的主 .sqlite 文件而漏掉 WAL。首次上线前检查备份/恢复、域名、邮件送达、两个真实测试账户隔离和钱包取消重试。
+备份时用 SQLite 一致性备份机制（或停止应用后备份整个数据卷），不能只复制运行中的主 .sqlite 文件而漏掉 WAL。首次上线前检查备份/恢复、域名、邮件送达、两个真实测试账户隔离以及个人训练集撤回。
 
-## API
+## 验证
 
-GET /api/health：进程存活及配置状态，不代表 Privy 邮件和钱包端到端可用。
-GET /api/config：仅公开 App ID / Client ID 和配置是否存在，无密钥。
-GET /api/me：Bearer token 验证后返回该用户账户、邮箱和 Privy 内嵌钱包。
-PUT /api/me：只允许提交 username；用户 ID 从验证过的 token 获取。用户名 2–24 字，NFKC 规范化后不区分大小写判重。
-POST /api/models/judgment：预留判断模型。
-POST /api/models/prediction：预留行为预测模型。
-POST /api/models/adjudication：预留裁决模型。
+```sh
+npm run quality
+```
 
-模型端点均要求登录，当前返回 HTTP 501 MODEL_NOT_CONNECTED，不接收/转发私人材料到未配置服务。后续在 server/app.mjs 替换预留处理器，加入版本、证据来源、超时、用量记录、用户许可和真实响应校验；不得直接把浏览器提供的 URL 当上游地址。
-
-## 权限与密钥边界
-
-前端不接触 App Secret；后端不创建、保存或代签用户私钥。账户页从服务端确认的 linked_accounts 展示钱包，不能通过前端伪造地址关联到账户。未认证返回 401，未配置返回 503；模型未接入返回 501。使用官方 SDK 验证令牌签名、audience 和过期时间。
-
-开发测试用人工签署的短期测试令牌验证 SDK 校验，不是调用 Privy 生产服务；账户 API 测试注入假身份，只用于验证账户隔离、校验和持久化。生产入口没有测试身份开关。
-
-## 验收
-
-npm test
-npm run build
-
-需在 Privy 配好后真人完成：邮件收信、正确与错误验证码、创建钱包、取消后重试、退出/跨设备登录保持同一地址、两个用户相同用户名冲突、服务故障提示。自动化检查不能替代这些真实服务验收。
-
-依赖已通过 package-lock.json 锁定；SDK 会引入较大的钱包依赖。构建成功但有第三方包的 PURE 注释和 chunk 大小警告。Docker 镜像构建需在有 Docker 的环境执行；当前机器尚未验证镜像运行。
+该命令执行 lint、类型检查、测试和构建。判断逻辑、账户归属和样本保存由现有接口支持。手机和桌面均可使用工作台。GitHub Pages 只能托管静态资源，邮箱登录和账户训练集需连接后端服务。

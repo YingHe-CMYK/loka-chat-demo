@@ -10,9 +10,15 @@
     "build": "tsc --noEmit && vite build && node scripts/pack-mirror.mjs",
     "start": "node --env-file-if-exists=.env server/index.mjs",
     "test": "node --test tests/*.test.mjs",
-    "cf:deploy": "npm run build && wrangler d1 migrations apply DB --remote --config wrangler.jsonc && wrangler deploy --config wrangler.jsonc"
+    "cf:deploy": "npm run build && wrangler d1 migrations apply DB --remote --config wrangler.jsonc && wrangler deploy --config wrangler.jsonc",
+    "lint": "eslint src/twin-workspace public/twin-presence tests/twin-presence.test.mjs tests/twin-workspace.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "quality": "npm run lint && npm run typecheck && npm test && npm run build",
+    "prebuild": "node scripts/prepare-twin-camera.mjs",
+    "predev": "node scripts/prepare-twin-camera.mjs"
   },
   "dependencies": {
+    "@mediapipe/tasks-vision": "0.10.22-rc.20250304",
     "@privy-io/node": "0.37.0",
     "@privy-io/react-auth": "3.51.0",
     "express": "5.3.0",
@@ -22,8 +28,14 @@
     "react-dom": "19.3.1"
   },
   "devDependencies": {
+    "@testing-library/react": "16.3.0",
+    "@testing-library/user-event": "14.6.1",
+    "@types/node": "24.19.4",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "@typescript-eslint/parser": "8.48.1",
+    "eslint": "9.39.1",
+    "jsdom": "26.1.0",
     "typescript": "5.9.3",
     "vite": "7.3.7",
     "wrangler": "^4.156.0"

@@ -1,0 +1,24 @@
+name: Twin frontend
+on:
+  push:
+    paths: ['live-service/**', '.github/workflows/twin-frontend.yml']
+  pull_request:
+    paths: ['live-service/**', '.github/workflows/twin-frontend.yml']
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: live-service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: live-service/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build

@@ -8,3 +8,5 @@ data/
 
 .wrangler/
 .dev.vars*
+
+/public/twin-presence/vision-runtime/

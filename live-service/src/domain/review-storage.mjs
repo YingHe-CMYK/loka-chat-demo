@@ -1,0 +1,4 @@
+export const reviewKeys=['miro-review-v3','miro-review-person','miro-name','loka-review-identity','loka-registration-draft'];
+export const reviewSessionKeys=['loka-review-page','loka-review-task','loka-contact-deferred','loka-review-source','loka-source-return','loka-renaming','loka-understanding-step'];
+export function exportReview(storage){const records={};for(const key of reviewKeys){const value=storage.getItem(key);if(value!==null){try{records[key]=JSON.parse(value)}catch{records[key]=value}}}return {format:'loka-review-export',version:1,exportedAt:new Date().toISOString(),scope:'Local preview data excludes live accounts and on-chain wallets.',records}}
+export function clearReview(storage,session){for(const key of reviewKeys)storage.removeItem(key);for(const key of reviewSessionKeys)session.removeItem(key)}

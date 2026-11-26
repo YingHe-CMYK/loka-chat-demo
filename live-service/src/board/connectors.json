@@ -1,0 +1,12 @@
+[
+ ["Calendar","Prepare a weekday briefing","One calendar event","Friday has three meetings and a two-hour research block."],
+ ["Gmail","Organize unread email","One unread email","A collaborator asks whether Friday works for a first meeting."],
+ ["Slack","Catch up on a discussion","One selected thread","The team suggested a two-week trial and has not chosen an owner."],
+ ["Notion","Review current priorities","One project page","This week’s priority is to finish the evaluation before starting another project."],
+ ["Google Drive","Revisit a project decision","One decision document","The project review postponed expansion until the trial has results."],
+ ["Desktop files","Prepare a desktop note","One selected text file","Draft note: ask who owns the trial. No desktop file will be created."],
+ ["GitHub","Review a code change","One pull request summary","The evaluation pull request needs one reviewer before Friday."],
+ ["Fitbit","Review activity from a wearable","One daily activity summary","Monday: 6,200 steps. No location, heart rate or sleep data included."],
+ ["Oura","Review rest from a wearable","One sleep summary","Monday: 7 hours of sleep. No location or raw sensor readings included."],
+ ["Personal notes","Reflect on a personal note","One selected note","I want to preserve research time and avoid an open-ended collaboration."]
+]

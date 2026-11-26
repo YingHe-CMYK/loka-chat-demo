@@ -1,7 +1,9 @@
-import {cp, mkdir, readdir} from 'node:fs/promises';
-const dest=new URL('../dist/mirror/',import.meta.url);
-const root=new URL('../../',import.meta.url);
-await mkdir(dest,{recursive:true});
-for (const name of await readdir(root)) {
-  if(name.endsWith('.js') || name.endsWith('.css') || ['index.html','mirror-loop.html','wallet-preview-qr.svg','vendor'].includes(name)) await cp(new URL(name,root),new URL(name,dest),{recursive:true});
-}
+// Keep the entry page and its styles on the same deployment revision.
+import { readFile, writeFile } from "node:fs/promises";
+const entry = new URL("../dist/index.html", import.meta.url);
+const html = await readFile(entry, "utf8");
+const stylesheet = html.match(/<link rel="stylesheet"[^>]+href="(\/assets\/[^"]+\.css)"[^>]*>/);
+if (!stylesheet) throw new Error("Missing entry stylesheet");
+const css = await readFile(new URL(".." + stylesheet[1], entry.href.replace("index.html","assets/")), "utf8");
+const shared = await readFile(new URL("../public/web/product.css",import.meta.url),"utf8");
+await writeFile(entry, html.replace(stylesheet[0], () => '<style>' + css + shared + '</style>'));
