@@ -62,6 +62,20 @@ export type TradeReviewStatus = 'Ready' | 'No trades' | 'Read failed';
 type Feedback = 'Right' | 'Partly right' | 'Needs correction';
 const starterBasis = 'Starting guess for a hypothetical scenario.';
 const starterPrediction = 'You might wait for a pullback before buying.';
+const trialExampleKey = 'loka.twin.trial-example';
+const trialExampleSignIn = '/?identity=1&signin=1&view=trades&return=twin&resume-example=1';
+
+function readTrialExample(): (CalibrationEvidence & { reason: string }) | undefined {
+  try {
+    const draft = JSON.parse(window.sessionStorage.getItem(trialExampleKey) || 'null');
+    if (!draft || !Number.isFinite(draft.expiresAt) || Date.now() >= draft.expiresAt) return;
+    const { scenario, twinAction, ownerAction, reason, matched } = draft;
+    if ([scenario, twinAction, ownerAction, reason].every(value => typeof value === 'string' && value.length > 0 && value.length <= 600)
+      && typeof matched === 'boolean') return { scenario, twinAction, ownerAction, reason, matched };
+  } catch {
+    // A blocked or malformed browser draft should not interrupt onboarding.
+  }
+}
 const explanations = {
   planned: { label: 'Two planned buys', next: 'Group both fills under the original plan and check whether they followed it.' },
   news: { label: 'News prompted the buy', next: 'Note which news changed your view and how much you adjusted the position afterward.' },
@@ -1515,10 +1529,19 @@ function LocalDecisionReview({ active, onFileSelected, followUp, savedUnderstand
       </details>}
       {baseline.evidence ? <>
         <p role="status">This example records your choices in this scenario.</p>
-        {trial && <p>
-          <a href="/?identity=1&signin=1&view=trades&return=twin" target="_blank" rel="noopener noreferrer">Open my account workspace ↗</a>
-          {' '}Your current review stays in this tab.
-        </p>}
+        {trial && baseline.basis === starterBasis && <div className="twin-fluid-actions">
+          <button type="button" className="twin-change-source" onClick={() => {
+            const { scenario, twinAction, ownerAction, matched, reason } = baseline.evidence!;
+            try {
+              window.sessionStorage.setItem(trialExampleKey, JSON.stringify({
+                scenario, twinAction, ownerAction, matched, reason, expiresAt: Date.now() + 30 * 60_000,
+              }));
+              window.location.assign(trialExampleSignIn);
+            } catch {
+              setMessage('This browser could not keep the replay for sign-in. You can continue here.');
+            }
+          }}>Sign in to review and save this example ↗</button>
+        </div>}
         {comparingNewSource && <div className="twin-missing-detail" aria-label="Compare with the earlier choice">
           <p><strong>What Twin inferred from the new source</strong> · {prediction}</p>
           {!comparison ? <div className="twin-fluid-actions">
@@ -1641,6 +1664,13 @@ export function TradeReview({ onResult, initiallyOpen = false, guidedSources = f
   onBackToVoice?: () => void;
   savedUnderstanding?: RetainedUnderstanding;
 } & UnderstandingAccess) {
+  const [trialExample, setTrialExample] = useState(() =>
+    persistentUnderstanding && new URLSearchParams(window.location.search).get('resume-example') === '1'
+      ? readTrialExample() : undefined);
+  function dismissTrialExample() {
+    try { window.sessionStorage.removeItem(trialExampleKey); } catch { /* The current view can still close. */ }
+    setTrialExample(undefined);
+  }
   const [started, setStarted] = useState(false);
   const [draft, setDraft] = useState(() => {
     try {
@@ -1740,7 +1770,20 @@ export function TradeReview({ onResult, initiallyOpen = false, guidedSources = f
       )}
       {!publicReview && <div role="status">{saveStatus}</div>}
 
-      {guidedSources && starterMounted && showPreparedStarter && sourceChoicesOpen && !sourcePaused && !starterDismissed && <DecisionFollowUp starter quietArrival
+      {guidedSources && showPreparedStarter && trialExample && <section className="twin-next-example" aria-label="Resume your practice example">
+        <p>Here’s the example you brought from your practice replay.</p>
+        <DecisionFollowUp basis={starterBasis} prediction={starterPrediction} persistent
+          observed={trialExample} onNext={(basis, prediction, evidence) => {
+            dismissTrialExample();
+            setStarterDismissed(true);
+            setFollowUp({ basis, prediction, evidence });
+            setFollowUpVersion(version => version + 1);
+            setSourceChoicesOpen(false);
+            setOtherSource(true);
+            setPublicReview(false);
+          }} />
+      </section>}
+      {guidedSources && !trialExample && starterMounted && showPreparedStarter && sourceChoicesOpen && !sourcePaused && !starterDismissed && <DecisionFollowUp starter quietArrival
         basis={starterBasis} prediction={starterPrediction}
         persistent={persistentUnderstanding} onUseFile={() => {
           sourceSection.current?.querySelector<HTMLInputElement>('input[type=file]')?.click();

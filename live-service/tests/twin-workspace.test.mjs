@@ -898,3 +898,24 @@ test('a replay-to-file comparison saves only the confirmed sample and can be wit
   await within(comparison).findByRole('region', { name: 'Review training example' });
   expect((await request(listPath)).examples.length, 0);
 });
+
+test('an account can review a practice draft before sending any training request', async t => {
+  const priorUrl = window.location.href;
+  window.history.replaceState(null, '', '/twin?resume-example=1');
+  t.after(() => window.history.replaceState(null, '', priorUrl));
+  const key = 'loka.twin.trial-example';
+  window.sessionStorage.setItem(key, JSON.stringify({
+    scenario: 'The price rises and then pulls back.', twinAction: 'Wait',
+    ownerAction: 'Stay out', matched: false, reason: 'In this hypothetical situation, I chose to stay out.',
+    expiresAt: Date.now() + 60_000,
+  }));
+  const request = t.mock.method(globalThis, 'fetch', async () => { throw new Error('Unexpected upload'); });
+  render(createElement(TradeReview, { initiallyOpen: true, guidedSources: true, persistentUnderstanding: true }));
+  const draft = await screen.findByRole('region', { name: 'Resume your practice example' });
+  await within(draft).findByText('Stay out', { exact: true });
+  const user = userEvent.setup({ document });
+  await user.click(within(draft).getByRole('button', { name: 'Continue on this device' }));
+  await within(screen.getByRole('region', { name: 'Compare the next decision' })).findByText(/In this hypothetical situation/);
+  expect(window.sessionStorage.getItem(key), null);
+  expect(request.mock.callCount(), 0);
+});

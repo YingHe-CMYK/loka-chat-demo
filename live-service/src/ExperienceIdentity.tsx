@@ -7,6 +7,7 @@ type Config={ready:boolean;appId:string;clientId:string};
 function workspaceReturnPath() {
  const query = new URLSearchParams(location.search);
  if (query.get('view') !== 'trades') return '/twin-workspace';
+ if (query.get('resume-example') === '1') return '/twin?start=1&setup=complete';
  const target = new URL(query.get('return') === 'twin' ? '/twin' : '/twin-workspace?view=trades', location.origin);
  if (query.get('initiative') === '1') target.searchParams.set('initiative', '1');
  return target.pathname + target.search;
@@ -29,7 +30,8 @@ function IdentityFlow(){
    } catch {
      // The workspace also works without browser storage.
    }
-   const target = new URL(workspaceReturnPath(), location.origin);
+   const resumeExample = twinId && new URLSearchParams(location.search).get('resume-example') === '1';
+   const target = new URL(resumeExample ? '/twin?resume-example=1' : workspaceReturnPath(), location.origin);
    if (setupTwin && guidedTrade) target.searchParams.set('setup', 'appearance');
    location.assign(target.pathname + target.search);
  }
