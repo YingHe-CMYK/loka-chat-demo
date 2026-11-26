@@ -1540,8 +1540,10 @@ function LocalDecisionReview({ active, onFileSelected, followUp, savedUnderstand
         </div>}
         {!editingSource && (!comparingNewSource || comparisonReceipt) && <div className="twin-missing-detail">
           <p>{baseline.evidence.scenario.toLowerCase().includes('fill')
-            ? 'A different trade export can show whether this was a one-off.'
-            : 'A real trade export can help check whether this choice also shows up in your trades.'}</p>
+            ? 'A trade export from a different order can help check whether your correction applies again.'
+            : baseline.evidence.matched
+              ? 'We made the same move here. A dated trade export can help check whether you usually make this choice.'
+              : 'We made different moves here. A dated trade export can help check whether the timing you chose also appears in your trades.'}</p>
           <button type="button" disabled={readingFile} onClick={() => picker.current?.click()}>Choose a trade file ↗</button>
           {readingFile && <small role="status">Preparing a local preview…</small>}
           {message && <small role="status">{message}</small>}
