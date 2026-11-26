@@ -51,7 +51,9 @@ let facePreview;
 let faceCamera;
 let faceCameraVideo;
 let faceCameraTimer;
+let faceCaptureRevision = 0;
 function closeFaceCamera() {
+  faceCaptureRevision++;
   window.clearInterval(faceCameraTimer);
   faceCameraTimer = undefined;
   faceCamera?.getTracks().forEach(track => track.stop());
@@ -703,8 +705,9 @@ function render(focusHeading = false) {
           const useFrame = frame => {
             if (!frame || faceCameraVideo !== live) return;
             closeFaceCamera();
+            const revision = faceCaptureRevision;
             frame.toBlob(photo => {
-              if (!photo || step !== 1 || document.hidden) return;
+              if (!photo || revision !== faceCaptureRevision || step !== 1 || document.hidden) return;
               void adoptPhoto(photo, 'camera');
             }, 'image/jpeg', .88);
           };
