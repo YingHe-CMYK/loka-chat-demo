@@ -662,6 +662,10 @@ function render(focusHeading = false) {
       const cameraTarget = inlineSetup && identityStage ? orbActions : stage;
       const cameraArea = add('div', '', cameraTarget);
       cameraArea.className = 'setup-camera-preview';
+      const cameraHint = add('p', inlineSetup
+        ? 'Twin uses one steady frame to make a 3D preview on this device, then closes the camera.'
+        : 'Capture one frame to make a 3D preview on this device.', cameraArea);
+      cameraHint.id = 'twin-camera-purpose';
       const camera = button('Open camera', async () => {
         camera.disabled = true;
         const message = add('p', 'Waiting for camera permission…', cameraArea);
@@ -679,6 +683,7 @@ function render(focusHeading = false) {
           }
           faceCamera = stream;
           camera.hidden = true;
+          cameraHint.hidden = true;
           message.textContent = 'Center your face to prepare a preview.';
           const orb = workspace.querySelector('.twin-workspace-orb');
           const placeInOrb = firstSetup && orb;
@@ -714,6 +719,7 @@ function render(focusHeading = false) {
         }
       }, cameraTarget);
       camera.dataset.openFaceCamera = '';
+      camera.setAttribute('aria-describedby', cameraHint.id);
       if (controls.hasPhoto()) {
         if (facePreview) stage.append(facePreview.controls);
         else if (photoSource) add('p', '3D preview needs one clear face. Try another image or continue with this portrait.', stage);
