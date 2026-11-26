@@ -243,6 +243,17 @@ function stopPlayback() {
 }
 const savedSamples = { photo: undefined, voice: undefined };
 
+async function saveSample(field, sample) {
+  const options = field === 'photo' ? { faceGeometry: Boolean(facePreview) } : { voiceLanguage };
+  await localProfile('readwrite', store => {
+    const request = store.get(profileKey);
+    request.addEventListener('success', () => store.put({ ...request.result, [field]: sample, ...options }, profileKey));
+    return request;
+  });
+  savedSamples[field] = sample;
+  notice = field === 'photo' ? 'Photo saved. It will be restored in this browser.' : 'Recording saved. It will be restored in this browser.';
+}
+
 async function removeSavedSample(field) {
   if (!savedSamples[field]) return;
   const retained = field === 'photo' ? 'voice' : 'photo';
@@ -866,6 +877,8 @@ function render(focusHeading = false) {
       end.addEventListener('input', save);
       add('p', 'Uses your local time. Results still appear during quiet hours. Leave blank to disable.', hours);
     }
+    const unsavedFace = firstSetup && step === 1 && facePreview && controls.getPhoto() !== savedSamples.photo
+      ? controls.getPhoto() : undefined;
     if (step < 3) {
       const photoStep = step === 1;
       const sample = photoStep ? controls.getPhoto() : voiceBlob;
@@ -873,15 +886,8 @@ function render(focusHeading = false) {
       if (sample && sample === savedSamples[field]) add('p', 'Saved on this device.');
       if (sample && sample !== savedSamples[field]) {
         add('small', 'This sample is available for this preview.', sampleActions ?? guide);
-        button(photoStep ? 'Save photo on this device' : 'Save recording on this device', () => void change(async () => {
-          await localProfile('readwrite', store => {
-            const request = store.get(profileKey);
-            request.addEventListener('success', () => store.put({ ...request.result, [field]: sample, ...(photoStep ? { faceGeometry: Boolean(facePreview) } : { voiceLanguage }) }, profileKey));
-            return request;
-          });
-          savedSamples[field] = sample;
-          notice = photoStep ? 'Photo saved. It will be restored in this browser.' : 'Recording saved. It will be restored in this browser.';
-        }), sampleActions ?? guide);
+        if (!unsavedFace) button(photoStep ? 'Save photo on this device' : 'Save recording on this device',
+          () => void change(() => saveSample(field, sample)), sampleActions ?? guide);
       }
 
     }
@@ -894,13 +900,22 @@ function render(focusHeading = false) {
       button('Back to appearance', () => move(1), actions).disabled = pending || Boolean(recorder);
     }
     const next = firstSetup && step === 1 ? 2 : workspaceStep;
-    const label = firstSetup ? (step === 1 ? 'Continue to voice' : 'Choose trading information') : 'Done';
-    const nextAction = button(label, () => {
+    const label = unsavedFace ? 'Save on this device and continue'
+      : firstSetup ? (step === 1 ? 'Continue to voice' : 'Choose trading information') : 'Done';
+    const advance = () => {
       if (firstSetup && step === 1) handoffReason = controls.hasPhoto() ? 'Appearance prepared' : '';
       move(next);
+    };
+    const nextAction = button(label, async () => {
+      if (unsavedFace) {
+        await change(() => saveSample('photo', unsavedFace));
+        if (savedSamples.photo !== unsavedFace) return;
+      }
+      advance();
     }, actions, true);
     nextAction.dataset.identityNext = '';
     nextAction.disabled = pending || Boolean(recorder);
+    if (unsavedFace) button('Continue without saving', advance, actions).disabled = pending;
     if (firstSetup) button('Later', () => {
       closeFaceCamera();
       pausedIdentity = true;
