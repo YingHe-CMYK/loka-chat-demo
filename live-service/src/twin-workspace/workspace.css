@@ -1282,7 +1282,7 @@ body:has(:is(.twin-trade-entry, .identity-panel[data-trade-signin], .twin-worksp
 .twin-identity-stage:has([data-tp-face=true]) .twin-identity-change { display: inline; }
 .twin-workspace[data-guided-trade] .twin-workspace-orb[data-tp-face=true] { min-height: 184px; }
 .twin-workspace[data-guided-trade] .vorb[data-tp-face=true] .twin-particle-canvas { opacity: .9; position: relative; z-index: 2; pointer-events: none; mask-image: radial-gradient(circle, #0004 18%, #0008 32%, #000 48%); }
-.twin-workspace[data-guided-trade] .vorb[data-tp-face=true] .tp-face :is(img, .tp-portrait-preview) {
+.twin-workspace[data-guided-trade] .vorb[data-tp-face=true] .tp-face :is(img, .tp-portrait-preview, .setup-face-surface) {
   position: absolute;
   inset: 0;
   margin: auto;
@@ -1855,11 +1855,11 @@ body:has(:is(.twin-trade-entry, .identity-panel[data-trade-signin], .twin-worksp
   gap: 8px;
   margin: 12px 0;
 }
-.setup-face-geometry canvas {
-  width: min(100%, 224px);
-  height: auto;
-  border-radius: 50%;
-  background: radial-gradient(circle, #192836, transparent 74%);
+.twin-workspace[data-guided-trade] .tp-face:has(.setup-face-surface):not(:has(.tp-speaking-mouth)) img {
+  visibility: hidden;
+}
+.twin-workspace[data-guided-trade] .tp-face:has(video, .tp-speaking-mouth) .setup-face-surface {
+  visibility: hidden;
 }
 .setup-face-geometry input {
   width: min(100%, 224px);

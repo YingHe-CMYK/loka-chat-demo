@@ -74,6 +74,7 @@ export async function createFacePreview(photo) {
 
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = 256;
+  canvas.className = 'setup-face-surface';
   canvas.setAttribute('role', 'img');
   canvas.setAttribute('aria-label', 'Personalized three-dimensional facial surface');
   const painter = canvas.getContext('2d');
@@ -108,10 +109,10 @@ export async function createFacePreview(photo) {
   }
   angle.addEventListener('input', draw);
   draw();
-  const preview = document.createElement('figure');
+  const preview = document.createElement('div');
   preview.className = 'setup-face-geometry';
-  const caption = document.createElement('figcaption');
+  const caption = document.createElement('span');
   caption.textContent = 'Turn your 3D face';
-  preview.append(canvas, caption, angle);
-  return preview;
+  preview.append(caption, angle);
+  return { canvas, controls: preview };
 }

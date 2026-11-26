@@ -479,6 +479,10 @@ async function change(action) {
 
 function render(focusHeading = false) {
   stopPlayback();
+  const faceHolder = workspace.querySelector('.twin-workspace-orb .tp-face');
+  const previousSurface = faceHolder?.querySelector('.setup-face-surface');
+  if (previousSurface && previousSurface !== facePreview?.canvas) previousSurface.remove();
+  if (facePreview && faceHolder && facePreview.canvas.parentElement !== faceHolder) faceHolder.append(facePreview.canvas);
   const finished = step === workspaceStep;
   controls.proactive.setConfiguring(!finished);
   toolbar.hidden = true;
@@ -724,7 +728,7 @@ function render(focusHeading = false) {
       }, cameraTarget);
       camera.dataset.openFaceCamera = '';
       if (controls.hasPhoto()) {
-        if (facePreview) stage.append(facePreview);
+        if (facePreview) stage.append(facePreview.controls);
         else if (photoSource === 'camera') add('p', '3D preview needs one clear face. You can retake the photo or continue with this portrait.', stage);
         if (portraitVideoURL) {
           if (firstSetup) {
@@ -1011,7 +1015,10 @@ if (externalControls) {
 }
 controls.photo.addEventListener('twin:photo-result', event => {
   if (step !== 1 || editingName) return;
-  if (event.detail) clearPortraitPreview();
+  if (event.detail) {
+    facePreview = undefined;
+    clearPortraitPreview();
+  }
   notice = event.detail ? 'Portrait preview updated.' : 'Could not read the photo. Choose a JPEG, PNG, or WebP under 8 MB.';
   render(true);
 });
