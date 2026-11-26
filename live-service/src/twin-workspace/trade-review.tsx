@@ -1328,6 +1328,7 @@ function LocalDecisionReview({ active, onFileSelected, followUp, savedUnderstand
   followUp?: RetainedUnderstanding;
   savedUnderstanding?: RetainedUnderstanding;
 } & UnderstandingAccess) {
+  const trial = new URLSearchParams(window.location.search).get('start') === '1';
   const [text, setText] = useState(followUp?.evidence?.reason ?? '');
   const [record, setRecord] = useState(followUp?.evidence?.reason ?? '');
   const [editingSource, setEditingSource] = useState(false);
@@ -1514,6 +1515,10 @@ function LocalDecisionReview({ active, onFileSelected, followUp, savedUnderstand
       </details>}
       {baseline.evidence ? <>
         <p role="status">This example records your choices in this scenario.</p>
+        {trial && <p>
+          <a href="/?identity=1&signin=1&view=trades&return=twin" target="_blank" rel="noopener noreferrer">Open my account workspace ↗</a>
+          {' '}Your current review stays in this tab.
+        </p>}
         {comparingNewSource && <div className="twin-missing-detail" aria-label="Compare with the earlier choice">
           <p><strong>What Twin inferred from the new source</strong> · {prediction}</p>
           {!comparison ? <div className="twin-fluid-actions">
@@ -1734,6 +1739,7 @@ export function TradeReview({ onResult, initiallyOpen = false, guidedSources = f
         </div>
       )}
       {!publicReview && <div role="status">{saveStatus}</div>}
+
       {guidedSources && starterMounted && showPreparedStarter && sourceChoicesOpen && !sourcePaused && !starterDismissed && <DecisionFollowUp starter quietArrival
         basis={starterBasis} prediction={starterPrediction}
         persistent={persistentUnderstanding} onUseFile={() => {
