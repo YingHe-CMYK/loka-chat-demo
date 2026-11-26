@@ -1848,3 +1848,20 @@ body:has(:is(.twin-trade-entry, .identity-panel[data-trade-signin], .twin-worksp
 .twin-training-library > section { padding-block: 8px; border-block-start: 1px solid var(--workspace-line); }
 .twin-training-library button { min-height: 44px; }
 .twin-training-library dd { margin: 0; overflow-wrap: anywhere; }
+
+.setup-face-geometry {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+.setup-face-geometry canvas {
+  width: min(100%, 224px);
+  height: auto;
+  border-radius: 50%;
+  background: radial-gradient(circle, #192836, transparent 74%);
+}
+.setup-face-geometry input {
+  width: min(100%, 224px);
+  accent-color: var(--workspace-accent);
+}

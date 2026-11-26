@@ -47,6 +47,7 @@ let generatedVoiceURL;
 let generatingVoice = false;
 
 let portraitVideoURL;
+let facePreview;
 let faceCamera;
 let faceCameraVideo;
 let faceCameraTimer;
@@ -433,7 +434,16 @@ async function adoptPhoto(photo, source) {
         return;
       }
       clearPortraitPreview();
+      facePreview = undefined;
       photoSource = source;
+      if (source === 'camera') {
+        try {
+          const { createFacePreview } = await import('./face-geometry.mjs');
+          facePreview = await createFacePreview(photo);
+        } catch {
+          // The existing portrait remains available if the local geometry model fails.
+        }
+      }
       notice = firstSetup ? '' : 'Your likeness is now inside the orb.';
       if (firstSetup) handoffReason = 'Appearance prepared';
     });
@@ -714,6 +724,8 @@ function render(focusHeading = false) {
       }, cameraTarget);
       camera.dataset.openFaceCamera = '';
       if (controls.hasPhoto()) {
+        if (facePreview) stage.append(facePreview);
+        else if (photoSource === 'camera') add('p', '3D preview needs one clear face. You can retake the photo or continue with this portrait.', stage);
         if (portraitVideoURL) {
           if (firstSetup) {
             button('Replay animation', () => {
@@ -747,6 +759,7 @@ function render(focusHeading = false) {
       if (controls.hasPhoto()) {
         button('Use default appearance', () => void change(async () => {
           await removeSavedSample('photo');
+          facePreview = undefined;
           clearPortraitPreview();
           controls.orb.click();
           notice = 'Restored the default appearance.';
