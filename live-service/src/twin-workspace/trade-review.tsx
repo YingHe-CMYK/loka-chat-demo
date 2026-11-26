@@ -1664,6 +1664,11 @@ export function TradeReview({ onResult, initiallyOpen = false, guidedSources = f
   onBackToVoice?: () => void;
   savedUnderstanding?: RetainedUnderstanding;
 } & UnderstandingAccess) {
+  const [resumedTrial] = useState(() => {
+    const query = new URLSearchParams(window.location.search);
+    return guidedSources && !persistentUnderstanding && query.get('start') === '1' && query.get('resume-example') === '1'
+      ? readTrialExample() : undefined;
+  });
   const [trialExample, setTrialExample] = useState(() =>
     persistentUnderstanding && new URLSearchParams(window.location.search).get('resume-example') === '1'
       ? readTrialExample() : undefined);
@@ -1692,14 +1697,15 @@ export function TradeReview({ onResult, initiallyOpen = false, guidedSources = f
       // The draft remains in memory when storage is unavailable.
     }
   }
-  const [publicReview, setPublicReview] = useState(initiallyOpen);
-  const [otherSource, setOtherSource] = useState(false);
+  const [publicReview, setPublicReview] = useState(initiallyOpen && !resumedTrial);
+  const [otherSource, setOtherSource] = useState(Boolean(resumedTrial));
   const [starterMounted, setStarterMounted] = useState(false);
-  const [starterDismissed, setStarterDismissed] = useState(false);
+  const [starterDismissed, setStarterDismissed] = useState(Boolean(resumedTrial));
   useEffect(() => setStarterMounted(true), []);
   const [sourcePaused, setSourcePaused] = useState(false);
-  const [sourceChoicesOpen, setSourceChoicesOpen] = useState(true);
-  const [followUp, setFollowUp] = useState<RetainedUnderstanding>();
+  const [sourceChoicesOpen, setSourceChoicesOpen] = useState(!resumedTrial);
+  const [followUp, setFollowUp] = useState<RetainedUnderstanding | undefined>(() =>
+    resumedTrial ? { basis: starterBasis, prediction: starterPrediction, evidence: resumedTrial } : undefined);
   const [followUpVersion, setFollowUpVersion] = useState(0);
   const publicReviewEntry = useRef<HTMLButtonElement>(null);
   const restoreEntryFocus = useRef(false);
