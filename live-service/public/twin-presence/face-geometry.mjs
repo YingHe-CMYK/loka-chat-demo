@@ -134,12 +134,27 @@ export async function createFacePreview(photo) {
       }
     }
   }
+  let drag;
+  canvas.addEventListener('pointerdown', event => {
+    if (!event.isPrimary || event.button !== 0) return;
+    drag = { id: event.pointerId, startX: event.clientX, angle: angle.valueAsNumber };
+    canvas.setPointerCapture(event.pointerId);
+  });
+  canvas.addEventListener('pointermove', event => {
+    if (event.pointerId !== drag?.id) return;
+    const width = canvas.getBoundingClientRect().width;
+    if (!width) return;
+    const next = Math.round(drag.angle + (event.clientX - drag.startX) * 100 / width);
+    angle.value = String(Math.max(-35, Math.min(35, next)));
+    draw();
+  });
+  canvas.addEventListener('lostpointercapture', () => { drag = undefined; });
   angle.addEventListener('input', draw);
   draw();
   const preview = document.createElement('div');
   preview.className = 'setup-face-geometry';
   const caption = document.createElement('span');
-  caption.textContent = 'Turn your 3D face';
+  caption.textContent = 'Drag your face to turn it, or use the slider.';
   preview.append(caption, angle);
   return { canvas, controls: preview };
 }

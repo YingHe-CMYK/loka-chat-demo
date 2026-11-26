@@ -1865,3 +1865,11 @@ body:has(:is(.twin-trade-entry, .identity-panel[data-trade-signin], .twin-worksp
   width: min(100%, 224px);
   accent-color: var(--workspace-accent);
 }
+
+
+.twin-workspace .setup-face-surface {
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: pan-y;
+}
+.twin-workspace .setup-face-surface:active { cursor: grabbing; }

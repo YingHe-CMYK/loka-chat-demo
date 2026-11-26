@@ -438,7 +438,7 @@ async function adoptPhoto(photo, source) {
       photoSource = source;
       if (source === 'camera') {
         try {
-          const { createFacePreview } = await import('./face-geometry.mjs?v=texture-1');
+          const { createFacePreview } = await import('./face-geometry.mjs?v=drag-1');
           facePreview = await createFacePreview(photo);
         } catch {
           // The existing portrait remains available if the local geometry model fails.
@@ -1030,7 +1030,7 @@ try {
       const restored = await controls.setPhoto(existing.photo);
       if (restored && existing.faceGeometry === true) {
         const savedPhoto = existing.photo;
-        void import('./face-geometry.mjs?v=texture-1').then(({ createFacePreview }) => createFacePreview(savedPhoto)).then(preview => {
+        void import('./face-geometry.mjs?v=drag-1').then(({ createFacePreview }) => createFacePreview(savedPhoto)).then(preview => {
           if (!preview || controls.getPhoto() !== savedPhoto || savedSamples.photo !== savedPhoto) return;
           facePreview = preview;
           if (step === workspaceStep || (step === 1 && !editingName && !faceCamera && !pending)) render();
